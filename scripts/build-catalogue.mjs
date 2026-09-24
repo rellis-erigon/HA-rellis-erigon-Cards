@@ -22,7 +22,13 @@ const files = readdirSync(ROOT, { withFileTypes: true })
   );
 
 for (const file of files) {
-  const source = readFileSync(file, "utf8");
+  const whole = readFileSync(file, "utf8");
+  // Parse only the exported Faceplate object. Reading the first `id:` in the
+  // file picked up a dial definition declared above it, and published a
+  // faceplate called "d10".
+  const start = whole.search(/export const \w+\s*:\s*Faceplate\s*=\s*\{/);
+  if (start === -1) continue;
+  const source = whole.slice(start);
   const pick = (key) =>
     source.match(new RegExp(`${key}:\\s*\n?\\s*"([^"]+)"`))?.[1];
   const id = pick("id");

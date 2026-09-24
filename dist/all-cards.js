@@ -460,7 +460,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
     <text class="brc315-icon" x="${344}" y="${140}">&#9788;</text>
     <text class="brc315-icon" x="${321}" y="${140}">&#9832;</text>
   </g>
-`,at=168,nt=132,lt=132,dt=136,ct=[Re,Ce,Ie,Me,Ge,it,{id:"daikin-brc2e61",name:"Daikin BRC2E61",description:"Simplified wired controller: a small central display surrounded by large flat keys for power, temperature, fan and louvre.",emulates:"Daikin BRC2E61 simplified remote controller",card:"hvac-controller-card",render:"svg",display:"positive",size:[400,400],artNode:V`
+`,at=80,nt=80,lt=240,dt=96,ct=104,ht=208,pt=[Re,Ce,Ie,Me,Ge,it,{id:"daikin-brc2e61",name:"Daikin BRC2E61",description:"Simplified wired controller: a small central display surrounded by large flat keys for power, temperature, fan and louvre.",emulates:"Daikin BRC2E61 simplified remote controller",card:"hvac-controller-card",render:"svg",display:"positive",size:[400,400],artNode:V`
   <defs>
     <linearGradient id="brc2-body" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#fdfdfd" />
@@ -486,29 +486,29 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
 
   <!-- Key segmentation: the face is the keys, divided by fine seams -->
   <g stroke="#e0e0dd" stroke-width="1.6" fill="none">
-    <line x1="112" y1="14" x2="112" y2="386" />
-    <line x1="288" y1="14" x2="288" y2="386" />
-    <line x1="14" y1="112" x2="386" y2="112" />
-    <line x1="14" y1="288" x2="386" y2="288" />
+    <line x1="${at}" y1="14" x2="${at}" y2="386" />
+    <line x1="${320}" y1="14" x2="${320}" y2="386" />
+    <line x1="14" y1="${nt}" x2="386" y2="${nt}" />
+    <line x1="14" y1="${320}" x2="386" y2="${320}" />
   </g>
 
   <!-- Power indicator and key, top centre -->
-  <rect x="192" y="30" width="16" height="9" rx="2" fill="#5f6a5c" />
-  <g transform="translate(193 52)" stroke="#4a5057" stroke-width="1.8" fill="none">
+  <rect x="192" y="22" width="16" height="9" rx="2" fill="#5f6a5c" />
+  <g transform="translate(193 40)" stroke="#4a5057" stroke-width="1.8" fill="none">
     <circle cx="7" cy="8" r="6.5" />
     <line x1="7" y1="0" x2="7" y2="7" />
   </g>
 
   <!-- Display surround and glass -->
-  <rect x="${116}" y="${116}" width="${at}" height="${at}" rx="16"
+  <rect x="${at}" y="${nt}" width="${lt}" height="${lt}" rx="16"
         fill="url(#brc2-sur)" />
-  <rect x="${nt}" y="${lt}" width="${dt}" height="${136}" rx="2"
+  <rect x="${dt}" y="${ct}" width="${ht}" height="${200}" rx="2"
         fill="url(#brc2-lcd)" stroke="#7d8277" stroke-width="1.5" />
-  <line x1="${138}" y1="${206}" x2="${262}" y2="${206}"
+  <line x1="${102}" y1="${200}" x2="${298}" y2="${200}"
         stroke="#8b9180" stroke-width="1.4" />
 
   <!-- Wordmark, printed across the surround as on the unit -->
-  <g transform="translate(${150} ${102})">
+  <g transform="translate(${154} ${86})">
     <path d="M0 0 L13 0 L6.5 11 Z" fill="#4a5057" />
     <text class="brc2-brand" x="18" y="10">DAIKIN</text>
   </g>
@@ -516,38 +516,38 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
   <!-- Key glyphs -->
   <g class="brc2-glyph" fill="#4a5057">
     <!-- top-left: mode / display -->
-    <g transform="translate(48 58)" stroke="#4a5057" stroke-width="1.6" fill="none">
+    <g transform="translate(30 32)" stroke="#4a5057" stroke-width="1.6" fill="none">
       <rect x="0" y="0" width="20" height="16" rx="2" />
       <line x1="2" y1="14" x2="18" y2="3" />
     </g>
     <!-- right: up and down chevrons -->
-    <polyline points="318,74 334,58 350,74" fill="none" stroke="#4a5057"
+    <polyline points="344,50 360,34 376,50" fill="none" stroke="#4a5057"
               stroke-width="2.6" stroke-linecap="round" />
-    <polyline points="318,326 334,342 350,326" fill="none" stroke="#4a5057"
+    <polyline points="344,350 360,366 376,350" fill="none" stroke="#4a5057"
               stroke-width="2.6" stroke-linecap="round" />
     <!-- right middle: thermometer keys -->
-    <g transform="translate(330 168)" stroke="#4a5057" stroke-width="1.6" fill="none">
+    <g transform="translate(356 140)" stroke="#4a5057" stroke-width="1.6" fill="none">
       <rect x="0" y="0" width="7" height="18" rx="3.5" />
       <circle cx="3.5" cy="21" r="4.5" />
     </g>
-    <g transform="translate(330 226)" stroke="#4a5057" stroke-width="1.6" fill="none">
+    <g transform="translate(356 232)" stroke="#4a5057" stroke-width="1.6" fill="none">
       <rect x="0" y="0" width="7" height="18" rx="3.5" />
       <circle cx="3.5" cy="21" r="4.5" />
     </g>
     <!-- bottom-left: fan -->
-    <g transform="translate(46 330)" stroke="#4a5057" stroke-width="1.7" fill="none">
+    <g transform="translate(30 346)" stroke="#4a5057" stroke-width="1.7" fill="none">
       <circle cx="11" cy="11" r="3" />
       <path d="M11 8 C15 3 21 5 20 10 C19 14 14 13 11 11" />
       <path d="M8 11 C3 9 2 3 7 2 C11 1 12 7 11 11" />
       <path d="M11 14 C12 19 8 23 5 19 C3 16 8 13 11 14" />
     </g>
     <!-- bottom-centre: louvre / swing -->
-    <g transform="translate(184 336)" stroke="#4a5057" stroke-width="1.7" fill="none">
+    <g transform="translate(184 348)" stroke="#4a5057" stroke-width="1.7" fill="none">
       <path d="M0 10 L16 2" stroke-dasharray="3 2.5" />
       <rect x="19" y="0" width="13" height="7" rx="1.5" />
     </g>
   </g>
-`,regions:[{id:"mode",role:"hvac_mode",kind:"text",x:138,y:138,w:124,align:"middle",size:15},{id:"sp",role:"setpoint",kind:"text",x:138,y:214,w:70,align:"start",unit:"",decimals:0,size:32},{id:"spunit",role:"",kind:"text",text:"°C",x:192,y:228,w:20,align:"start",size:12},{id:"fan",role:"fan_speed",kind:"text",x:210,y:222,w:52,align:"end",size:13,placeholder:""},{id:"room",role:"room_temp",kind:"text",x:138,y:252,w:124,align:"middle",label:"",unit:"°C",decimals:0,size:13},{id:"k-power",role:"",kind:"button",x:160,y:24,w:80,h:76,text:"",action:"power_toggle"},{id:"k-up",role:"",kind:"button",x:296,y:30,w:86,h:78,text:"",action:"temp_up"},{id:"k-down",role:"",kind:"button",x:296,y:296,w:86,h:78,text:"",action:"temp_down"},{id:"k-mode",role:"",kind:"button",x:20,y:30,w:86,h:78,text:"",action:"mode_cycle"},{id:"k-fan",role:"",kind:"button",x:20,y:296,w:86,h:78,text:"",action:"fan_cycle"}]},Be,{id:"daikin-brc315d7",name:"Daikin BRC315D7",description:"Schedule controller, cover closed: wide segmented display with timer rows, temperature and mode icons.",emulates:"Daikin BRC315D7 schedule remote controller",card:"hvac-controller-card",render:"svg",display:"positive",size:[400,400],artNode:ot,regions:[{id:"hdr",role:"",kind:"text",text:"ONETIME  DAILY  TIMER",x:114,y:94,w:160,align:"start",size:10},{id:"t1",role:"",kind:"text",text:"--:--",x:122,y:114,w:108,align:"middle",size:22},{id:"t2",role:"",kind:"text",text:"--:--",x:122,y:150,w:108,align:"middle",size:22},{id:"sp",role:"setpoint",kind:"text",x:244,y:106,w:64,align:"middle",unit:"",decimals:0,size:38},{id:"spunit",role:"",kind:"text",text:"°C",x:306,y:130,w:20,align:"start",size:12},{id:"room",role:"room_temp",kind:"text",x:244,y:154,w:64,align:"middle",label:"",decimals:0,size:16},{id:"mode",role:"hvac_mode",kind:"text",x:244,y:172,w:120,align:"start",size:11},{id:"k-power",role:"",kind:"button",x:290,y:56,w:72,h:20,text:"",action:"power_toggle"}]}];function ht(e){return ct.filter(t=>t.card===e)}function pt(e,t){const i=ht(e);return i.find(e=>e.id===t)??i[0]}const ft="bms-meter-card";class xt extends le{constructor(){super(),this._page=""}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e;const t=pt(ft,e.faceplate);this._page=e.page??t.pages?.[0]??""}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${ft}-editor`)}static getStubConfig(){return{type:`custom:${ft}`,faceplate:"schneider-pm2200"}}_faceplate(){return pt(ft,this._config?.faceplate)}_onAction(e){const t=this._faceplate().pages??[];if(!t.length)return;if("page"===e.action&&e.target)return void(this._page=e.target);const i=t.indexOf(this._page),s="prev_page"===e.action?-1:1;this._page=t[(i+s+t.length)%t.length]}render(){if(!this._config||!this.hass)return K;const e=this._faceplate(),t=[...new Set(e.regions.map(e=>e.role))].filter(Boolean),i=[...new Set(t.flatMap(e=>pe[e]??[e]))],s=fe(this.hass,i,this._config.entities??{},this._config.device?function(e,t){const i=e.entities;if(i){const e=Object.keys(i).filter(e=>i[e]?.device_id===t);if(e.length)return e}return Object.keys(e.states).filter(e=>e.includes(t))}(this.hass,this._config.device):[]),r=i.filter(e=>!s[e]);return B`
+`,regions:[{id:"mode",role:"hvac_mode",kind:"text",x:104,y:112,w:192,align:"middle",size:20},{id:"sp",role:"setpoint",kind:"text",x:106,y:208,w:104,align:"start",unit:"",decimals:0,size:48},{id:"spunit",role:"",kind:"text",text:"°C",x:192,y:232,w:24,align:"start",size:16},{id:"fan",role:"fan_speed",kind:"text",x:216,y:222,w:78,align:"end",size:16,placeholder:""},{id:"room",role:"room_temp",kind:"text",x:104,y:262,w:192,align:"middle",label:"",unit:"°C",decimals:0,size:16},{id:"k-power",role:"",kind:"button",x:120,y:12,w:160,h:62,text:"",action:"power_toggle"},{id:"k-up",role:"",kind:"button",x:326,y:14,w:66,h:60,text:"",action:"temp_up"},{id:"k-down",role:"",kind:"button",x:326,y:326,w:66,h:60,text:"",action:"temp_down"},{id:"k-mode",role:"",kind:"button",x:12,y:14,w:62,h:60,text:"",action:"mode_cycle"},{id:"k-fan",role:"",kind:"button",x:12,y:326,w:62,h:60,text:"",action:"fan_cycle"}]},Be,{id:"daikin-brc315d7",name:"Daikin BRC315D7",description:"Schedule controller, cover closed: wide segmented display with timer rows, temperature and mode icons.",emulates:"Daikin BRC315D7 schedule remote controller",card:"hvac-controller-card",render:"svg",display:"positive",size:[400,400],artNode:ot,regions:[{id:"hdr",role:"",kind:"text",text:"ONETIME  DAILY  TIMER",x:114,y:94,w:160,align:"start",size:10},{id:"t1",role:"",kind:"text",text:"--:--",x:122,y:114,w:108,align:"middle",size:22},{id:"t2",role:"",kind:"text",text:"--:--",x:122,y:150,w:108,align:"middle",size:22},{id:"sp",role:"setpoint",kind:"text",x:244,y:106,w:64,align:"middle",unit:"",decimals:0,size:38},{id:"spunit",role:"",kind:"text",text:"°C",x:306,y:130,w:20,align:"start",size:12},{id:"room",role:"room_temp",kind:"text",x:244,y:154,w:64,align:"middle",label:"",decimals:0,size:16},{id:"mode",role:"hvac_mode",kind:"text",x:244,y:172,w:120,align:"start",size:11},{id:"k-power",role:"",kind:"button",x:290,y:56,w:72,h:20,text:"",action:"power_toggle"}]}];function ft(e){return pt.filter(t=>t.card===e)}function xt(e,t){const i=ft(e);return i.find(e=>e.id===t)??i[0]}const gt="bms-meter-card";class ut extends le{constructor(){super(),this._page=""}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e;const t=xt(gt,e.faceplate);this._page=e.page??t.pages?.[0]??""}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${gt}-editor`)}static getStubConfig(){return{type:`custom:${gt}`,faceplate:"schneider-pm2200"}}_faceplate(){return xt(gt,this._config?.faceplate)}_onAction(e){const t=this._faceplate().pages??[];if(!t.length)return;if("page"===e.action&&e.target)return void(this._page=e.target);const i=t.indexOf(this._page),s="prev_page"===e.action?-1:1;this._page=t[(i+s+t.length)%t.length]}render(){if(!this._config||!this.hass)return K;const e=this._faceplate(),t=[...new Set(e.regions.map(e=>e.role))].filter(Boolean),i=[...new Set(t.flatMap(e=>pe[e]??[e]))],s=fe(this.hass,i,this._config.entities??{},this._config.device?function(e,t){const i=e.entities;if(i){const e=Object.keys(i).filter(e=>i[e]?.device_id===t);if(e.length)return e}return Object.keys(e.states).filter(e=>e.includes(t))}(this.hass,this._config.device):[]),r=i.filter(e=>!s[e]);return B`
       <ha-card>
         ${this._config.name?B`<div class="title">${this._config.name}</div>`:K}
         <div class="frame">
@@ -558,7 +558,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
               at a device.
             </div>`:K}
       </ha-card>
-    `}}xt.properties={hass:{attribute:!1},_config:{state:!0},_page:{state:!0}},xt.styles=o`
+    `}}ut.properties={hass:{attribute:!1},_config:{state:!0},_page:{state:!0}},ut.styles=o`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -753,7 +753,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `;class gt extends le{setConfig(e){this._config=e}_emit(e){const t={...this._config,...e};this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:t},bubbles:!0,composed:!0}))}render(){if(!this._config)return K;const e=ht(ft),t=pt(ft,this._config.faceplate);return B`
+  `;class yt extends le{setConfig(e){this._config=e}_emit(e){const t={...this._config,...e};this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:t},bubbles:!0,composed:!0}))}render(){if(!this._config)return K;const e=ft(gt),t=xt(gt,this._config.faceplate);return B`
       <div class="editor">
         <label>
           Faceplate
@@ -781,7 +781,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
           any of them in YAML with an <code>entities:</code> block.
         </p>
       </div>
-    `}}gt.properties={hass:{attribute:!1},_config:{state:!0}},gt.styles=o`
+    `}}yt.properties={hass:{attribute:!1},_config:{state:!0}},yt.styles=o`
     .editor {
       display: flex;
       flex-direction: column;
@@ -809,7 +809,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       font-size: 12px;
       color: var(--secondary-text-color);
     }
-  `,customElements.define(ft,xt),customElements.define(`${ft}-editor`,gt),window.customCards??=[],window.customCards.push({type:ft,name:"BMS Meter Card",description:"A power meter that looks like a power meter.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-Cards"});const ut="hvac-controller-card",yt=["off","cool","heat","dry","fan_only","auto"];class mt extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${ut}-editor`)}static getStubConfig(){return{type:`custom:${ut}`,faceplate:"daikin-brc1e63"}}_faceplate(){return pt(ut,this._config?.faceplate)}_setpoint(){if(!this.hass||!this._config)return;if(this._config.climate)return ge(this.hass,this._config.climate,"setpoint").value;const e=this._config.entities?.setpoint;return e?Number(this.hass.states[e]?.state):void 0}async _onAction(e){if(!this.hass||!this._config)return;const t=this._config.climate;if(!t)return void this._notify("This controller is read-only — no climate entity is set.");const i=this._setpoint();switch(e.action){case"temp_up":case"temp_down":{if(void 0===i)return;const s="temp_up"===e.action?.5:-.5;return void await this.hass.callService("climate","set_temperature",{entity_id:t,temperature:Math.round(2*(i+s))/2})}case"power_toggle":{const e="off"!==this.hass.states[t]?.state;return void await this.hass.callService("climate",e?"turn_off":"turn_on",{entity_id:t})}case"fan_cycle":{const e=this.hass.states[t]?.attributes.fan_modes??[];if(!e.length)return;const i=this.hass.states[t]?.attributes.fan_mode,s=e[(e.indexOf(i)+1)%e.length];return void await this.hass.callService("climate","set_fan_mode",{entity_id:t,fan_mode:s})}case"mode_cycle":{const e=this.hass.states[t]?.attributes.hvac_modes??yt,i=this.hass.states[t]?.state??e[0],s=e[(e.indexOf(i)+1)%e.length];return void await this.hass.callService("climate","set_hvac_mode",{entity_id:t,hvac_mode:s})}default:return}}_notify(e){this.dispatchEvent(new CustomEvent("hass-notification",{detail:{message:e},bubbles:!0,composed:!0}))}render(){if(!this._config||!this.hass)return K;const e=this._faceplate(),t=[...new Set(e.regions.map(e=>e.role))].filter(Boolean),i=fe(this.hass,t,this._config.entities??{});return B`
+  `,customElements.define(gt,ut),customElements.define(`${gt}-editor`,yt),window.customCards??=[],window.customCards.push({type:gt,name:"BMS Meter Card",description:"A power meter that looks like a power meter.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-Cards"});const mt="hvac-controller-card",$t=["off","cool","heat","dry","fan_only","auto"];class wt extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${mt}-editor`)}static getStubConfig(){return{type:`custom:${mt}`,faceplate:"daikin-brc1e63"}}_faceplate(){return xt(mt,this._config?.faceplate)}_setpoint(){if(!this.hass||!this._config)return;if(this._config.climate)return ge(this.hass,this._config.climate,"setpoint").value;const e=this._config.entities?.setpoint;return e?Number(this.hass.states[e]?.state):void 0}async _onAction(e){if(!this.hass||!this._config)return;const t=this._config.climate;if(!t)return void this._notify("This controller is read-only — no climate entity is set.");const i=this._setpoint();switch(e.action){case"temp_up":case"temp_down":{if(void 0===i)return;const s="temp_up"===e.action?.5:-.5;return void await this.hass.callService("climate","set_temperature",{entity_id:t,temperature:Math.round(2*(i+s))/2})}case"power_toggle":{const e="off"!==this.hass.states[t]?.state;return void await this.hass.callService("climate",e?"turn_off":"turn_on",{entity_id:t})}case"fan_cycle":{const e=this.hass.states[t]?.attributes.fan_modes??[];if(!e.length)return;const i=this.hass.states[t]?.attributes.fan_mode,s=e[(e.indexOf(i)+1)%e.length];return void await this.hass.callService("climate","set_fan_mode",{entity_id:t,fan_mode:s})}case"mode_cycle":{const e=this.hass.states[t]?.attributes.hvac_modes??$t,i=this.hass.states[t]?.state??e[0],s=e[(e.indexOf(i)+1)%e.length];return void await this.hass.callService("climate","set_hvac_mode",{entity_id:t,hvac_mode:s})}default:return}}_notify(e){this.dispatchEvent(new CustomEvent("hass-notification",{detail:{message:e},bubbles:!0,composed:!0}))}render(){if(!this._config||!this.hass)return K;const e=this._faceplate(),t=[...new Set(e.regions.map(e=>e.role))].filter(Boolean),i=fe(this.hass,t,this._config.entities??{});return B`
       <ha-card>
         ${this._config.name?B`<div class="title">${this._config.name}</div>`:K}
         ${this._config.climate||this._config.entities?K:B`<div class="hint">
@@ -820,7 +820,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
           ${ue({hass:this.hass,climate:this._config.climate,faceplate:e,bindings:i,page:"",onAction:e=>{this._onAction(e)}})}
         </div>
       </ha-card>
-    `}}mt.properties={hass:{attribute:!1},_config:{state:!0}},mt.styles=o`
+    `}}wt.properties={hass:{attribute:!1},_config:{state:!0}},wt.styles=o`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -940,7 +940,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `;class $t extends le{setConfig(e){this._config=e}_emit(e){const t={...this._config,...e};this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:t},bubbles:!0,composed:!0}))}render(){if(!this._config||!this.hass)return K;const e=ht(ut),t=pt(ut,this._config.faceplate),i=Object.keys(this.hass.states).filter(e=>e.startsWith("climate.")).sort();return B`
+  `;class _t extends le{setConfig(e){this._config=e}_emit(e){const t={...this._config,...e};this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:t},bubbles:!0,composed:!0}))}render(){if(!this._config||!this.hass)return K;const e=ft(mt),t=xt(mt,this._config.faceplate),i=Object.keys(this.hass.states).filter(e=>e.startsWith("climate.")).sort();return B`
       <div class="editor">
         <label>
           Controller
@@ -968,7 +968,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
         ${t.emulates?B`<p class="note">Emulates ${t.emulates}. Product names
               and marks belong to their respective owners.</p>`:K}
       </div>
-    `}}$t.properties={hass:{attribute:!1},_config:{state:!0}},$t.styles=o`
+    `}}_t.properties={hass:{attribute:!1},_config:{state:!0}},_t.styles=o`
     .editor {
       display: flex;
       flex-direction: column;
@@ -1000,4 +1000,4 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       font-size: 12px;
       color: var(--warning-color, #d98600);
     }
-  `,customElements.define(ut,mt),customElements.define(`${ut}-editor`,$t),window.customCards??=[],window.customCards.push({type:ut,name:"HVAC Controller Card",description:"A wall controller that looks and behaves like the real one.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-Cards"});
+  `,customElements.define(mt,wt),customElements.define(`${mt}-editor`,_t),window.customCards??=[],window.customCards.push({type:mt,name:"HVAC Controller Card",description:"A wall controller that looks and behaves like the real one.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-Cards"});
