@@ -86,8 +86,6 @@ export const CVM_E3_MINI: Faceplate = {
     // -- Power page: the unit's default view ---------------------------
     { id: "p-w", role: "power_total", kind: "text", page: "power",
       x: 70, y: 66, w: 232, align: "end", unit: "", decimals: 2, size: 42 },
-    { id: "p-w-u", role: "", kind: "text", page: "power",
-      x: 312, y: 78, w: 70, label: "", unit: "", decimals: 0, size: 15 },
     { id: "p-va", role: "apparent_power", kind: "text", page: "power",
       x: 70, y: 124, w: 232, align: "end", decimals: 2, size: 42 },
     { id: "p-var", role: "reactive_power", kind: "text", page: "power",

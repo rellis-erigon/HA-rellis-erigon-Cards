@@ -131,14 +131,17 @@ export const BRC2E61: Faceplate = {
       x: LX + 6, y: LY + 6, w: LW - 12, align: "middle", size: 15 },
 
     // Set point, large, lower left as on the unit.
+    // unit: "" — the degree glyph is drawn beside it.
     { id: "sp", role: "setpoint", kind: "text",
-      x: LX + 6, y: LY + 82, w: 70, align: "start", decimals: 0, size: 32 },
+      x: LX + 6, y: LY + 82, w: 70, align: "start", unit: "",
+      decimals: 0, size: 32 },
     { id: "spunit", role: "", kind: "text", text: "°C",
       x: LX + 60, y: LY + 96, w: 20, align: "start", size: 12 },
 
     // Fan speed to the right of it.
     { id: "fan", role: "fan_speed", kind: "text",
-      x: LX + 78, y: LY + 90, w: LW - 84, align: "end", size: 13 },
+      x: LX + 78, y: LY + 90, w: LW - 84, align: "end", size: 13,
+      placeholder: "" },
 
     // Room temperature, small, under the rule.
     { id: "room", role: "room_temp", kind: "text",

@@ -73,6 +73,10 @@ function renderRegion(ctx: RenderContext, region: Region): SVGTemplateResult {
       return barRegion(region, reading);
     case "ring":
       return ringRegion(region, reading);
+    case "odometer":
+      return odometerRegion(region, reading);
+    case "needle":
+      return needleRegion(region, reading);
     case "button":
       return buttonRegion(ctx, region);
   }
@@ -81,9 +85,16 @@ function renderRegion(ctx: RenderContext, region: Region): SVGTemplateResult {
 function textRegion(region: Region, reading: Reading): SVGTemplateResult {
   // A region with literal text and no role is chrome — a title band, a
   // soft-key legend — that still needs to change with the page.
-  const value = region.role
-    ? format(reading, region.decimals ?? 1, region.unit)
-    : region.text ?? "";
+  const value = !region.role
+    ? region.text ?? ""
+    : region.show === "unit"
+      ? (reading.unit ?? region.text ?? "").toUpperCase()
+      : reading.dark && region.placeholder !== undefined
+        ? region.placeholder
+        : format(reading, region.decimals ?? 1, region.unit);
+  // Neither a role nor literal text means the region does nothing but emit
+  // an empty element. Drawing nothing is the honest outcome.
+  if (!region.role && !region.text) return svg``;
   const anchor = region.align ?? "start";
   const x = region.x + (anchor === "end" ? region.w ?? 0 : anchor === "middle" ? (region.w ?? 0) / 2 : 0);
   return svg`
@@ -160,6 +171,82 @@ function ringRegion(region: Region, reading: Reading): SVGTemplateResult {
       stroke=${lit ? region.on ?? "#3aa0ff" : region.off ?? "#1b2026"}
       stroke-width=${region.stroke ?? 6}
     />
+  `;
+}
+
+function odometerRegion(region: Region, reading: Reading): SVGTemplateResult {
+  const digits = region.digits ?? 5;
+  const red = region.redDigits ?? 1;
+  const scale = region.scale ?? 1;
+  const cellW = (region.w ?? 140) / digits;
+  const cellH = region.h ?? 34;
+
+  const shown =
+    reading.dark || reading.value === undefined
+      ? "-".repeat(digits)
+      : String(Math.floor(Math.abs(reading.value) / scale))
+          .slice(-digits)
+          .padStart(digits, "0");
+
+  return svg`
+    <g class="odometer ${reading.dark ? "dark" : ""}">
+      ${[...shown].map((digit, index) => {
+        const highlighted = index >= digits - red;
+        return svg`
+          <rect
+            class="odo-cell ${highlighted ? "odo-red" : ""}"
+            x=${region.x + index * cellW}
+            y=${region.y}
+            width=${cellW - 1.5}
+            height=${cellH}
+            rx="1.5"
+          />
+          <text
+            class="odo-digit ${highlighted ? "odo-red-digit" : ""}"
+            x=${region.x + index * cellW + (cellW - 1.5) / 2}
+            y=${region.y + cellH - 8}
+            text-anchor="middle"
+            font-size=${cellH - 12}
+          >${digit}</text>
+        `;
+      })}
+    </g>
+  `;
+}
+
+function needleRegion(region: Region, reading: Reading): SVGTemplateResult {
+  const radius = region.r ?? 26;
+  const scale = region.scale ?? 1;
+
+  // One revolution is ten of this decade's units, as on a real register.
+  const turns =
+    reading.dark || reading.value === undefined
+      ? 0
+      : ((Math.abs(reading.value) / scale) % 10) / 10;
+  const angle = turns * 2 * Math.PI - Math.PI / 2;
+  const tipX = region.x + Math.cos(angle) * (radius - 5);
+  const tipY = region.y + Math.sin(angle) * (radius - 5);
+
+  return svg`
+    <g class="dial ${reading.dark ? "dark" : ""}">
+      <circle class="dial-face" cx=${region.x} cy=${region.y} r=${radius} />
+      ${[...Array(10).keys()].map((tick) => {
+        const a = (tick / 10) * 2 * Math.PI - Math.PI / 2;
+        return svg`<line
+          class="dial-tick"
+          x1=${region.x + Math.cos(a) * (radius - 4)}
+          y1=${region.y + Math.sin(a) * (radius - 4)}
+          x2=${region.x + Math.cos(a) * radius}
+          y2=${region.y + Math.sin(a) * radius}
+        />`;
+      })}
+      <line class="dial-needle" x1=${region.x} y1=${region.y} x2=${tipX} y2=${tipY} />
+      <circle class="dial-hub" cx=${region.x} cy=${region.y} r="2.4" />
+      ${region.label
+        ? svg`<text class="dial-label" x=${region.x} y=${region.y + radius + 13}
+                text-anchor="middle">${region.label}</text>`
+        : ""}
+    </g>
   `;
 }
 

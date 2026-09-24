@@ -9,7 +9,14 @@
 export type RenderMode = "svg" | "css" | "image";
 
 /** What a region draws. Each kind is implemented once, in faceplate.ts. */
-export type RegionKind = "text" | "lamp" | "bar" | "button" | "ring";
+export type RegionKind =
+  | "text"
+  | "lamp"
+  | "bar"
+  | "button"
+  | "ring"
+  | "odometer"
+  | "needle";
 
 export interface Region {
   id: string;
@@ -28,6 +35,23 @@ export interface Region {
   unit?: string;
   /** text only */
   label?: string;
+  /**
+   * What a text region prints. "value" is the default; "unit" prints the
+   * bound entity's unit of measurement.
+   *
+   * This exists so a faceplate does not have to paint a unit into its
+   * artwork. The photographed register says U.S. GALLONS; a meter bound to
+   * it here reads litres or cubic metres, and a card that insists on
+   * gallons would be lying about the number beside it.
+   */
+  show?: "value" | "unit";
+  /**
+   * What a text region shows when nothing is bound. Defaults to "--", which
+   * is right for a numeric readout — an unlit segment is honest. Set it to
+   * an empty string for an annunciator, where real hardware shows nothing
+   * at all rather than dashes.
+   */
+  placeholder?: string;
   align?: "start" | "middle" | "end";
   size?: number;
   /** lamp only */
@@ -38,6 +62,19 @@ export interface Region {
   /** ring only: stroke width, and the radius measured from x,y as centre. */
   r?: number;
   stroke?: number;
+  /**
+   * odometer and needle: the decade this region reads.
+   *
+   * A mechanical register shows one cumulative total across an odometer and
+   * several sweep dials of decreasing significance. Every one of those
+   * regions therefore takes the *same role* and differs only in scale — the
+   * odometer at 100, then dials at 10, 1, 0.1 and so on.
+   */
+  scale?: number;
+  /** odometer only: how many digit cells. */
+  digits?: number;
+  /** odometer only: how many trailing cells are the highlighted decade. */
+  redDigits?: number;
   /** button only */
   action?:
     | "page"

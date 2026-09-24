@@ -217,6 +217,61 @@ class BmsMeterCard extends LitElement {
     .cvm-annun.dark {
       fill: #6c7075;
     }
+    /* Mechanical register: an odometer and sweep dials on a painted face. */
+    .odo-cell {
+      fill: #f6f4ec;
+      stroke: #6d6a5e;
+      stroke-width: 0.8;
+    }
+    .odo-cell.odo-red {
+      fill: #a8231d;
+      stroke: #6d120e;
+    }
+    .odo-digit {
+      fill: #1b1b18;
+      font-family: ui-monospace, Menlo, monospace;
+      font-weight: 700;
+    }
+    .odo-digit.odo-red-digit {
+      fill: #fdf6f5;
+    }
+    .odometer.dark .odo-digit {
+      fill: #8d8a80;
+    }
+    .dial-face {
+      fill: #fbf9f2;
+      stroke: #7d7a6e;
+      stroke-width: 1.2;
+    }
+    .dial-tick {
+      stroke: #7d7a6e;
+      stroke-width: 1;
+    }
+    .dial-needle {
+      stroke: #b3241c;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+    }
+    .dial-hub {
+      fill: #7d1a14;
+    }
+    .dial.dark .dial-needle {
+      stroke: #b9b6ab;
+    }
+    .dial-label {
+      fill: #3d3b34;
+      font-size: 12px;
+    }
+    .mj-brand {
+      fill: #8a2018;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+    .mj-spec text {
+      fill: #4a4840;
+      font-size: 10.5px;
+    }
     .lamp {
       stroke: #11151a;
       stroke-width: 1;

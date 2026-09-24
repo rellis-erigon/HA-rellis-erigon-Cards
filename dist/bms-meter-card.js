@@ -1,63 +1,98 @@
-const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,i=Symbol(),r=new WeakMap;let s=class{constructor(t,e,r){if(this._$cssResult$=!0,r!==i)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e}get styleSheet(){let t=this.o;const i=this.t;if(e&&void 0===t){const e=void 0!==i&&1===i.length;e&&(t=r.get(i)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&r.set(i,t))}return t}toString(){return this.cssText}};const o=(t,...e)=>{const r=1===t.length?t[0]:e.reduce((e,i,r)=>e+(t=>{if(!0===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+t[r+1],t[0]);return new s(r,t,i)},n=e?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const i of t.cssRules)e+=i.cssText;return(t=>new s("string"==typeof t?t:t+"",void 0,i))(e)})(t):t,{is:a,defineProperty:l,getOwnPropertyDescriptor:d,getOwnPropertyNames:c,getOwnPropertySymbols:h,getPrototypeOf:p}=Object,f=globalThis,x=f.trustedTypes,g=x?x.emptyScript:"",y=f.reactiveElementPolyfillSupport,u=(t,e)=>t,m={toAttribute(t,e){switch(e){case Boolean:t=t?g:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t)}return t},fromAttribute(t,e){let i=t;switch(e){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t)}catch(t){i=null}}return i}},$=(t,e)=>!a(t,e),w={attribute:!0,type:String,converter:m,reflect:!1,useDefault:!1,hasChanged:$};Symbol.metadata??=Symbol("metadata"),f.litPropertyMetadata??=new WeakMap;let k=class extends HTMLElement{static addInitializer(t){this._$Ei(),(this.l??=[]).push(t)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(t,e=w){if(e.state&&(e.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(t)&&((e=Object.create(e)).wrapped=!0),this.elementProperties.set(t,e),!e.noAccessor){const i=Symbol(),r=this.getPropertyDescriptor(t,i,e);void 0!==r&&l(this.prototype,t,r)}}static getPropertyDescriptor(t,e,i){const{get:r,set:s}=d(this.prototype,t)??{get(){return this[e]},set(t){this[e]=t}};return{get:r,set(e){const o=r?.call(this);s?.call(this,e),this.requestUpdate(t,o,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(t){return this.elementProperties.get(t)??w}static _$Ei(){if(this.hasOwnProperty(u("elementProperties")))return;const t=p(this);t.finalize(),void 0!==t.l&&(this.l=[...t.l]),this.elementProperties=new Map(t.elementProperties)}static finalize(){if(this.hasOwnProperty(u("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(u("properties"))){const t=this.properties,e=[...c(t),...h(t)];for(const i of e)this.createProperty(i,t[i])}const t=this[Symbol.metadata];if(null!==t){const e=litPropertyMetadata.get(t);if(void 0!==e)for(const[t,i]of e)this.elementProperties.set(t,i)}this._$Eh=new Map;for(const[t,e]of this.elementProperties){const i=this._$Eu(t,e);void 0!==i&&this._$Eh.set(i,t)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(t){const e=[];if(Array.isArray(t)){const i=new Set(t.flat(1/0).reverse());for(const t of i)e.unshift(n(t))}else void 0!==t&&e.push(n(t));return e}static _$Eu(t,e){const i=e.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof t?t.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(t=>this.enableUpdating=t),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(t=>t(this))}addController(t){(this._$EO??=new Set).add(t),void 0!==this.renderRoot&&this.isConnected&&t.hostConnected?.()}removeController(t){this._$EO?.delete(t)}_$E_(){const t=new Map,e=this.constructor.elementProperties;for(const i of e.keys())this.hasOwnProperty(i)&&(t.set(i,this[i]),delete this[i]);t.size>0&&(this._$Ep=t)}createRenderRoot(){const i=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return((i,r)=>{if(e)i.adoptedStyleSheets=r.map(t=>t instanceof CSSStyleSheet?t:t.styleSheet);else for(const e of r){const r=document.createElement("style"),s=t.litNonce;void 0!==s&&r.setAttribute("nonce",s),r.textContent=e.cssText,i.appendChild(r)}})(i,this.constructor.elementStyles),i}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(t=>t.hostConnected?.())}enableUpdating(t){}disconnectedCallback(){this._$EO?.forEach(t=>t.hostDisconnected?.())}attributeChangedCallback(t,e,i){this._$AK(t,i)}_$ET(t,e){const i=this.constructor.elementProperties.get(t),r=this.constructor._$Eu(t,i);if(void 0!==r&&!0===i.reflect){const s=(void 0!==i.converter?.toAttribute?i.converter:m).toAttribute(e,i.type);this._$Em=t,null==s?this.removeAttribute(r):this.setAttribute(r,s),this._$Em=null}}_$AK(t,e){const i=this.constructor,r=i._$Eh.get(t);if(void 0!==r&&this._$Em!==r){const t=i.getPropertyOptions(r),s="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==t.converter?.fromAttribute?t.converter:m;this._$Em=r;const o=s.fromAttribute(e,t.type);this[r]=o??this._$Ej?.get(r)??o,this._$Em=null}}requestUpdate(t,e,i,r=!1,s){if(void 0!==t){const o=this.constructor;if(!1===r&&(s=this[t]),i??=o.getPropertyOptions(t),!((i.hasChanged??$)(s,e)||i.useDefault&&i.reflect&&s===this._$Ej?.get(t)&&!this.hasAttribute(o._$Eu(t,i))))return;this.C(t,e,i)}!1===this.isUpdatePending&&(this._$ES=this._$EP())}C(t,e,{useDefault:i,reflect:r,wrapped:s},o){i&&!(this._$Ej??=new Map).has(t)&&(this._$Ej.set(t,o??e??this[t]),!0!==s||void 0!==o)||(this._$AL.has(t)||(this.hasUpdated||i||(e=void 0),this._$AL.set(t,e)),!0===r&&this._$Em!==t&&(this._$Eq??=new Set).add(t))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(t){Promise.reject(t)}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[t,e]of this._$Ep)this[t]=e;this._$Ep=void 0}const t=this.constructor.elementProperties;if(t.size>0)for(const[e,i]of t){const{wrapped:t}=i,r=this[e];!0!==t||this._$AL.has(e)||void 0===r||this.C(e,void 0,i,r)}}let t=!1;const e=this._$AL;try{t=this.shouldUpdate(e),t?(this.willUpdate(e),this._$EO?.forEach(t=>t.hostUpdate?.()),this.update(e)):this._$EM()}catch(e){throw t=!1,this._$EM(),e}t&&this._$AE(e)}willUpdate(t){}_$AE(t){this._$EO?.forEach(t=>t.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(t)),this.updated(t)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(t){return!0}update(t){this._$Eq&&=this._$Eq.forEach(t=>this._$ET(t,this[t])),this._$EM()}updated(t){}firstUpdated(t){}};k.elementStyles=[],k.shadowRootOptions={mode:"open"},k[u("elementProperties")]=new Map,k[u("finalized")]=new Map,y?.({ReactiveElement:k}),(f.reactiveElementVersions??=[]).push("2.1.2");const _=globalThis,b=t=>t,v=_.trustedTypes,A=v?v.createPolicy("lit-html",{createHTML:t=>t}):void 0,z="$lit$",E=`lit$${Math.random().toFixed(9).slice(2)}$`,S="?"+E,C=`<${S}>`,M=document,P=()=>M.createComment(""),N=t=>null===t||"object"!=typeof t&&"function"!=typeof t,L=Array.isArray,R="[ \t\n\f\r]",D=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,I=/-->/g,O=/>/g,T=RegExp(`>|${R}(?:([^\\s"'>=/]+)(${R}*=${R}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),U=/'/g,G=/"/g,H=/^(?:script|style|textarea|title)$/i,B=t=>(e,...i)=>({_$litType$:t,strings:e,values:i}),V=B(1),W=B(2),j=Symbol.for("lit-noChange"),K=Symbol.for("lit-nothing"),F=new WeakMap,q=M.createTreeWalker(M,129);function Z(t,e){if(!L(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==A?A.createHTML(e):e}const Y=(t,e)=>{const i=t.length-1,r=[];let s,o=2===e?"<svg>":3===e?"<math>":"",n=D;for(let e=0;e<i;e++){const i=t[e];let a,l,d=-1,c=0;for(;c<i.length&&(n.lastIndex=c,l=n.exec(i),null!==l);)c=n.lastIndex,n===D?"!--"===l[1]?n=I:void 0!==l[1]?n=O:void 0!==l[2]?(H.test(l[2])&&(s=RegExp("</"+l[2],"g")),n=T):void 0!==l[3]&&(n=T):n===T?">"===l[0]?(n=s??D,d=-1):void 0===l[1]?d=-2:(d=n.lastIndex-l[2].length,a=l[1],n=void 0===l[3]?T:'"'===l[3]?G:U):n===G||n===U?n=T:n===I||n===O?n=D:(n=T,s=void 0);const h=n===T&&t[e+1].startsWith("/>")?" ":"";o+=n===D?i+C:d>=0?(r.push(a),i.slice(0,d)+z+i.slice(d)+E+h):i+E+(-2===d?e:h)}return[Z(t,o+(t[i]||"<?>")+(2===e?"</svg>":3===e?"</math>":"")),r]};class J{constructor({strings:t,_$litType$:e},i){let r;this.parts=[];let s=0,o=0;const n=t.length-1,a=this.parts,[l,d]=Y(t,e);if(this.el=J.createElement(l,i),q.currentNode=this.el.content,2===e||3===e){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes)}for(;null!==(r=q.nextNode())&&a.length<n;){if(1===r.nodeType){if(r.hasAttributes())for(const t of r.getAttributeNames())if(t.endsWith(z)){const e=d[o++],i=r.getAttribute(t).split(E),n=/([.?@])?(.*)/.exec(e);a.push({type:1,index:s,name:n[2],strings:i,ctor:"."===n[1]?it:"?"===n[1]?rt:"@"===n[1]?st:et}),r.removeAttribute(t)}else t.startsWith(E)&&(a.push({type:6,index:s}),r.removeAttribute(t));if(H.test(r.tagName)){const t=r.textContent.split(E),e=t.length-1;if(e>0){r.textContent=v?v.emptyScript:"";for(let i=0;i<e;i++)r.append(t[i],P()),q.nextNode(),a.push({type:2,index:++s});r.append(t[e],P())}}}else if(8===r.nodeType)if(r.data===S)a.push({type:2,index:s});else{let t=-1;for(;-1!==(t=r.data.indexOf(E,t+1));)a.push({type:7,index:s}),t+=E.length-1}s++}}static createElement(t,e){const i=M.createElement("template");return i.innerHTML=t,i}}function Q(t,e,i=t,r){if(e===j)return e;let s=void 0!==r?i._$Co?.[r]:i._$Cl;const o=N(e)?void 0:e._$litDirective$;return s?.constructor!==o&&(s?._$AO?.(!1),void 0===o?s=void 0:(s=new o(t),s._$AT(t,i,r)),void 0!==r?(i._$Co??=[])[r]=s:i._$Cl=s),void 0!==s&&(e=Q(t,s._$AS(t,e.values),s,r)),e}class X{constructor(t,e){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=e}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:e},parts:i}=this._$AD,r=(t?.creationScope??M).importNode(e,!0);q.currentNode=r;let s=q.nextNode(),o=0,n=0,a=i[0];for(;void 0!==a;){if(o===a.index){let e;2===a.type?e=new tt(s,s.nextSibling,this,t):1===a.type?e=new a.ctor(s,a.name,a.strings,this,t):6===a.type&&(e=new ot(s,this,t)),this._$AV.push(e),a=i[++n]}o!==a?.index&&(s=q.nextNode(),o++)}return q.currentNode=M,r}p(t){let e=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(t,i,e),e+=i.strings.length-2):i._$AI(t[e])),e++}}class tt{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,e,i,r){this.type=2,this._$AH=K,this._$AN=void 0,this._$AA=t,this._$AB=e,this._$AM=i,this.options=r,this._$Cv=r?.isConnected??!0}get parentNode(){let t=this._$AA.parentNode;const e=this._$AM;return void 0!==e&&11===t?.nodeType&&(t=e.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,e=this){t=Q(this,t,e),N(t)?t===K||null==t||""===t?(this._$AH!==K&&this._$AR(),this._$AH=K):t!==this._$AH&&t!==j&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):(t=>L(t)||"function"==typeof t?.[Symbol.iterator])(t)?this.k(t):this._(t)}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t))}_(t){this._$AH!==K&&N(this._$AH)?this._$AA.nextSibling.data=t:this.T(M.createTextNode(t)),this._$AH=t}$(t){const{values:e,_$litType$:i}=t,r="number"==typeof i?this._$AC(t):(void 0===i.el&&(i.el=J.createElement(Z(i.h,i.h[0]),this.options)),i);if(this._$AH?._$AD===r)this._$AH.p(e);else{const t=new X(r,this),i=t.u(this.options);t.p(e),this.T(i),this._$AH=t}}_$AC(t){let e=F.get(t.strings);return void 0===e&&F.set(t.strings,e=new J(t)),e}k(t){L(this._$AH)||(this._$AH=[],this._$AR());const e=this._$AH;let i,r=0;for(const s of t)r===e.length?e.push(i=new tt(this.O(P()),this.O(P()),this,this.options)):i=e[r],i._$AI(s),r++;r<e.length&&(this._$AR(i&&i._$AB.nextSibling,r),e.length=r)}_$AR(t=this._$AA.nextSibling,e){for(this._$AP?.(!1,!0,e);t!==this._$AB;){const e=b(t).nextSibling;b(t).remove(),t=e}}setConnected(t){void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t))}}let et=class{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,e,i,r,s){this.type=1,this._$AH=K,this._$AN=void 0,this.element=t,this.name=e,this._$AM=r,this.options=s,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=K}_$AI(t,e=this,i,r){const s=this.strings;let o=!1;if(void 0===s)t=Q(this,t,e,0),o=!N(t)||t!==this._$AH&&t!==j,o&&(this._$AH=t);else{const r=t;let n,a;for(t=s[0],n=0;n<s.length-1;n++)a=Q(this,r[i+n],e,n),a===j&&(a=this._$AH[n]),o||=!N(a)||a!==this._$AH[n],a===K?t=K:t!==K&&(t+=(a??"")+s[n+1]),this._$AH[n]=a}o&&!r&&this.j(t)}j(t){t===K?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"")}};class it extends et{constructor(){super(...arguments),this.type=3}j(t){this.element[this.name]=t===K?void 0:t}}class rt extends et{constructor(){super(...arguments),this.type=4}j(t){this.element.toggleAttribute(this.name,!!t&&t!==K)}}class st extends et{constructor(t,e,i,r,s){super(t,e,i,r,s),this.type=5}_$AI(t,e=this){if((t=Q(this,t,e,0)??K)===j)return;const i=this._$AH,r=t===K&&i!==K||t.capture!==i.capture||t.once!==i.once||t.passive!==i.passive,s=t!==K&&(i===K||r);r&&this.element.removeEventListener(this.name,this,i),s&&this.element.addEventListener(this.name,this,t),this._$AH=t}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t)}}class ot{constructor(t,e,i){this.element=t,this.type=6,this._$AN=void 0,this._$AM=e,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(t){Q(this,t)}}const nt=_.litHtmlPolyfillSupport;nt?.(J,tt),(_.litHtmlVersions??=[]).push("3.3.3");const at=globalThis;class lt extends k{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const t=super.createRenderRoot();return this.renderOptions.renderBefore??=t.firstChild,t}update(t){const e=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=((t,e,i)=>{const r=i?.renderBefore??e;let s=r._$litPart$;if(void 0===s){const t=i?.renderBefore??null;r._$litPart$=s=new tt(e.insertBefore(P(),t),t,void 0,i??{})}return s._$AI(t),s})(e,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return j}}lt._$litElement$=!0,lt.finalized=!0,at.litElementHydrateSupport?.({LitElement:lt});const dt=at.litElementPolyfillSupport;dt?.({LitElement:lt}),(at.litElementVersions??=[]).push("4.2.2");const ct={energy_total:/metertotal$|_energy_total$|_kwh_total$/,power_total:/3phase_active_power$|_active_power$|_power_total$/,power_l1:/active_power_p1$/,power_l2:/active_power_p2$/,power_l3:/active_power_p3$/,volts_l1:/phase_1_v$|_l1_n$|_voltage_l1$/,volts_l2:/phase_2_v$|_l2_n$|_voltage_l2$/,volts_l3:/phase_3_v$|_l3_n$|_voltage_l3$/,current_l1:/phase_1_a$|_current_l1$/,current_l2:/phase_2_a$|_current_l2$/,current_l3:/phase_3_a$|_current_l3$/,power_factor:/power_factor$/,frequency:/frequency$/},ht=new Set(["unavailable","unknown","none",""]),pt={volts_avg:["volts_l1","volts_l2","volts_l3"],current_avg:["current_l1","current_l2","current_l3"]};function ft(t,e){if(!e)return{dark:!0,stale:!1};const i=t.states[e];if(!i)return{entityId:e,dark:!0,stale:!1};const r=String(i.state);if(ht.has(r.toLowerCase()))return{entityId:e,state:r,dark:!0,stale:!0};const s=Number(r);return{entityId:e,state:r,value:Number.isFinite(s)?s:void 0,unit:i.attributes.unit_of_measurement,dark:!1,stale:!1}}function xt(t){const[e,i]=t.faceplate.size,r=(s=t.faceplate,o=t.page,s.regions.filter(t=>!t.page||t.page===o));var s,o;return V`
+const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,i=Symbol(),r=new WeakMap;let s=class{constructor(e,t,r){if(this._$cssResult$=!0,r!==i)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e,this.t=t}get styleSheet(){let e=this.o;const i=this.t;if(t&&void 0===e){const t=void 0!==i&&1===i.length;t&&(e=r.get(i)),void 0===e&&((this.o=e=new CSSStyleSheet).replaceSync(this.cssText),t&&r.set(i,e))}return e}toString(){return this.cssText}};const o=(e,...t)=>{const r=1===e.length?e[0]:t.reduce((t,i,r)=>t+(e=>{if(!0===e._$cssResult$)return e.cssText;if("number"==typeof e)return e;throw Error("Value passed to 'css' function must be a 'css' function result: "+e+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+e[r+1],e[0]);return new s(r,e,i)},a=t?e=>e:e=>e instanceof CSSStyleSheet?(e=>{let t="";for(const i of e.cssRules)t+=i.cssText;return(e=>new s("string"==typeof e?e:e+"",void 0,i))(t)})(e):e,{is:l,defineProperty:n,getOwnPropertyDescriptor:d,getOwnPropertyNames:c,getOwnPropertySymbols:h,getPrototypeOf:p}=Object,f=globalThis,x=f.trustedTypes,g=x?x.emptyScript:"",y=f.reactiveElementPolyfillSupport,u=(e,t)=>e,m={toAttribute(e,t){switch(t){case Boolean:e=e?g:null;break;case Object:case Array:e=null==e?e:JSON.stringify(e)}return e},fromAttribute(e,t){let i=e;switch(t){case Boolean:i=null!==e;break;case Number:i=null===e?null:Number(e);break;case Object:case Array:try{i=JSON.parse(e)}catch(e){i=null}}return i}},$=(e,t)=>!l(e,t),w={attribute:!0,type:String,converter:m,reflect:!1,useDefault:!1,hasChanged:$};Symbol.metadata??=Symbol("metadata"),f.litPropertyMetadata??=new WeakMap;let k=class extends HTMLElement{static addInitializer(e){this._$Ei(),(this.l??=[]).push(e)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(e,t=w){if(t.state&&(t.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(e)&&((t=Object.create(t)).wrapped=!0),this.elementProperties.set(e,t),!t.noAccessor){const i=Symbol(),r=this.getPropertyDescriptor(e,i,t);void 0!==r&&n(this.prototype,e,r)}}static getPropertyDescriptor(e,t,i){const{get:r,set:s}=d(this.prototype,e)??{get(){return this[t]},set(e){this[t]=e}};return{get:r,set(t){const o=r?.call(this);s?.call(this,t),this.requestUpdate(e,o,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)??w}static _$Ei(){if(this.hasOwnProperty(u("elementProperties")))return;const e=p(this);e.finalize(),void 0!==e.l&&(this.l=[...e.l]),this.elementProperties=new Map(e.elementProperties)}static finalize(){if(this.hasOwnProperty(u("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(u("properties"))){const e=this.properties,t=[...c(e),...h(e)];for(const i of t)this.createProperty(i,e[i])}const e=this[Symbol.metadata];if(null!==e){const t=litPropertyMetadata.get(e);if(void 0!==t)for(const[e,i]of t)this.elementProperties.set(e,i)}this._$Eh=new Map;for(const[e,t]of this.elementProperties){const i=this._$Eu(e,t);void 0!==i&&this._$Eh.set(i,e)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(e){const t=[];if(Array.isArray(e)){const i=new Set(e.flat(1/0).reverse());for(const e of i)t.unshift(a(e))}else void 0!==e&&t.push(a(e));return t}static _$Eu(e,t){const i=t.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof e?e.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(e=>this.enableUpdating=e),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(e=>e(this))}addController(e){(this._$EO??=new Set).add(e),void 0!==this.renderRoot&&this.isConnected&&e.hostConnected?.()}removeController(e){this._$EO?.delete(e)}_$E_(){const e=new Map,t=this.constructor.elementProperties;for(const i of t.keys())this.hasOwnProperty(i)&&(e.set(i,this[i]),delete this[i]);e.size>0&&(this._$Ep=e)}createRenderRoot(){const i=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return((i,r)=>{if(t)i.adoptedStyleSheets=r.map(e=>e instanceof CSSStyleSheet?e:e.styleSheet);else for(const t of r){const r=document.createElement("style"),s=e.litNonce;void 0!==s&&r.setAttribute("nonce",s),r.textContent=t.cssText,i.appendChild(r)}})(i,this.constructor.elementStyles),i}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(e=>e.hostConnected?.())}enableUpdating(e){}disconnectedCallback(){this._$EO?.forEach(e=>e.hostDisconnected?.())}attributeChangedCallback(e,t,i){this._$AK(e,i)}_$ET(e,t){const i=this.constructor.elementProperties.get(e),r=this.constructor._$Eu(e,i);if(void 0!==r&&!0===i.reflect){const s=(void 0!==i.converter?.toAttribute?i.converter:m).toAttribute(t,i.type);this._$Em=e,null==s?this.removeAttribute(r):this.setAttribute(r,s),this._$Em=null}}_$AK(e,t){const i=this.constructor,r=i._$Eh.get(e);if(void 0!==r&&this._$Em!==r){const e=i.getPropertyOptions(r),s="function"==typeof e.converter?{fromAttribute:e.converter}:void 0!==e.converter?.fromAttribute?e.converter:m;this._$Em=r;const o=s.fromAttribute(t,e.type);this[r]=o??this._$Ej?.get(r)??o,this._$Em=null}}requestUpdate(e,t,i,r=!1,s){if(void 0!==e){const o=this.constructor;if(!1===r&&(s=this[e]),i??=o.getPropertyOptions(e),!((i.hasChanged??$)(s,t)||i.useDefault&&i.reflect&&s===this._$Ej?.get(e)&&!this.hasAttribute(o._$Eu(e,i))))return;this.C(e,t,i)}!1===this.isUpdatePending&&(this._$ES=this._$EP())}C(e,t,{useDefault:i,reflect:r,wrapped:s},o){i&&!(this._$Ej??=new Map).has(e)&&(this._$Ej.set(e,o??t??this[e]),!0!==s||void 0!==o)||(this._$AL.has(e)||(this.hasUpdated||i||(t=void 0),this._$AL.set(e,t)),!0===r&&this._$Em!==e&&(this._$Eq??=new Set).add(e))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(e){Promise.reject(e)}const e=this.scheduleUpdate();return null!=e&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[e,t]of this._$Ep)this[e]=t;this._$Ep=void 0}const e=this.constructor.elementProperties;if(e.size>0)for(const[t,i]of e){const{wrapped:e}=i,r=this[t];!0!==e||this._$AL.has(t)||void 0===r||this.C(t,void 0,i,r)}}let e=!1;const t=this._$AL;try{e=this.shouldUpdate(t),e?(this.willUpdate(t),this._$EO?.forEach(e=>e.hostUpdate?.()),this.update(t)):this._$EM()}catch(t){throw e=!1,this._$EM(),t}e&&this._$AE(t)}willUpdate(e){}_$AE(e){this._$EO?.forEach(e=>e.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(e){return!0}update(e){this._$Eq&&=this._$Eq.forEach(e=>this._$ET(e,this[e])),this._$EM()}updated(e){}firstUpdated(e){}};k.elementStyles=[],k.shadowRootOptions={mode:"open"},k[u("elementProperties")]=new Map,k[u("finalized")]=new Map,y?.({ReactiveElement:k}),(f.reactiveElementVersions??=[]).push("2.1.2");const _=globalThis,b=e=>e,v=_.trustedTypes,A=v?v.createPolicy("lit-html",{createHTML:e=>e}):void 0,z="$lit$",E=`lit$${Math.random().toFixed(9).slice(2)}$`,S="?"+E,M=`<${S}>`,C=document,P=()=>C.createComment(""),N=e=>null===e||"object"!=typeof e&&"function"!=typeof e,I=Array.isArray,L="[ \t\n\f\r]",D=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,R=/-->/g,O=/>/g,U=RegExp(`>|${L}(?:([^\\s"'>=/]+)(${L}*=${L}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),G=/'/g,T=/"/g,H=/^(?:script|style|textarea|title)$/i,j=e=>(t,...i)=>({_$litType$:e,strings:t,values:i}),B=j(1),V=j(2),W=Symbol.for("lit-noChange"),K=Symbol.for("lit-nothing"),F=new WeakMap,q=C.createTreeWalker(C,129);function Z(e,t){if(!I(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==A?A.createHTML(t):t}const J=(e,t)=>{const i=e.length-1,r=[];let s,o=2===t?"<svg>":3===t?"<math>":"",a=D;for(let t=0;t<i;t++){const i=e[t];let l,n,d=-1,c=0;for(;c<i.length&&(a.lastIndex=c,n=a.exec(i),null!==n);)c=a.lastIndex,a===D?"!--"===n[1]?a=R:void 0!==n[1]?a=O:void 0!==n[2]?(H.test(n[2])&&(s=RegExp("</"+n[2],"g")),a=U):void 0!==n[3]&&(a=U):a===U?">"===n[0]?(a=s??D,d=-1):void 0===n[1]?d=-2:(d=a.lastIndex-n[2].length,l=n[1],a=void 0===n[3]?U:'"'===n[3]?T:G):a===T||a===G?a=U:a===R||a===O?a=D:(a=U,s=void 0);const h=a===U&&e[t+1].startsWith("/>")?" ":"";o+=a===D?i+M:d>=0?(r.push(l),i.slice(0,d)+z+i.slice(d)+E+h):i+E+(-2===d?t:h)}return[Z(e,o+(e[i]||"<?>")+(2===t?"</svg>":3===t?"</math>":"")),r]};class Y{constructor({strings:e,_$litType$:t},i){let r;this.parts=[];let s=0,o=0;const a=e.length-1,l=this.parts,[n,d]=J(e,t);if(this.el=Y.createElement(n,i),q.currentNode=this.el.content,2===t||3===t){const e=this.el.content.firstChild;e.replaceWith(...e.childNodes)}for(;null!==(r=q.nextNode())&&l.length<a;){if(1===r.nodeType){if(r.hasAttributes())for(const e of r.getAttributeNames())if(e.endsWith(z)){const t=d[o++],i=r.getAttribute(e).split(E),a=/([.?@])?(.*)/.exec(t);l.push({type:1,index:s,name:a[2],strings:i,ctor:"."===a[1]?ie:"?"===a[1]?re:"@"===a[1]?se:te}),r.removeAttribute(e)}else e.startsWith(E)&&(l.push({type:6,index:s}),r.removeAttribute(e));if(H.test(r.tagName)){const e=r.textContent.split(E),t=e.length-1;if(t>0){r.textContent=v?v.emptyScript:"";for(let i=0;i<t;i++)r.append(e[i],P()),q.nextNode(),l.push({type:2,index:++s});r.append(e[t],P())}}}else if(8===r.nodeType)if(r.data===S)l.push({type:2,index:s});else{let e=-1;for(;-1!==(e=r.data.indexOf(E,e+1));)l.push({type:7,index:s}),e+=E.length-1}s++}}static createElement(e,t){const i=C.createElement("template");return i.innerHTML=e,i}}function Q(e,t,i=e,r){if(t===W)return t;let s=void 0!==r?i._$Co?.[r]:i._$Cl;const o=N(t)?void 0:t._$litDirective$;return s?.constructor!==o&&(s?._$AO?.(!1),void 0===o?s=void 0:(s=new o(e),s._$AT(e,i,r)),void 0!==r?(i._$Co??=[])[r]=s:i._$Cl=s),void 0!==s&&(t=Q(e,s._$AS(e,t.values),s,r)),t}class X{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){const{el:{content:t},parts:i}=this._$AD,r=(e?.creationScope??C).importNode(t,!0);q.currentNode=r;let s=q.nextNode(),o=0,a=0,l=i[0];for(;void 0!==l;){if(o===l.index){let t;2===l.type?t=new ee(s,s.nextSibling,this,e):1===l.type?t=new l.ctor(s,l.name,l.strings,this,e):6===l.type&&(t=new oe(s,this,e)),this._$AV.push(t),l=i[++a]}o!==l?.index&&(s=q.nextNode(),o++)}return q.currentNode=C,r}p(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class ee{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(e,t,i,r){this.type=2,this._$AH=K,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=r,this._$Cv=r?.isConnected??!0}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===e?.nodeType&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Q(this,e,t),N(e)?e===K||null==e||""===e?(this._$AH!==K&&this._$AR(),this._$AH=K):e!==this._$AH&&e!==W&&this._(e):void 0!==e._$litType$?this.$(e):void 0!==e.nodeType?this.T(e):(e=>I(e)||"function"==typeof e?.[Symbol.iterator])(e)?this.k(e):this._(e)}O(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}T(e){this._$AH!==e&&(this._$AR(),this._$AH=this.O(e))}_(e){this._$AH!==K&&N(this._$AH)?this._$AA.nextSibling.data=e:this.T(C.createTextNode(e)),this._$AH=e}$(e){const{values:t,_$litType$:i}=e,r="number"==typeof i?this._$AC(e):(void 0===i.el&&(i.el=Y.createElement(Z(i.h,i.h[0]),this.options)),i);if(this._$AH?._$AD===r)this._$AH.p(t);else{const e=new X(r,this),i=e.u(this.options);e.p(t),this.T(i),this._$AH=e}}_$AC(e){let t=F.get(e.strings);return void 0===t&&F.set(e.strings,t=new Y(e)),t}k(e){I(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,r=0;for(const s of e)r===t.length?t.push(i=new ee(this.O(P()),this.O(P()),this,this.options)):i=t[r],i._$AI(s),r++;r<t.length&&(this._$AR(i&&i._$AB.nextSibling,r),t.length=r)}_$AR(e=this._$AA.nextSibling,t){for(this._$AP?.(!1,!0,t);e!==this._$AB;){const t=b(e).nextSibling;b(e).remove(),e=t}}setConnected(e){void 0===this._$AM&&(this._$Cv=e,this._$AP?.(e))}}let te=class{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(e,t,i,r,s){this.type=1,this._$AH=K,this._$AN=void 0,this.element=e,this.name=t,this._$AM=r,this.options=s,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=K}_$AI(e,t=this,i,r){const s=this.strings;let o=!1;if(void 0===s)e=Q(this,e,t,0),o=!N(e)||e!==this._$AH&&e!==W,o&&(this._$AH=e);else{const r=e;let a,l;for(e=s[0],a=0;a<s.length-1;a++)l=Q(this,r[i+a],t,a),l===W&&(l=this._$AH[a]),o||=!N(l)||l!==this._$AH[a],l===K?e=K:e!==K&&(e+=(l??"")+s[a+1]),this._$AH[a]=l}o&&!r&&this.j(e)}j(e){e===K?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,e??"")}};class ie extends te{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===K?void 0:e}}class re extends te{constructor(){super(...arguments),this.type=4}j(e){this.element.toggleAttribute(this.name,!!e&&e!==K)}}class se extends te{constructor(e,t,i,r,s){super(e,t,i,r,s),this.type=5}_$AI(e,t=this){if((e=Q(this,e,t,0)??K)===W)return;const i=this._$AH,r=e===K&&i!==K||e.capture!==i.capture||e.once!==i.once||e.passive!==i.passive,s=e!==K&&(i===K||r);r&&this.element.removeEventListener(this.name,this,i),s&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,e):this._$AH.handleEvent(e)}}class oe{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){Q(this,e)}}const ae=_.litHtmlPolyfillSupport;ae?.(Y,ee),(_.litHtmlVersions??=[]).push("3.3.3");const le=globalThis;class ne extends k{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{const r=i?.renderBefore??t;let s=r._$litPart$;if(void 0===s){const e=i?.renderBefore??null;r._$litPart$=s=new ee(t.insertBefore(P(),e),e,void 0,i??{})}return s._$AI(e),s})(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return W}}ne._$litElement$=!0,ne.finalized=!0,le.litElementHydrateSupport?.({LitElement:ne});const de=le.litElementPolyfillSupport;de?.({LitElement:ne}),(le.litElementVersions??=[]).push("4.2.2");const ce={energy_total:/metertotal$|_energy_total$|_kwh_total$/,power_total:/3phase_active_power$|_active_power$|_power_total$/,power_l1:/active_power_p1$/,power_l2:/active_power_p2$/,power_l3:/active_power_p3$/,volts_l1:/phase_1_v$|_l1_n$|_voltage_l1$/,volts_l2:/phase_2_v$|_l2_n$|_voltage_l2$/,volts_l3:/phase_3_v$|_l3_n$|_voltage_l3$/,current_l1:/phase_1_a$|_current_l1$/,current_l2:/phase_2_a$|_current_l2$/,current_l3:/phase_3_a$|_current_l3$/,power_factor:/power_factor$/,frequency:/frequency$/,volume_total:/_cubicmetre$|_volume_total$|_water_total$|watermeter_total$/},he=new Set(["unavailable","unknown","none",""]),pe={volts_avg:["volts_l1","volts_l2","volts_l3"],current_avg:["current_l1","current_l2","current_l3"]};function fe(e,t){if(!t)return{dark:!0,stale:!1};const i=e.states[t];if(!i)return{entityId:t,dark:!0,stale:!1};const r=String(i.state);if(he.has(r.toLowerCase()))return{entityId:t,state:r,dark:!0,stale:!0};const s=Number(r);return{entityId:t,state:r,value:Number.isFinite(s)?s:void 0,unit:i.attributes.unit_of_measurement,dark:!1,stale:!1}}function xe(e){const[t,i]=e.faceplate.size,r=(s=e.faceplate,o=e.page,s.regions.filter(e=>!e.page||e.page===o));var s,o;return B`
     <svg
-      class="faceplate display-${t.faceplate.display??"positive"}"
-      viewBox="0 0 ${e} ${i}"
+      class="faceplate display-${e.faceplate.display??"positive"}"
+      viewBox="0 0 ${t} ${i}"
       preserveAspectRatio="xMidYMid meet"
       role="img"
-      aria-label=${t.faceplate.name}
+      aria-label=${e.faceplate.name}
     >
-      ${function(t){if("image"===t.render&&t.art){const[e,i]=t.size;return W`<image href=${t.art} x="0" y="0" width=${e} height=${i} />`}return W`${t.artNode??""}`}(t.faceplate)}
-      ${r.map(e=>function(t,e){const i=t.climate&&!t.bindings[e.role]?function(t,e,i){const r=t.states[e];if(!r)return{entityId:e,dark:!0,stale:!1};if(ht.has(String(r.state).toLowerCase()))return{entityId:e,state:r.state,dark:!0,stale:!0};const s=r.attributes,o=(t,i)=>{if(null==t)return{entityId:e,dark:!0,stale:!1};const r=Number(t);return{entityId:e,state:String(t),value:Number.isFinite(r)?r:void 0,unit:i,dark:!1,stale:!1}};switch(i){case"hvac_mode":return o(r.state);case"hvac_action":return o(s.hvac_action??r.state);case"setpoint":return o(s.temperature,"°C");case"room_temp":return o(s.current_temperature,"°C");case"fan_speed":return o(s.fan_mode);case"swing":return o(s.swing_mode);case"power":return o("off"===r.state?"off":"on");case"humidity":return o(s.current_humidity,"%");default:return{entityId:e,dark:!0,stale:!1}}}(t.hass,t.climate,e.role):function(t,e,i){if(e[i])return ft(t,e[i]);if("clock"===i){const t=new Date;return{state:`${String(t.getHours()).padStart(2,"0")}:${String(t.getMinutes()).padStart(2,"0")}`,dark:!1,stale:!1}}const r=pt[i];if(!r)return{dark:!0,stale:!1};const s=r.map(i=>ft(t,e[i]));if(s.some(t=>t.dark||void 0===t.value))return{dark:!0,stale:s.some(t=>t.stale)};const o=s.reduce((t,e)=>t+(e.value??0),0);return{value:o/s.length,state:String(o/s.length),unit:s[0].unit,dark:!1,stale:!1}}(t.hass,t.bindings,e.role);switch(e.kind){case"text":return function(t,e){const i=t.role?function(t,e=1,i){if(t.dark)return"--";if(void 0===t.value)return t.state??"--";const r=t.value.toFixed(e),s=i??t.unit??"";return s?`${r} ${s}`:r}(e,t.decimals??1,t.unit):t.text??"",r=t.align??"start",s=t.x+("end"===r?t.w??0:"middle"===r?(t.w??0)/2:0);return W`
-    ${t.label?W`<text class="lcd-label" x=${t.x} y=${t.y-10}>${t.label}</text>`:""}
+      ${function(e){if("image"===e.render&&e.art){const[t,i]=e.size;return V`<image href=${e.art} x="0" y="0" width=${t} height=${i} />`}return V`${e.artNode??""}`}(e.faceplate)}
+      ${r.map(t=>function(e,t){const i=e.climate&&!e.bindings[t.role]?function(e,t,i){const r=e.states[t];if(!r)return{entityId:t,dark:!0,stale:!1};if(he.has(String(r.state).toLowerCase()))return{entityId:t,state:r.state,dark:!0,stale:!0};const s=r.attributes,o=(e,i)=>{if(null==e)return{entityId:t,dark:!0,stale:!1};const r=Number(e);return{entityId:t,state:String(e),value:Number.isFinite(r)?r:void 0,unit:i,dark:!1,stale:!1}};switch(i){case"hvac_mode":return o(r.state);case"hvac_action":return o(s.hvac_action??r.state);case"setpoint":return o(s.temperature,"°C");case"room_temp":return o(s.current_temperature,"°C");case"fan_speed":return o(s.fan_mode);case"swing":return o(s.swing_mode);case"power":return o("off"===r.state?"off":"on");case"humidity":return o(s.current_humidity,"%");default:return{entityId:t,dark:!0,stale:!1}}}(e.hass,e.climate,t.role):function(e,t,i){if(t[i])return fe(e,t[i]);if("clock"===i){const e=new Date;return{state:`${String(e.getHours()).padStart(2,"0")}:${String(e.getMinutes()).padStart(2,"0")}`,dark:!1,stale:!1}}const r=pe[i];if(!r)return{dark:!0,stale:!1};const s=r.map(i=>fe(e,t[i]));if(s.some(e=>e.dark||void 0===e.value))return{dark:!0,stale:s.some(e=>e.stale)};const o=s.reduce((e,t)=>e+(t.value??0),0);return{value:o/s.length,state:String(o/s.length),unit:s[0].unit,dark:!1,stale:!1}}(e.hass,e.bindings,t.role);switch(t.kind){case"text":return function(e,t){const i=e.role?"unit"===e.show?(t.unit??e.text??"").toUpperCase():t.dark&&void 0!==e.placeholder?e.placeholder:function(e,t=1,i){if(e.dark)return"--";if(void 0===e.value)return e.state??"--";const r=e.value.toFixed(t),s=i??e.unit??"";return s?`${r} ${s}`:r}(t,e.decimals??1,e.unit):e.text??"";if(!e.role&&!e.text)return V``;const r=e.align??"start",s=e.x+("end"===r?e.w??0:"middle"===r?(e.w??0)/2:0);return V`
+    ${e.label?V`<text class="lcd-label" x=${e.x} y=${e.y-10}>${e.label}</text>`:""}
     <text
-      class="lcd-value ${t.role?"":"chrome"} ${t.role&&e.dark?"dark":""} ${e.stale?"stale":""}"
+      class="lcd-value ${e.role?"":"chrome"} ${e.role&&t.dark?"dark":""} ${t.stale?"stale":""}"
       x=${s}
-      y=${t.y+(t.size??22)}
-      font-size=${t.size??22}
+      y=${e.y+(e.size??22)}
+      font-size=${e.size??22}
       text-anchor=${r}
     >${i}</text>
-  `}(e,i);case"lamp":return function(t,e){const i=!e.dark&&void 0!==e.state&&!["off","0","false","normal","ok"].includes(e.state.toLowerCase()),r=(t.w??12)/2;return W`
+  `}(t,i);case"lamp":return function(e,t){const i=!t.dark&&void 0!==t.state&&!["off","0","false","normal","ok"].includes(t.state.toLowerCase()),r=(e.w??12)/2;return V`
     <circle
       class="lamp ${i?"lit":""}"
-      cx=${t.x+r}
-      cy=${t.y+r}
+      cx=${e.x+r}
+      cy=${e.y+r}
       r=${r}
-      fill=${i?t.on??"#e34":t.off??"#3a1418"}
+      fill=${i?e.on??"#e34":e.off??"#3a1418"}
     />
-    ${t.label?W`<text class="lamp-label" x=${t.x+r} y=${t.y+2*r+12}
-              text-anchor="middle">${t.label}</text>`:""}
-  `}(e,i);case"bar":return function(t,e){const i=t.w??100,r=t.h??10,s=t.max??100,o=e.dark||void 0===e.value?0:Math.max(0,Math.min(1,e.value/s));return W`
-    <rect class="bar-track" x=${t.x} y=${t.y} width=${i} height=${r} rx="2" />
+    ${e.label?V`<text class="lamp-label" x=${e.x+r} y=${e.y+2*r+12}
+              text-anchor="middle">${e.label}</text>`:""}
+  `}(t,i);case"bar":return function(e,t){const i=e.w??100,r=e.h??10,s=e.max??100,o=t.dark||void 0===t.value?0:Math.max(0,Math.min(1,t.value/s));return V`
+    <rect class="bar-track" x=${e.x} y=${e.y} width=${i} height=${r} rx="2" />
     <rect
       class="bar-fill"
-      x=${t.x}
-      y=${t.y}
+      x=${e.x}
+      y=${e.y}
       width=${i*o}
       height=${r}
       rx="2"
     />
-  `}(e,i);case"ring":return function(t,e){const i=(e.state??"").toLowerCase(),r=!e.dark&&"off"!==i&&"0"!==i&&"false"!==i;return W`
+  `}(t,i);case"ring":return function(e,t){const i=(t.state??"").toLowerCase(),r=!t.dark&&"off"!==i&&"0"!==i&&"false"!==i;return V`
     <circle
       class="ring ${r?"lit":""}"
-      cx=${t.x}
-      cy=${t.y}
-      r=${t.r??100}
+      cx=${e.x}
+      cy=${e.y}
+      r=${e.r??100}
       fill="none"
-      stroke=${r?t.on??"#3aa0ff":t.off??"#1b2026"}
-      stroke-width=${t.stroke??6}
+      stroke=${r?e.on??"#3aa0ff":e.off??"#1b2026"}
+      stroke-width=${e.stroke??6}
     />
-  `}(e,i);case"button":return function(t,e){const i=e.w??44,r=e.h??26;return W`
-    <g class="button" @click=${()=>t.onAction(e)} role="button" tabindex="0">
-      <rect x=${e.x} y=${e.y} width=${i} height=${r} rx="4" />
-      <text
-        x=${e.x+i/2}
-        y=${e.y+r/2+4}
-        text-anchor="middle"
-      >${e.text??""}</text>
+  `}(t,i);case"odometer":return function(e,t){const i=e.digits??5,r=e.redDigits??1,s=e.scale??1,o=(e.w??140)/i,a=e.h??34,l=t.dark||void 0===t.value?"-".repeat(i):String(Math.floor(Math.abs(t.value)/s)).slice(-i).padStart(i,"0");return V`
+    <g class="odometer ${t.dark?"dark":""}">
+      ${[...l].map((t,s)=>{const l=s>=i-r;return V`
+          <rect
+            class="odo-cell ${l?"odo-red":""}"
+            x=${e.x+s*o}
+            y=${e.y}
+            width=${o-1.5}
+            height=${a}
+            rx="1.5"
+          />
+          <text
+            class="odo-digit ${l?"odo-red-digit":""}"
+            x=${e.x+s*o+(o-1.5)/2}
+            y=${e.y+a-8}
+            text-anchor="middle"
+            font-size=${a-12}
+          >${t}</text>
+        `})}
     </g>
-  `}(t,e)}}(t,e))}
+  `}(t,i);case"needle":return function(e,t){const i=e.r??26,r=e.scale??1,s=t.dark||void 0===t.value?0:Math.abs(t.value)/r%10/10,o=2*s*Math.PI-Math.PI/2,a=e.x+Math.cos(o)*(i-5),l=e.y+Math.sin(o)*(i-5);return V`
+    <g class="dial ${t.dark?"dark":""}">
+      <circle class="dial-face" cx=${e.x} cy=${e.y} r=${i} />
+      ${[...Array(10).keys()].map(t=>{const r=t/10*2*Math.PI-Math.PI/2;return V`<line
+          class="dial-tick"
+          x1=${e.x+Math.cos(r)*(i-4)}
+          y1=${e.y+Math.sin(r)*(i-4)}
+          x2=${e.x+Math.cos(r)*i}
+          y2=${e.y+Math.sin(r)*i}
+        />`})}
+      <line class="dial-needle" x1=${e.x} y1=${e.y} x2=${a} y2=${l} />
+      <circle class="dial-hub" cx=${e.x} cy=${e.y} r="2.4" />
+      ${e.label?V`<text class="dial-label" x=${e.x} y=${e.y+i+13}
+                text-anchor="middle">${e.label}</text>`:""}
+    </g>
+  `}(t,i);case"button":return function(e,t){const i=t.w??44,r=t.h??26;return V`
+    <g class="button" @click=${()=>e.onAction(t)} role="button" tabindex="0">
+      <rect x=${t.x} y=${t.y} width=${i} height=${r} rx="4" />
+      <text
+        x=${t.x+i/2}
+        y=${t.y+r/2+4}
+        text-anchor="middle"
+      >${t.text??""}</text>
+    </g>
+  `}(e,t)}}(e,t))}
     </svg>
-  `}const gt=400,yt=400,ut=62,mt=84,$t=276,wt=244,kt=[142,188,234,280],_t=352,bt=[112,172,232,292],vt=W`
+  `}const ge=400,ye=400,ue=62,me=84,$e=276,we=244,ke=[142,188,234,280],_e=352,be=[112,172,232,292],ve=V`
   <defs>
     <linearGradient id="pm-bezel" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#43484c" />
@@ -75,7 +110,7 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
     </radialGradient>
   </defs>
 
-  <rect x="0" y="0" width="${gt}" height="${yt}" rx="12" fill="url(#pm-bezel)" />
+  <rect x="0" y="0" width="${ge}" height="${ye}" rx="12" fill="url(#pm-bezel)" />
   <rect x="7" y="7" width="${386}" height="${386}" rx="9"
         fill="none" stroke="#20242700" stroke-width="1" />
   <rect x="26" y="26" width="${348}" height="${348}" rx="6"
@@ -90,39 +125,39 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
   <!-- Display -->
   <rect x="${59}" y="${81}" width="${282}" height="${250}" rx="3"
         fill="#1d2124" />
-  <rect x="${ut}" y="${mt}" width="${$t}" height="${wt}" fill="url(#pm-lcd)" />
+  <rect x="${ue}" y="${me}" width="${$e}" height="${we}" fill="url(#pm-lcd)" />
 
   <!-- Title band -->
-  <rect x="${ut}" y="${mt}" width="${$t}" height="24" fill="#6a7482" />
-  <rect x="${ut}" y="${mt}" width="26" height="24" fill="#8d97a4" />
-  <rect x="${312}" y="${mt}" width="26" height="24" fill="#8d97a4" />
+  <rect x="${ue}" y="${me}" width="${$e}" height="24" fill="#6a7482" />
+  <rect x="${ue}" y="${me}" width="26" height="24" fill="#8d97a4" />
+  <rect x="${312}" y="${me}" width="26" height="24" fill="#8d97a4" />
 
   <!-- Soft-key legend, aligned over the four physical keys -->
-  <line x1="${ut}" y1="${302}" x2="${338}" y2="${302}"
+  <line x1="${ue}" y1="${302}" x2="${338}" y2="${302}"
         stroke="#9aa392" stroke-width="1" />
 
   <!-- Keys -->
-  ${bt.map(t=>W`
-      <circle cx="${t}" cy="${_t}" r="21" fill="url(#pm-key)" />
-      <circle cx="${t}" cy="${_t}" r="21" fill="none" stroke="#24282b" stroke-width="1.5" />
+  ${be.map(e=>V`
+      <circle cx="${e}" cy="${_e}" r="21" fill="url(#pm-key)" />
+      <circle cx="${e}" cy="${_e}" r="21" fill="none" stroke="#24282b" stroke-width="1.5" />
     `)}
 
   <!-- Indicator marks on the right edge -->
   <rect x="358" y="342" width="7" height="7" rx="1" fill="#22262a" />
   <rect x="358" y="356" width="7" height="7" rx="1" fill="#22262a" />
-`,At=76,zt={id:"schneider-pm2200",name:"Schneider EasyLogic PM2200",description:"Square panel-mount analyser: pale LCD with a title band, four labelled rows and a soft-key legend over four push keys.",emulates:"Schneider Electric EasyLogic PM2200",card:"bms-meter-card",render:"svg",display:"positive",size:[gt,yt],artNode:vt,pages:["summary","amps","volts","power"],regions:[{id:"s-v",role:"volts_avg",kind:"text",page:"summary",x:At,y:kt[0],w:182,align:"end",label:"V avg",decimals:1,size:26},{id:"s-i",role:"current_avg",kind:"text",page:"summary",x:At,y:kt[1],w:182,align:"end",label:"I avg",decimals:2,size:26},{id:"s-p",role:"power_total",kind:"text",page:"summary",x:At,y:kt[2],w:182,align:"end",label:"P total",decimals:2,size:26},{id:"s-e",role:"energy_total",kind:"text",page:"summary",x:At,y:kt[3],w:182,align:"end",label:"E total",decimals:1,size:26},{id:"i1",role:"current_l1",kind:"text",page:"amps",x:At,y:kt[0],w:182,align:"end",label:"I1",decimals:2,size:26},{id:"i2",role:"current_l2",kind:"text",page:"amps",x:At,y:kt[1],w:182,align:"end",label:"I2",decimals:2,size:26},{id:"i3",role:"current_l3",kind:"text",page:"amps",x:At,y:kt[2],w:182,align:"end",label:"I3",decimals:2,size:26},{id:"iavg",role:"current_avg",kind:"text",page:"amps",x:At,y:kt[3],w:182,align:"end",label:"I avg",decimals:2,size:26},{id:"u1",role:"volts_l1",kind:"text",page:"volts",x:At,y:kt[0],w:182,align:"end",label:"V1-N",decimals:1,size:26},{id:"u2",role:"volts_l2",kind:"text",page:"volts",x:At,y:kt[1],w:182,align:"end",label:"V2-N",decimals:1,size:26},{id:"u3",role:"volts_l3",kind:"text",page:"volts",x:At,y:kt[2],w:182,align:"end",label:"V3-N",decimals:1,size:26},{id:"uavg",role:"volts_avg",kind:"text",page:"volts",x:At,y:kt[3],w:182,align:"end",label:"V avg",decimals:1,size:26},{id:"pw1",role:"power_l1",kind:"text",page:"power",x:At,y:kt[0],w:182,align:"end",label:"P1",decimals:2,size:26},{id:"pw2",role:"power_l2",kind:"text",page:"power",x:At,y:kt[1],w:182,align:"end",label:"P2",decimals:2,size:26},{id:"pw3",role:"power_l3",kind:"text",page:"power",x:At,y:kt[2],w:182,align:"end",label:"P3",decimals:2,size:26},{id:"pwf",role:"power_factor",kind:"text",page:"power",x:At,y:kt[3],w:182,align:"end",label:"PF",decimals:2,size:26},{id:"t-sum",role:"",kind:"text",page:"summary",text:"Total",x:ut,y:82,w:$t,align:"middle",size:15},{id:"t-amp",role:"",kind:"text",page:"amps",text:"Current",x:ut,y:82,w:$t,align:"middle",size:15},{id:"t-vol",role:"",kind:"text",page:"volts",text:"Voltage",x:ut,y:82,w:$t,align:"middle",size:15},{id:"t-pow",role:"",kind:"text",page:"power",text:"Power",x:ut,y:82,w:$t,align:"middle",size:15},{id:"sk1",role:"",kind:"text",text:"I",x:68,y:304,w:60,align:"middle",size:13},{id:"sk2",role:"",kind:"text",text:"U-V",x:128,y:304,w:60,align:"middle",size:13},{id:"sk3",role:"",kind:"text",text:"PQS",x:188,y:304,w:60,align:"middle",size:13},{id:"sk4",role:"",kind:"text",text:"▶",x:248,y:304,w:60,align:"middle",size:13},{id:"k1",role:"",kind:"button",x:bt[0]-26,y:331,w:52,h:42,text:"",action:"page",target:"amps"},{id:"k2",role:"",kind:"button",x:bt[1]-26,y:331,w:52,h:42,text:"",action:"page",target:"volts"},{id:"k3",role:"",kind:"button",x:bt[2]-26,y:331,w:52,h:42,text:"",action:"page",target:"power"},{id:"k4",role:"",kind:"button",x:bt[3]-26,y:331,w:52,h:42,text:"",action:"page",target:"summary"}]},Et=460,St={id:"generic-3phase",name:"Generic 3-phase meter",description:"Single-page readout for boards where the physical meter is unknown.",card:"bms-meter-card",render:"svg",display:"negative",size:[Et,260],artNode:W`
+`,Ae=76,ze={id:"schneider-pm2200",name:"Schneider EasyLogic PM2200",description:"Square panel-mount analyser: pale LCD with a title band, four labelled rows and a soft-key legend over four push keys.",emulates:"Schneider Electric EasyLogic PM2200",card:"bms-meter-card",render:"svg",display:"positive",size:[ge,ye],artNode:ve,pages:["summary","amps","volts","power"],regions:[{id:"s-v",role:"volts_avg",kind:"text",page:"summary",x:Ae,y:ke[0],w:182,align:"end",label:"V avg",decimals:1,size:26},{id:"s-i",role:"current_avg",kind:"text",page:"summary",x:Ae,y:ke[1],w:182,align:"end",label:"I avg",decimals:2,size:26},{id:"s-p",role:"power_total",kind:"text",page:"summary",x:Ae,y:ke[2],w:182,align:"end",label:"P total",decimals:2,size:26},{id:"s-e",role:"energy_total",kind:"text",page:"summary",x:Ae,y:ke[3],w:182,align:"end",label:"E total",decimals:1,size:26},{id:"i1",role:"current_l1",kind:"text",page:"amps",x:Ae,y:ke[0],w:182,align:"end",label:"I1",decimals:2,size:26},{id:"i2",role:"current_l2",kind:"text",page:"amps",x:Ae,y:ke[1],w:182,align:"end",label:"I2",decimals:2,size:26},{id:"i3",role:"current_l3",kind:"text",page:"amps",x:Ae,y:ke[2],w:182,align:"end",label:"I3",decimals:2,size:26},{id:"iavg",role:"current_avg",kind:"text",page:"amps",x:Ae,y:ke[3],w:182,align:"end",label:"I avg",decimals:2,size:26},{id:"u1",role:"volts_l1",kind:"text",page:"volts",x:Ae,y:ke[0],w:182,align:"end",label:"V1-N",decimals:1,size:26},{id:"u2",role:"volts_l2",kind:"text",page:"volts",x:Ae,y:ke[1],w:182,align:"end",label:"V2-N",decimals:1,size:26},{id:"u3",role:"volts_l3",kind:"text",page:"volts",x:Ae,y:ke[2],w:182,align:"end",label:"V3-N",decimals:1,size:26},{id:"uavg",role:"volts_avg",kind:"text",page:"volts",x:Ae,y:ke[3],w:182,align:"end",label:"V avg",decimals:1,size:26},{id:"pw1",role:"power_l1",kind:"text",page:"power",x:Ae,y:ke[0],w:182,align:"end",label:"P1",decimals:2,size:26},{id:"pw2",role:"power_l2",kind:"text",page:"power",x:Ae,y:ke[1],w:182,align:"end",label:"P2",decimals:2,size:26},{id:"pw3",role:"power_l3",kind:"text",page:"power",x:Ae,y:ke[2],w:182,align:"end",label:"P3",decimals:2,size:26},{id:"pwf",role:"power_factor",kind:"text",page:"power",x:Ae,y:ke[3],w:182,align:"end",label:"PF",decimals:2,size:26},{id:"t-sum",role:"",kind:"text",page:"summary",text:"Total",x:ue,y:82,w:$e,align:"middle",size:15},{id:"t-amp",role:"",kind:"text",page:"amps",text:"Current",x:ue,y:82,w:$e,align:"middle",size:15},{id:"t-vol",role:"",kind:"text",page:"volts",text:"Voltage",x:ue,y:82,w:$e,align:"middle",size:15},{id:"t-pow",role:"",kind:"text",page:"power",text:"Power",x:ue,y:82,w:$e,align:"middle",size:15},{id:"sk1",role:"",kind:"text",text:"I",x:68,y:304,w:60,align:"middle",size:13},{id:"sk2",role:"",kind:"text",text:"U-V",x:128,y:304,w:60,align:"middle",size:13},{id:"sk3",role:"",kind:"text",text:"PQS",x:188,y:304,w:60,align:"middle",size:13},{id:"sk4",role:"",kind:"text",text:"▶",x:248,y:304,w:60,align:"middle",size:13},{id:"k1",role:"",kind:"button",x:be[0]-26,y:331,w:52,h:42,text:"",action:"page",target:"amps"},{id:"k2",role:"",kind:"button",x:be[1]-26,y:331,w:52,h:42,text:"",action:"page",target:"volts"},{id:"k3",role:"",kind:"button",x:be[2]-26,y:331,w:52,h:42,text:"",action:"page",target:"power"},{id:"k4",role:"",kind:"button",x:be[3]-26,y:331,w:52,h:42,text:"",action:"page",target:"summary"}]},Ee=460,Se={id:"generic-3phase",name:"Generic 3-phase meter",description:"Single-page readout for boards where the physical meter is unknown.",card:"bms-meter-card",render:"svg",display:"negative",size:[Ee,260],artNode:V`
   <defs>
     <linearGradient id="g3p-case" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#4a5159" />
       <stop offset="100%" stop-color="#343a40" />
     </linearGradient>
   </defs>
-  <rect x="0" y="0" width="${Et}" height="${260}" rx="10" fill="url(#g3p-case)" />
+  <rect x="0" y="0" width="${Ee}" height="${260}" rx="10" fill="url(#g3p-case)" />
   <rect x="14" y="14" width="${432}" height="${232}" rx="6"
         fill="#151b17" stroke="#090c0a" stroke-width="2" />
   <line x1="14" y1="110" x2="${446}" y2="110" stroke="#3c4a40" stroke-width="1" />
   <line x1="14" y1="186" x2="${446}" y2="186" stroke="#3c4a40" stroke-width="1" />
-`,regions:[{id:"etot",role:"energy_total",kind:"text",x:34,y:34,w:390,label:"Total energy",unit:"kWh",decimals:1,size:40},{id:"ptot",role:"power_total",kind:"text",x:34,y:124,w:180,label:"Power",unit:"kW",decimals:2,size:28},{id:"pf",role:"power_factor",kind:"text",x:250,y:124,w:174,label:"Power factor",decimals:2,size:28},{id:"v1",role:"volts_l1",kind:"text",x:34,y:200,w:120,label:"L1-N",unit:"V",decimals:0,size:22},{id:"v2",role:"volts_l2",kind:"text",x:174,y:200,w:120,label:"L2-N",unit:"V",decimals:0,size:22},{id:"v3",role:"volts_l3",kind:"text",x:314,y:200,w:110,label:"L3-N",unit:"V",decimals:0,size:22}]},Ct=230,Mt=380,Pt=W`
+`,regions:[{id:"etot",role:"energy_total",kind:"text",x:34,y:34,w:390,label:"Total energy",unit:"kWh",decimals:1,size:40},{id:"ptot",role:"power_total",kind:"text",x:34,y:124,w:180,label:"Power",unit:"kW",decimals:2,size:28},{id:"pf",role:"power_factor",kind:"text",x:250,y:124,w:174,label:"Power factor",decimals:2,size:28},{id:"v1",role:"volts_l1",kind:"text",x:34,y:200,w:120,label:"L1-N",unit:"V",decimals:0,size:22},{id:"v2",role:"volts_l2",kind:"text",x:174,y:200,w:120,label:"L2-N",unit:"V",decimals:0,size:22},{id:"v3",role:"volts_l3",kind:"text",x:314,y:200,w:110,label:"L3-N",unit:"V",decimals:0,size:22}]},Me=230,Ce=380,Pe=V`
   <defs>
     <linearGradient id="din3p-case" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#5b626a" />
@@ -136,13 +171,13 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
   </defs>
 
   <!-- Housing with the stepped DIN profile -->
-  <rect x="0" y="22" width="${Ct}" height="${336}" rx="6" fill="url(#din3p-case)" />
+  <rect x="0" y="22" width="${Me}" height="${336}" rx="6" fill="url(#din3p-case)" />
   <rect x="18" y="0" width="${194}" height="30" rx="3" fill="#333940" />
   <rect x="18" y="${350}" width="${194}" height="30" rx="3" fill="#333940" />
 
   <!-- Terminal detail, top and bottom -->
-  ${[0,1,2,3].map(t=>W`<rect x="${26+45*t}" y="4" width="34" height="20" rx="2" fill="#23282d" />`)}
-  ${[0,1,2,3].map(t=>W`<rect x="${26+45*t}" y="${354}" width="34" height="20" rx="2" fill="#23282d" />`)}
+  ${[0,1,2,3].map(e=>V`<rect x="${26+45*e}" y="4" width="34" height="20" rx="2" fill="#23282d" />`)}
+  ${[0,1,2,3].map(e=>V`<rect x="${26+45*e}" y="${354}" width="34" height="20" rx="2" fill="#23282d" />`)}
 
   <!-- Display -->
   <rect x="20" y="52" width="${190}" height="168" rx="3" fill="url(#din3p-lcd)" />
@@ -153,7 +188,7 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
 
   <!-- Key cluster -->
   <rect x="20" y="234" width="${190}" height="62" rx="4" fill="#2e343a" />
-`,Nt={id:"din-3phase-analyser",name:"DIN-rail 3-phase analyser",description:"Portrait DIN-mounted analyser with a stacked per-phase display. Generic to the form factor, not modelled on a specific product.",card:"bms-meter-card",render:"svg",display:"positive",size:[Ct,Mt],artNode:Pt,pages:["volts","amps","power"],regions:[{id:"r1",role:"volts_l1",kind:"text",page:"volts",x:34,y:62,w:162,label:"L1",unit:"V",decimals:1,size:30},{id:"r2",role:"volts_l2",kind:"text",page:"volts",x:34,y:118,w:162,label:"L2",unit:"V",decimals:1,size:30},{id:"r3",role:"volts_l3",kind:"text",page:"volts",x:34,y:174,w:162,label:"L3",unit:"V",decimals:1,size:30},{id:"a1",role:"current_l1",kind:"text",page:"amps",x:34,y:62,w:162,label:"L1",unit:"A",decimals:2,size:30},{id:"a2",role:"current_l2",kind:"text",page:"amps",x:34,y:118,w:162,label:"L2",unit:"A",decimals:2,size:30},{id:"a3",role:"current_l3",kind:"text",page:"amps",x:34,y:174,w:162,label:"L3",unit:"A",decimals:2,size:30},{id:"pt",role:"power_total",kind:"text",page:"power",x:34,y:62,w:162,label:"Total",unit:"kW",decimals:2,size:30},{id:"pf",role:"power_factor",kind:"text",page:"power",x:34,y:118,w:162,label:"PF",decimals:2,size:30},{id:"en",role:"energy_total",kind:"text",page:"power",x:34,y:174,w:162,label:"Energy",unit:"kWh",decimals:0,size:30},{id:"k1",role:"",kind:"button",x:32,y:246,w:52,h:34,text:"V",action:"page",target:"volts"},{id:"k2",role:"",kind:"button",x:92,y:246,w:52,h:34,text:"A",action:"page",target:"amps"},{id:"k3",role:"",kind:"button",x:152,y:246,w:52,h:34,text:"kW",action:"page",target:"power"},{id:"lampL1",role:"volts_l1",kind:"lamp",x:40,y:310,w:14,label:"L1",on:"#5fd87a"},{id:"lampL2",role:"volts_l2",kind:"lamp",x:100,y:310,w:14,label:"L2",on:"#5fd87a"},{id:"lampL3",role:"volts_l3",kind:"lamp",x:160,y:310,w:14,label:"L3",on:"#5fd87a"}]},Lt=400,Rt={id:"circutor-cvm-e3-mini",name:"Circutor CVM-E3-MINI",description:"Panel-mount three-phase analyser: negative LCD with three stacked values, magnitude and unit to the right, four-key bezel.",emulates:"Circutor CVM-E3-MINI-WiEth",card:"bms-meter-card",render:"svg",display:"negative",size:[Lt,330],artNode:W`
+`,Ne={id:"din-3phase-analyser",name:"DIN-rail 3-phase analyser",description:"Portrait DIN-mounted analyser with a stacked per-phase display. Generic to the form factor, not modelled on a specific product.",card:"bms-meter-card",render:"svg",display:"positive",size:[Me,Ce],artNode:Pe,pages:["volts","amps","power"],regions:[{id:"r1",role:"volts_l1",kind:"text",page:"volts",x:34,y:62,w:162,label:"L1",unit:"V",decimals:1,size:30},{id:"r2",role:"volts_l2",kind:"text",page:"volts",x:34,y:118,w:162,label:"L2",unit:"V",decimals:1,size:30},{id:"r3",role:"volts_l3",kind:"text",page:"volts",x:34,y:174,w:162,label:"L3",unit:"V",decimals:1,size:30},{id:"a1",role:"current_l1",kind:"text",page:"amps",x:34,y:62,w:162,label:"L1",unit:"A",decimals:2,size:30},{id:"a2",role:"current_l2",kind:"text",page:"amps",x:34,y:118,w:162,label:"L2",unit:"A",decimals:2,size:30},{id:"a3",role:"current_l3",kind:"text",page:"amps",x:34,y:174,w:162,label:"L3",unit:"A",decimals:2,size:30},{id:"pt",role:"power_total",kind:"text",page:"power",x:34,y:62,w:162,label:"Total",unit:"kW",decimals:2,size:30},{id:"pf",role:"power_factor",kind:"text",page:"power",x:34,y:118,w:162,label:"PF",decimals:2,size:30},{id:"en",role:"energy_total",kind:"text",page:"power",x:34,y:174,w:162,label:"Energy",unit:"kWh",decimals:0,size:30},{id:"k1",role:"",kind:"button",x:32,y:246,w:52,h:34,text:"V",action:"page",target:"volts"},{id:"k2",role:"",kind:"button",x:92,y:246,w:52,h:34,text:"A",action:"page",target:"amps"},{id:"k3",role:"",kind:"button",x:152,y:246,w:52,h:34,text:"kW",action:"page",target:"power"},{id:"lampL1",role:"volts_l1",kind:"lamp",x:40,y:310,w:14,label:"L1",on:"#5fd87a"},{id:"lampL2",role:"volts_l2",kind:"lamp",x:100,y:310,w:14,label:"L2",on:"#5fd87a"},{id:"lampL3",role:"volts_l3",kind:"lamp",x:160,y:310,w:14,label:"L3",on:"#5fd87a"}]},Ie=400,Le={id:"circutor-cvm-e3-mini",name:"Circutor CVM-E3-MINI",description:"Panel-mount three-phase analyser: negative LCD with three stacked values, magnitude and unit to the right, four-key bezel.",emulates:"Circutor CVM-E3-MINI-WiEth",card:"bms-meter-card",render:"svg",display:"negative",size:[Ie,330],artNode:V`
   <defs>
     <linearGradient id="cvm-bezel" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#f2f2f0" />
@@ -166,7 +201,7 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
     </linearGradient>
   </defs>
 
-  <rect x="0" y="0" width="${Lt}" height="${330}" rx="7" fill="url(#cvm-bezel)" />
+  <rect x="0" y="0" width="${Ie}" height="${330}" rx="7" fill="url(#cvm-bezel)" />
   <rect x="1" y="1" width="${398}" height="${328}" rx="6"
         fill="none" stroke="#b4b4b0" stroke-width="1" />
 
@@ -201,7 +236,51 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
     <line x1="30" y1="279" x2="30" y2="290" stroke="#6c7075" stroke-width="2" />
     <text x="352" y="298" class="cvm-annun dark">(&#8226;)</text>
   </g>
-`,pages:["power","volts","amps","energy"],regions:[{id:"p-w",role:"power_total",kind:"text",page:"power",x:70,y:66,w:232,align:"end",unit:"",decimals:2,size:42},{id:"p-w-u",role:"",kind:"text",page:"power",x:312,y:78,w:70,label:"",unit:"",decimals:0,size:15},{id:"p-va",role:"apparent_power",kind:"text",page:"power",x:70,y:124,w:232,align:"end",decimals:2,size:42},{id:"p-var",role:"reactive_power",kind:"text",page:"power",x:70,y:180,w:232,align:"end",decimals:2,size:42},{id:"v1",role:"volts_l1",kind:"text",page:"volts",x:70,y:66,w:232,align:"end",decimals:1,size:42},{id:"v2",role:"volts_l2",kind:"text",page:"volts",x:70,y:124,w:232,align:"end",decimals:1,size:42},{id:"v3",role:"volts_l3",kind:"text",page:"volts",x:70,y:180,w:232,align:"end",decimals:1,size:42},{id:"a1",role:"current_l1",kind:"text",page:"amps",x:70,y:66,w:232,align:"end",decimals:2,size:42},{id:"a2",role:"current_l2",kind:"text",page:"amps",x:70,y:124,w:232,align:"end",decimals:2,size:42},{id:"a3",role:"current_l3",kind:"text",page:"amps",x:70,y:180,w:232,align:"end",decimals:2,size:42},{id:"e-tot",role:"energy_total",kind:"text",page:"energy",x:70,y:82,w:232,align:"end",decimals:1,size:44},{id:"e-pf",role:"power_factor",kind:"text",page:"energy",x:70,y:160,w:232,align:"end",decimals:2,size:36},{id:"k-prev",role:"",kind:"button",x:86,y:272,w:40,h:40,text:"‹",action:"prev_page"},{id:"k-menu",role:"",kind:"button",x:146,y:274,w:108,h:36,text:"☰",action:"next_page"},{id:"k-next",role:"",kind:"button",x:274,y:272,w:40,h:40,text:"›",action:"next_page"}]},Dt=180,It=208,Ot={id:"daikin-brc1h63k",name:"Daikin BRC1H63K (Madoka)",description:"Round wall controller with an illuminated status ring and a dark display. Mode, room temperature and three touch keys.",emulates:"Daikin BRC1H63K Madoka",card:"hvac-controller-card",render:"svg",display:"negative",size:[360,400],artNode:W`
+`,pages:["power","volts","amps","energy"],regions:[{id:"p-w",role:"power_total",kind:"text",page:"power",x:70,y:66,w:232,align:"end",unit:"",decimals:2,size:42},{id:"p-va",role:"apparent_power",kind:"text",page:"power",x:70,y:124,w:232,align:"end",decimals:2,size:42},{id:"p-var",role:"reactive_power",kind:"text",page:"power",x:70,y:180,w:232,align:"end",decimals:2,size:42},{id:"v1",role:"volts_l1",kind:"text",page:"volts",x:70,y:66,w:232,align:"end",decimals:1,size:42},{id:"v2",role:"volts_l2",kind:"text",page:"volts",x:70,y:124,w:232,align:"end",decimals:1,size:42},{id:"v3",role:"volts_l3",kind:"text",page:"volts",x:70,y:180,w:232,align:"end",decimals:1,size:42},{id:"a1",role:"current_l1",kind:"text",page:"amps",x:70,y:66,w:232,align:"end",decimals:2,size:42},{id:"a2",role:"current_l2",kind:"text",page:"amps",x:70,y:124,w:232,align:"end",decimals:2,size:42},{id:"a3",role:"current_l3",kind:"text",page:"amps",x:70,y:180,w:232,align:"end",decimals:2,size:42},{id:"e-tot",role:"energy_total",kind:"text",page:"energy",x:70,y:82,w:232,align:"end",decimals:1,size:44},{id:"e-pf",role:"power_factor",kind:"text",page:"energy",x:70,y:160,w:232,align:"end",decimals:2,size:36},{id:"k-prev",role:"",kind:"button",x:86,y:272,w:40,h:40,text:"‹",action:"prev_page"},{id:"k-menu",role:"",kind:"button",x:146,y:274,w:108,h:36,text:"☰",action:"next_page"},{id:"k-next",role:"",kind:"button",x:274,y:272,w:40,h:40,text:"›",action:"next_page"}]},De=200,Re=200,Oe=V`
+  <defs>
+    <linearGradient id="mj-brass" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0%" stop-color="#e8d9a6" />
+      <stop offset="35%" stop-color="#c9ad63" />
+      <stop offset="70%" stop-color="#a98d45" />
+      <stop offset="100%" stop-color="#d6c187" />
+    </linearGradient>
+    <radialGradient id="mj-face" cx="0.4" cy="0.32" r="0.85">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="85%" stop-color="#f2efe6" />
+      <stop offset="100%" stop-color="#e2ded1" />
+    </radialGradient>
+  </defs>
+
+  <!-- Brass housing -->
+  <circle cx="${De}" cy="${Re}" r="192" fill="url(#mj-brass)" />
+  <circle cx="${De}" cy="${Re}" r="192" fill="none" stroke="#8a7133" stroke-width="2" />
+  <circle cx="${De}" cy="${Re}" r="176" fill="none" stroke="#8a7133" stroke-width="1.2" />
+
+  <!-- Knurling around the bezel -->
+  <g stroke="#9c8138" stroke-width="1.6">
+    ${[...Array(60).keys()].map(e=>{const t=e/60*Math.PI*2;return V`<line
+        x1="${De+178*Math.cos(t)}" y1="${Re+178*Math.sin(t)}"
+        x2="${De+190*Math.cos(t)}" y2="${Re+190*Math.sin(t)}" />`})}
+  </g>
+
+  <!-- Dial face -->
+  <circle cx="${De}" cy="${Re}" r="170" fill="url(#mj-face)" />
+
+  <text class="mj-brand" x="${De}" y="78" text-anchor="middle">MEASURED AUTOMATION</text>
+
+  <!-- Odometer surround -->
+  <rect x="112" y="110" width="176" height="40" rx="3"
+        fill="#2b2b28" stroke="#15150f" stroke-width="1.5" />
+
+
+  <!-- Specification block, as printed on the face -->
+  <g class="mj-spec">
+    <text x="64" y="206">Multi-jet</text>
+    <text x="64" y="220">Model: MJ</text>
+    <text x="64" y="234">Size: 5/8" x 1/2"</text>
+    <text x="64" y="248">100&#176;F  150 PSI</text>
+  </g>
+`,Ue={id:"multijet-water-register",name:"Multi-jet water register",description:"Mechanical register: five-digit odometer with an x100 multiplier over four sweep dials. Reads in US gallons.",emulates:"Multi-jet mechanical water meter register",card:"bms-meter-card",render:"svg",display:"positive",size:[400,400],artNode:Oe,regions:[{id:"odo",role:"volume_total",kind:"odometer",x:116,y:114,w:168,h:32,digits:5,redDigits:1,scale:100},{id:"units",role:"volume_total",kind:"text",show:"unit",x:100,y:160,w:200,align:"middle",size:14,text:"UNITS"},{id:"mult",role:"",kind:"text",text:"x100",x:296,y:118,w:48,align:"start",size:15},...[{id:"d10",x:104,scale:10,label:"x10"},{id:"d1",x:168,scale:1,label:"x1"},{id:"d01",x:232,scale:.1,label:"x0.1"},{id:"d001",x:296,scale:.01,label:"x0.01"}].map(e=>({id:e.id,role:"volume_total",kind:"needle",x:e.x,y:286,r:27,scale:e.scale,label:e.label}))]},Ge=180,Te=208,He={id:"daikin-brc1h63k",name:"Daikin BRC1H63K (Madoka)",description:"Round wall controller with an illuminated status ring and a dark display. Mode, room temperature and three touch keys.",emulates:"Daikin BRC1H63K Madoka",card:"hvac-controller-card",render:"svg",display:"negative",size:[360,400],artNode:V`
   <defs>
     <linearGradient id="madoka-plate" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#eeece6" />
@@ -225,14 +304,14 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
   </g>
 
   <!-- Round face -->
-  <circle cx="${Dt}" cy="${It}" r="${132}" fill="url(#madoka-face)" />
-  <circle cx="${Dt}" cy="${It}" r="${122}" fill="none"
+  <circle cx="${Ge}" cy="${Te}" r="${132}" fill="url(#madoka-face)" />
+  <circle cx="${Ge}" cy="${Te}" r="${122}" fill="none"
           stroke="#0a0d11" stroke-width="2" />
 
   <!-- Specular highlight, so the glass reads as glass -->
   <ellipse cx="${146}" cy="${134}" rx="62" ry="26"
            fill="#ffffff" opacity="0.06" />
-`,regions:[{id:"ring",role:"hvac_mode",kind:"ring",x:Dt,y:It,r:128,stroke:7,on:"#2f8fff",off:"#161b21"},{id:"mode",role:"hvac_mode",kind:"text",x:90,y:130,w:180,align:"middle",size:19},{id:"roomlabel",role:"",kind:"text",text:"Room",x:88,y:164,w:70,align:"start",size:15},{id:"temp",role:"room_temp",kind:"text",x:84,y:182,w:172,align:"middle",decimals:0,size:68},{id:"unit",role:"",kind:"text",text:"°C",x:258,y:190,w:34,align:"start",size:20},{id:"fan",role:"fan_speed",kind:"text",x:84,y:214,w:80,align:"start",size:14},{id:"swing",role:"swing",kind:"text",x:84,y:234,w:80,align:"start",size:14},{id:"sp",role:"setpoint",kind:"text",x:186,y:214,w:90,align:"end",label:"Set",decimals:0,size:18},{id:"minus",role:"",kind:"button",x:106,y:270,w:44,h:34,text:"−",action:"temp_down"},{id:"power",role:"",kind:"button",x:158,y:270,w:44,h:34,text:"○",action:"power_toggle"},{id:"plus",role:"",kind:"button",x:210,y:270,w:44,h:34,text:"+",action:"temp_up"}]},Tt=400,Ut=66,Gt=84,Ht=268,Bt=170,Vt=118,Wt=252,jt=188,Kt=200,Ft=296,qt=96,Zt=30,Yt={id:"daikin-brc1e63",name:"Daikin BRC1E63",description:"Wired navigation controller: landscape LCD with mode, clock, set point and room temperature, over four pill keys and a navigation pad.",emulates:"Daikin BRC1E63 / BRC1E53 navigation remote controller",card:"hvac-controller-card",render:"svg",display:"positive",size:[Tt,400],artNode:W`
+`,regions:[{id:"ring",role:"hvac_mode",kind:"ring",x:Ge,y:Te,r:128,stroke:7,on:"#2f8fff",off:"#161b21"},{id:"mode",role:"hvac_mode",kind:"text",x:90,y:130,w:180,align:"middle",size:19},{id:"roomlabel",role:"",kind:"text",text:"Room",x:88,y:164,w:70,align:"start",size:15},{id:"temp",role:"room_temp",kind:"text",x:84,y:182,w:172,align:"middle",unit:"",decimals:0,size:68},{id:"unit",role:"",kind:"text",text:"°C",x:258,y:190,w:34,align:"start",size:20},{id:"fan",role:"fan_speed",kind:"text",x:84,y:214,w:80,align:"start",size:14,placeholder:""},{id:"swing",role:"swing",kind:"text",x:84,y:234,w:80,align:"start",size:14,placeholder:""},{id:"sp",role:"setpoint",kind:"text",x:186,y:214,w:90,align:"end",label:"Set",decimals:0,size:18},{id:"minus",role:"",kind:"button",x:106,y:270,w:44,h:34,text:"−",action:"temp_down"},{id:"power",role:"",kind:"button",x:158,y:270,w:44,h:34,text:"○",action:"power_toggle"},{id:"plus",role:"",kind:"button",x:210,y:270,w:44,h:34,text:"+",action:"temp_up"}]},je=400,Be=66,Ve=84,We=268,Ke=170,Fe=118,qe=252,Ze=188,Je=200,Ye=296,Qe=96,Xe=30,et={id:"daikin-brc1e63",name:"Daikin BRC1E63",description:"Wired navigation controller: landscape LCD with mode, clock, set point and room temperature, over four pill keys and a navigation pad.",emulates:"Daikin BRC1E63 / BRC1E53 navigation remote controller",card:"hvac-controller-card",render:"svg",display:"positive",size:[je,400],artNode:V`
   <defs>
     <linearGradient id="brc-bezel" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#fbfbfa" />
@@ -254,7 +333,7 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
     </radialGradient>
   </defs>
 
-  <rect x="0" y="0" width="${Tt}" height="${400}" rx="16" fill="url(#brc-bezel)" />
+  <rect x="0" y="0" width="${je}" height="${400}" rx="16" fill="url(#brc-bezel)" />
   <rect x="1" y="1" width="${398}" height="${398}" rx="15"
         fill="none" stroke="#d2d2ce" stroke-width="1.5" />
 
@@ -267,11 +346,11 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
   <!-- Display -->
   <rect x="${62}" y="${80}" width="${276}" height="${132}" rx="3"
         fill="#b3b8ac" />
-  <rect x="${Ut}" y="${Gt}" width="${Ht}" height="${124}" fill="url(#brc-lcd)" />
-  <line x1="${Bt}" y1="${Gt}" x2="${Bt}" y2="${jt}" stroke="#8d9788" stroke-width="1.5" />
-  <line x1="${Bt}" y1="${Vt}" x2="${334}" y2="${Vt}" stroke="#8d9788" stroke-width="1.5" />
-  <line x1="${Wt}" y1="${Vt}" x2="${Wt}" y2="${jt}" stroke="#8d9788" stroke-width="1.5" />
-  <line x1="${Ut}" y1="${jt}" x2="${334}" y2="${jt}" stroke="#8d9788" stroke-width="1.5" />
+  <rect x="${Be}" y="${Ve}" width="${We}" height="${124}" fill="url(#brc-lcd)" />
+  <line x1="${Ke}" y1="${Ve}" x2="${Ke}" y2="${Ze}" stroke="#8d9788" stroke-width="1.5" />
+  <line x1="${Ke}" y1="${Fe}" x2="${334}" y2="${Fe}" stroke="#8d9788" stroke-width="1.5" />
+  <line x1="${qe}" y1="${Fe}" x2="${qe}" y2="${Ze}" stroke="#8d9788" stroke-width="1.5" />
+  <line x1="${Be}" y1="${Ze}" x2="${334}" y2="${Ze}" stroke="#8d9788" stroke-width="1.5" />
 
   <!-- Fan and swing glyphs, as printed on the display -->
   <g transform="translate(${78} ${146})" fill="#26302a">
@@ -286,13 +365,13 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
 
   <!-- Pill keys -->
   <g>
-    <rect x="46" y="228" width="${qt}" height="${Zt}" rx="15"
+    <rect x="46" y="228" width="${Qe}" height="${Xe}" rx="15"
           fill="url(#brc-pill)" stroke="#d5d5d1" stroke-width="1.2" />
-    <rect x="${258}" y="228" width="${qt}" height="${Zt}" rx="15"
+    <rect x="${258}" y="228" width="${Qe}" height="${Xe}" rx="15"
           fill="url(#brc-pill)" stroke="#d5d5d1" stroke-width="1.2" />
-    <rect x="46" y="332" width="${qt}" height="${Zt}" rx="15"
+    <rect x="46" y="332" width="${Qe}" height="${Xe}" rx="15"
           fill="url(#brc-pill)" stroke="#d5d5d1" stroke-width="1.2" />
-    <rect x="${258}" y="332" width="${qt}" height="${Zt}" rx="15"
+    <rect x="${258}" y="332" width="${Qe}" height="${Xe}" rx="15"
           fill="url(#brc-pill)" stroke="#d5d5d1" stroke-width="1.2" />
   </g>
 
@@ -309,22 +388,22 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
   </g>
 
   <!-- Navigation pad -->
-  <circle cx="${Kt}" cy="${Ft}" r="${62}" fill="url(#brc-pad)"
+  <circle cx="${Je}" cy="${Ye}" r="${62}" fill="url(#brc-pad)"
           stroke="#cfcfca" stroke-width="1.5" />
-  <circle cx="${Kt}" cy="${Ft}" r="${56}" fill="none"
+  <circle cx="${Je}" cy="${Ye}" r="${56}" fill="none"
           stroke="#e6e6e2" stroke-width="1" />
-  <circle cx="${Kt}" cy="${Ft}" r="27" fill="#fbfbfa"
+  <circle cx="${Je}" cy="${Ye}" r="27" fill="#fbfbfa"
           stroke="#d0d0cb" stroke-width="1.5" />
-  <text class="brc-enter" x="${Kt}" y="${303}" text-anchor="middle">&#8629;</text>
+  <text class="brc-enter" x="${Je}" y="${303}" text-anchor="middle">&#8629;</text>
 
   <!-- Pad direction marks -->
   <g fill="#8b9097">
-    <polygon points="${194},${256} ${206},${256} ${Kt},${246}" />
-    <polygon points="${194},${336} ${206},${336} ${Kt},${346}" />
-    <polygon points="${160},${290} ${160},${302} ${150},${Ft}" />
-    <polygon points="${240},${290} ${240},${302} ${250},${Ft}" />
+    <polygon points="${194},${256} ${206},${256} ${Je},${246}" />
+    <polygon points="${194},${336} ${206},${336} ${Je},${346}" />
+    <polygon points="${160},${290} ${160},${302} ${150},${Ye}" />
+    <polygon points="${240},${290} ${240},${302} ${250},${Ye}" />
   </g>
-`,regions:[{id:"mode",role:"hvac_mode",kind:"text",x:76,y:92,w:88,align:"start",size:22},{id:"fan",role:"fan_speed",kind:"text",x:92,y:142,w:24,align:"start",size:13},{id:"clock",role:"clock",kind:"text",x:Bt,y:88,w:164,align:"middle",size:22},{id:"sp-label",role:"",kind:"text",text:"Set temp",x:174,y:120,w:74,align:"start",size:11},{id:"sp",role:"setpoint",kind:"text",x:174,y:136,w:74,align:"middle",unit:"°C",decimals:0,size:26},{id:"room-label",role:"",kind:"text",text:"Room",x:256,y:120,w:74,align:"start",size:11},{id:"room",role:"room_temp",kind:"text",x:256,y:136,w:74,align:"middle",unit:"°C",decimals:0,size:26},{id:"status",role:"hvac_action",kind:"text",x:74,y:189,w:252,align:"start",size:12},{id:"k-mode",role:"",kind:"button",x:46,y:228,w:qt,h:Zt,text:"",action:"mode_cycle"},{id:"k-power",role:"",kind:"button",x:258,y:228,w:qt,h:Zt,text:"",action:"power_toggle"},{id:"k-fan",role:"",kind:"button",x:46,y:332,w:qt,h:Zt,text:"",action:"fan_cycle"},{id:"k-up",role:"",kind:"button",x:178,y:238,w:44,h:30,text:"",action:"temp_up"},{id:"k-down",role:"",kind:"button",x:178,y:324,w:44,h:30,text:"",action:"temp_down"}]},Jt=30,Qt=92,Xt=W`
+`,regions:[{id:"mode",role:"hvac_mode",kind:"text",x:76,y:92,w:88,align:"start",size:22},{id:"fan",role:"fan_speed",kind:"text",x:92,y:142,w:24,align:"start",size:13,placeholder:""},{id:"clock",role:"clock",kind:"text",x:Ke,y:88,w:164,align:"middle",size:22},{id:"sp-label",role:"",kind:"text",text:"Set temp",x:174,y:120,w:74,align:"start",size:11},{id:"sp",role:"setpoint",kind:"text",x:174,y:136,w:74,align:"middle",unit:"°C",decimals:0,size:26},{id:"room-label",role:"",kind:"text",text:"Room",x:256,y:120,w:74,align:"start",size:11},{id:"room",role:"room_temp",kind:"text",x:256,y:136,w:74,align:"middle",unit:"°C",decimals:0,size:26},{id:"status",role:"hvac_action",kind:"text",x:74,y:189,w:252,align:"start",size:12,placeholder:""},{id:"k-mode",role:"",kind:"button",x:46,y:228,w:Qe,h:Xe,text:"",action:"mode_cycle"},{id:"k-power",role:"",kind:"button",x:258,y:228,w:Qe,h:Xe,text:"",action:"power_toggle"},{id:"k-fan",role:"",kind:"button",x:46,y:332,w:Qe,h:Xe,text:"",action:"fan_cycle"},{id:"k-up",role:"",kind:"button",x:178,y:238,w:44,h:30,text:"",action:"temp_up"},{id:"k-down",role:"",kind:"button",x:178,y:324,w:44,h:30,text:"",action:"temp_down"}]},tt=30,it=92,rt=V`
   <defs>
     <linearGradient id="brc315-body" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#f6f4ee" />
@@ -344,7 +423,7 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
         fill="none" stroke="#d6d1c5" stroke-width="1.5" />
   <!-- Ventilation slots -->
   <g fill="#cfcabd">
-    ${[0,1,2,3,4,5].map(t=>W`<rect x="${34+9*t}" y="26" width="4" height="22" rx="2" />`)}
+    ${[0,1,2,3,4,5].map(e=>V`<rect x="${34+9*e}" y="26" width="4" height="22" rx="2" />`)}
   </g>
   <!-- Wordmark -->
   <g transform="translate(34 62)">
@@ -361,11 +440,11 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
   <rect x="290" y="58" width="72" height="16" rx="8" fill="#f2d98a" stroke="#d9bf6d" stroke-width="1" />
   <!-- Display -->
   <rect x="${27}" y="${89}" width="${346}" height="${102}" rx="3" fill="#9aa48d" />
-  <rect x="${Jt}" y="${Qt}" width="${340}" height="${96}" fill="url(#brc315-lcd)" />
+  <rect x="${tt}" y="${it}" width="${340}" height="${96}" fill="url(#brc315-lcd)" />
   <!-- Schedule ring, left of the display -->
   <g transform="translate(${74} ${144})">
     <circle cx="0" cy="0" r="30" fill="none" stroke="#7f8a74" stroke-width="1.4" />
-    ${[0,3,6,9,12,15,18,21].map(t=>{const e=t/24*Math.PI*2-Math.PI/2,i=37*Math.cos(e),r=37*Math.sin(e)+3;return W`<text class="brc315-ring" x="${i}" y="${r}" text-anchor="middle">${t}</text>`})}
+    ${[0,3,6,9,12,15,18,21].map(e=>{const t=e/24*Math.PI*2-Math.PI/2,i=37*Math.cos(t),r=37*Math.sin(t)+3;return V`<text class="brc315-ring" x="${i}" y="${r}" text-anchor="middle">${e}</text>`})}
     <path d="M-9 -4 a7 7 0 1 0 7 8 a9 9 0 0 1 -7 -8 z" fill="#3d4838" />
     <circle cx="8" cy="6" r="5" fill="none" stroke="#3d4838" stroke-width="1.4" />
   </g>
@@ -381,7 +460,7 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
     <text class="brc315-icon" x="${344}" y="${140}">&#9788;</text>
     <text class="brc315-icon" x="${321}" y="${140}">&#9832;</text>
   </g>
-`,te=168,ee=132,ie=132,re=136,se=[Rt,zt,Nt,St,Yt,{id:"daikin-brc2e61",name:"Daikin BRC2E61",description:"Simplified wired controller: a small central display surrounded by large flat keys for power, temperature, fan and louvre.",emulates:"Daikin BRC2E61 simplified remote controller",card:"hvac-controller-card",render:"svg",display:"positive",size:[400,400],artNode:W`
+`,st=168,ot=132,at=132,lt=136,nt=[Le,ze,Ne,Se,Ue,et,{id:"daikin-brc2e61",name:"Daikin BRC2E61",description:"Simplified wired controller: a small central display surrounded by large flat keys for power, temperature, fan and louvre.",emulates:"Daikin BRC2E61 simplified remote controller",card:"hvac-controller-card",render:"svg",display:"positive",size:[400,400],artNode:V`
   <defs>
     <linearGradient id="brc2-body" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#fdfdfd" />
@@ -421,9 +500,9 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
   </g>
 
   <!-- Display surround and glass -->
-  <rect x="${116}" y="${116}" width="${te}" height="${te}" rx="16"
+  <rect x="${116}" y="${116}" width="${st}" height="${st}" rx="16"
         fill="url(#brc2-sur)" />
-  <rect x="${ee}" y="${ie}" width="${re}" height="${136}" rx="2"
+  <rect x="${ot}" y="${at}" width="${lt}" height="${136}" rx="2"
         fill="url(#brc2-lcd)" stroke="#7d8277" stroke-width="1.5" />
   <line x1="${138}" y1="${206}" x2="${262}" y2="${206}"
         stroke="#8b9180" stroke-width="1.4" />
@@ -468,18 +547,18 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
       <rect x="19" y="0" width="13" height="7" rx="1.5" />
     </g>
   </g>
-`,regions:[{id:"mode",role:"hvac_mode",kind:"text",x:138,y:138,w:124,align:"middle",size:15},{id:"sp",role:"setpoint",kind:"text",x:138,y:214,w:70,align:"start",decimals:0,size:32},{id:"spunit",role:"",kind:"text",text:"°C",x:192,y:228,w:20,align:"start",size:12},{id:"fan",role:"fan_speed",kind:"text",x:210,y:222,w:52,align:"end",size:13},{id:"room",role:"room_temp",kind:"text",x:138,y:252,w:124,align:"middle",label:"",unit:"°C",decimals:0,size:13},{id:"k-power",role:"",kind:"button",x:160,y:24,w:80,h:76,text:"",action:"power_toggle"},{id:"k-up",role:"",kind:"button",x:296,y:30,w:86,h:78,text:"",action:"temp_up"},{id:"k-down",role:"",kind:"button",x:296,y:296,w:86,h:78,text:"",action:"temp_down"},{id:"k-mode",role:"",kind:"button",x:20,y:30,w:86,h:78,text:"",action:"mode_cycle"},{id:"k-fan",role:"",kind:"button",x:20,y:296,w:86,h:78,text:"",action:"fan_cycle"}]},Ot,{id:"daikin-brc315d7",name:"Daikin BRC315D7",description:"Schedule controller, cover closed: wide segmented display with timer rows, temperature and mode icons.",emulates:"Daikin BRC315D7 schedule remote controller",card:"hvac-controller-card",render:"svg",display:"positive",size:[400,400],artNode:Xt,regions:[{id:"hdr",role:"",kind:"text",text:"ONETIME  DAILY  TIMER",x:114,y:94,w:160,align:"start",size:10},{id:"t1",role:"",kind:"text",text:"--:--",x:122,y:114,w:108,align:"middle",size:22},{id:"t2",role:"",kind:"text",text:"--:--",x:122,y:150,w:108,align:"middle",size:22},{id:"sp",role:"setpoint",kind:"text",x:244,y:106,w:64,align:"middle",decimals:0,size:38},{id:"spunit",role:"",kind:"text",text:"°C",x:306,y:130,w:20,align:"start",size:12},{id:"room",role:"room_temp",kind:"text",x:244,y:154,w:64,align:"middle",label:"",decimals:0,size:16},{id:"mode",role:"hvac_mode",kind:"text",x:244,y:172,w:120,align:"start",size:11},{id:"k-power",role:"",kind:"button",x:290,y:56,w:72,h:20,text:"",action:"power_toggle"}]}];function oe(t){return se.filter(e=>e.card===t)}function ne(t,e){const i=oe(t);return i.find(t=>t.id===e)??i[0]}const ae="bms-meter-card";class le extends lt{constructor(){super(),this._page=""}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config=t;const e=ne(ae,t.faceplate);this._page=t.page??e.pages?.[0]??""}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${ae}-editor`)}static getStubConfig(){return{type:`custom:${ae}`,faceplate:"schneider-pm2200"}}_faceplate(){return ne(ae,this._config?.faceplate)}_onAction(t){const e=this._faceplate().pages??[];if(!e.length)return;if("page"===t.action&&t.target)return void(this._page=t.target);const i=e.indexOf(this._page),r="prev_page"===t.action?-1:1;this._page=e[(i+r+e.length)%e.length]}render(){if(!this._config||!this.hass)return K;const t=this._faceplate(),e=[...new Set(t.regions.map(t=>t.role))].filter(Boolean),i=[...new Set(e.flatMap(t=>pt[t]??[t]))],r=function(t,e,i={},r=[]){const s={};for(const o of e){if(i[o]){s[o]=i[o];continue}const e=r.length?r:Object.keys(t.states),n=ct[o];if(!n)continue;const a=e.find(t=>n.test(t));a&&(s[o]=a)}return s}(this.hass,i,this._config.entities??{},this._config.device?function(t,e){const i=t.entities;if(i){const t=Object.keys(i).filter(t=>i[t]?.device_id===e);if(t.length)return t}return Object.keys(t.states).filter(t=>t.includes(e))}(this.hass,this._config.device):[]),s=i.filter(t=>!r[t]);return V`
+`,regions:[{id:"mode",role:"hvac_mode",kind:"text",x:138,y:138,w:124,align:"middle",size:15},{id:"sp",role:"setpoint",kind:"text",x:138,y:214,w:70,align:"start",unit:"",decimals:0,size:32},{id:"spunit",role:"",kind:"text",text:"°C",x:192,y:228,w:20,align:"start",size:12},{id:"fan",role:"fan_speed",kind:"text",x:210,y:222,w:52,align:"end",size:13,placeholder:""},{id:"room",role:"room_temp",kind:"text",x:138,y:252,w:124,align:"middle",label:"",unit:"°C",decimals:0,size:13},{id:"k-power",role:"",kind:"button",x:160,y:24,w:80,h:76,text:"",action:"power_toggle"},{id:"k-up",role:"",kind:"button",x:296,y:30,w:86,h:78,text:"",action:"temp_up"},{id:"k-down",role:"",kind:"button",x:296,y:296,w:86,h:78,text:"",action:"temp_down"},{id:"k-mode",role:"",kind:"button",x:20,y:30,w:86,h:78,text:"",action:"mode_cycle"},{id:"k-fan",role:"",kind:"button",x:20,y:296,w:86,h:78,text:"",action:"fan_cycle"}]},He,{id:"daikin-brc315d7",name:"Daikin BRC315D7",description:"Schedule controller, cover closed: wide segmented display with timer rows, temperature and mode icons.",emulates:"Daikin BRC315D7 schedule remote controller",card:"hvac-controller-card",render:"svg",display:"positive",size:[400,400],artNode:rt,regions:[{id:"hdr",role:"",kind:"text",text:"ONETIME  DAILY  TIMER",x:114,y:94,w:160,align:"start",size:10},{id:"t1",role:"",kind:"text",text:"--:--",x:122,y:114,w:108,align:"middle",size:22},{id:"t2",role:"",kind:"text",text:"--:--",x:122,y:150,w:108,align:"middle",size:22},{id:"sp",role:"setpoint",kind:"text",x:244,y:106,w:64,align:"middle",unit:"",decimals:0,size:38},{id:"spunit",role:"",kind:"text",text:"°C",x:306,y:130,w:20,align:"start",size:12},{id:"room",role:"room_temp",kind:"text",x:244,y:154,w:64,align:"middle",label:"",decimals:0,size:16},{id:"mode",role:"hvac_mode",kind:"text",x:244,y:172,w:120,align:"start",size:11},{id:"k-power",role:"",kind:"button",x:290,y:56,w:72,h:20,text:"",action:"power_toggle"}]}];function dt(e){return nt.filter(t=>t.card===e)}function ct(e,t){const i=dt(e);return i.find(e=>e.id===t)??i[0]}const ht="bms-meter-card";class pt extends ne{constructor(){super(),this._page=""}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e;const t=ct(ht,e.faceplate);this._page=e.page??t.pages?.[0]??""}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${ht}-editor`)}static getStubConfig(){return{type:`custom:${ht}`,faceplate:"schneider-pm2200"}}_faceplate(){return ct(ht,this._config?.faceplate)}_onAction(e){const t=this._faceplate().pages??[];if(!t.length)return;if("page"===e.action&&e.target)return void(this._page=e.target);const i=t.indexOf(this._page),r="prev_page"===e.action?-1:1;this._page=t[(i+r+t.length)%t.length]}render(){if(!this._config||!this.hass)return K;const e=this._faceplate(),t=[...new Set(e.regions.map(e=>e.role))].filter(Boolean),i=[...new Set(t.flatMap(e=>pe[e]??[e]))],r=function(e,t,i={},r=[]){const s={};for(const o of t){if(i[o]){s[o]=i[o];continue}const t=r.length?r:Object.keys(e.states),a=ce[o];if(!a)continue;const l=t.find(e=>a.test(e));l&&(s[o]=l)}return s}(this.hass,i,this._config.entities??{},this._config.device?function(e,t){const i=e.entities;if(i){const e=Object.keys(i).filter(e=>i[e]?.device_id===t);if(e.length)return e}return Object.keys(e.states).filter(e=>e.includes(t))}(this.hass,this._config.device):[]),s=i.filter(e=>!r[e]);return B`
       <ha-card>
-        ${this._config.name?V`<div class="title">${this._config.name}</div>`:K}
+        ${this._config.name?B`<div class="title">${this._config.name}</div>`:K}
         <div class="frame">
-          ${xt({hass:this.hass,faceplate:t,bindings:r,page:this._page,onAction:t=>this._onAction(t)})}
+          ${xe({hass:this.hass,faceplate:e,bindings:r,page:this._page,onAction:e=>this._onAction(e)})}
         </div>
-        ${s.length===i.length?V`<div class="hint">
+        ${s.length===i.length?B`<div class="hint">
               No entities bound. Set them in the card editor, or point the card
               at a device.
             </div>`:K}
       </ha-card>
-    `}}le.properties={hass:{attribute:!1},_config:{state:!0},_page:{state:!0}},le.styles=o`
+    `}}pt.properties={hass:{attribute:!1},_config:{state:!0},_page:{state:!0}},pt.styles=o`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -581,6 +660,61 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
     .cvm-annun.dark {
       fill: #6c7075;
     }
+    /* Mechanical register: an odometer and sweep dials on a painted face. */
+    .odo-cell {
+      fill: #f6f4ec;
+      stroke: #6d6a5e;
+      stroke-width: 0.8;
+    }
+    .odo-cell.odo-red {
+      fill: #a8231d;
+      stroke: #6d120e;
+    }
+    .odo-digit {
+      fill: #1b1b18;
+      font-family: ui-monospace, Menlo, monospace;
+      font-weight: 700;
+    }
+    .odo-digit.odo-red-digit {
+      fill: #fdf6f5;
+    }
+    .odometer.dark .odo-digit {
+      fill: #8d8a80;
+    }
+    .dial-face {
+      fill: #fbf9f2;
+      stroke: #7d7a6e;
+      stroke-width: 1.2;
+    }
+    .dial-tick {
+      stroke: #7d7a6e;
+      stroke-width: 1;
+    }
+    .dial-needle {
+      stroke: #b3241c;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+    }
+    .dial-hub {
+      fill: #7d1a14;
+    }
+    .dial.dark .dial-needle {
+      stroke: #b9b6ab;
+    }
+    .dial-label {
+      fill: #3d3b34;
+      font-size: 12px;
+    }
+    .mj-brand {
+      fill: #8a2018;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+    .mj-spec text {
+      fill: #4a4840;
+      font-size: 10.5px;
+    }
     .lamp {
       stroke: #11151a;
       stroke-width: 1;
@@ -619,27 +753,27 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `;class de extends lt{setConfig(t){this._config=t}_emit(t){const e={...this._config,...t};this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0}))}render(){if(!this._config)return K;const t=oe(ae),e=ne(ae,this._config.faceplate);return V`
+  `;class ft extends ne{setConfig(e){this._config=e}_emit(e){const t={...this._config,...e};this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:t},bubbles:!0,composed:!0}))}render(){if(!this._config)return K;const e=dt(ht),t=ct(ht,this._config.faceplate);return B`
       <div class="editor">
         <label>
           Faceplate
           <select
-            @change=${t=>this._emit({faceplate:t.target.value})}
+            @change=${e=>this._emit({faceplate:e.target.value})}
           >
-            ${t.map(t=>V`<option value=${t.id} ?selected=${t.id===e.id}>
-                ${t.name}
+            ${e.map(e=>B`<option value=${e.id} ?selected=${e.id===t.id}>
+                ${e.name}
               </option>`)}
           </select>
         </label>
-        <p class="note">${e.description??""}</p>
-        ${e.emulates?V`<p class="note">Emulates ${e.emulates}. Product names
+        <p class="note">${t.description??""}</p>
+        ${t.emulates?B`<p class="note">Emulates ${t.emulates}. Product names
               and marks belong to their respective owners.</p>`:K}
         <label>
           Name
           <input
             type="text"
             .value=${this._config.name??""}
-            @change=${t=>this._emit({name:t.target.value})}
+            @change=${e=>this._emit({name:e.target.value})}
           />
         </label>
         <p class="note">
@@ -647,7 +781,7 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
           any of them in YAML with an <code>entities:</code> block.
         </p>
       </div>
-    `}}de.properties={hass:{attribute:!1},_config:{state:!0}},de.styles=o`
+    `}}ft.properties={hass:{attribute:!1},_config:{state:!0}},ft.styles=o`
     .editor {
       display: flex;
       flex-direction: column;
@@ -675,4 +809,4 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
       font-size: 12px;
       color: var(--secondary-text-color);
     }
-  `,customElements.define(ae,le),customElements.define(`${ae}-editor`,de),window.customCards??=[],window.customCards.push({type:ae,name:"BMS Meter Card",description:"A power meter that looks like a power meter.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-Cards"});
+  `,customElements.define(ht,pt),customElements.define(`${ht}-editor`,ft),window.customCards??=[],window.customCards.push({type:ht,name:"BMS Meter Card",description:"A power meter that looks like a power meter.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-Cards"});

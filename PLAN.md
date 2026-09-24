@@ -177,7 +177,22 @@ Ordered by what earns its keep first on this estate.
 | `qsys-zone-card` | Fader strip | Gain and mute per zone, position-driven fader |
 | `crestron-room-card` | Room panel | Source select, volume, mics — driven by joins |
 
-### Backlog: mechanical water meter register
+### Done: mechanical water meter register
+
+Built as `multijet-water-register` on `bms-meter-card` rather than a card of
+its own — the card only renders faceplates, so a water register needed no new
+card, just the two region kinds below. The original note is kept for the
+reasoning.
+
+Verified against the arithmetic: a total of 9234.56 puts **00092** in the
+odometer and 3 / 4.56 / 5.6 / 6 on the dials, which are exactly the digits
+below the odometer's resolution.
+
+The unit is **not** painted on. The photographed register says US GALLONS;
+the meters here read litres and cubic metres, so the units line is a region
+that prints whatever the bound entity reports.
+
+### Original note: mechanical water meter register
 
 A photograph is in hand of a multi-jet register — brass housing with a hinged
 cover, a five-digit odometer with the last digit red and an `x100`

@@ -88,6 +88,22 @@ views:
         volts_l3: sensor.db_1_volts_l3
         power_factor: sensor.db_1_power_factor
     - type: markdown
+      content: "### Multi-jet water register\n`faceplate: d10`  \nEmulates Multi-jet mechanical\
+        \ water meter register."
+    - type: custom:bms-meter-card
+      faceplate: d10
+      name: ''
+      entities:
+        energy_total: sensor.db_1_energy_total
+        power_total: sensor.db_1_power_total
+        power_l1: sensor.db_1_power_l1
+        power_l2: sensor.db_1_power_l2
+        power_l3: sensor.db_1_power_l3
+        volts_l1: sensor.db_1_volts_l1
+        volts_l2: sensor.db_1_volts_l2
+        volts_l3: sensor.db_1_volts_l3
+        power_factor: sensor.db_1_power_factor
+    - type: markdown
       content: "### Schneider EasyLogic PM2200\n`faceplate: schneider-pm2200`  \nEmulates\
         \ Schneider Electric EasyLogic PM2200.  \nPages: summary, amps, volts, power."
     - type: custom:bms-meter-card

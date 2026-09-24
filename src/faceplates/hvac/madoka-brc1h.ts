@@ -78,17 +78,21 @@ export const MADOKA_BRC1H: Faceplate = {
     { id: "roomlabel", role: "", kind: "text", text: "Room",
       x: CX - 92, y: CY - 44, w: 70, align: "start", size: 15 },
 
+    // unit: "" because the faceplate prints the degree glyph separately.
     { id: "temp", role: "room_temp", kind: "text",
-      x: CX - 96, y: CY - 26, w: 172, align: "middle", decimals: 0, size: 68 },
+      x: CX - 96, y: CY - 26, w: 172, align: "middle", unit: "",
+      decimals: 0, size: 68 },
 
     { id: "unit", role: "", kind: "text", text: "°C",
       x: CX + 78, y: CY - 18, w: 34, align: "start", size: 20 },
 
     // Fan and swing annunciators, bottom-left of the display area.
     { id: "fan", role: "fan_speed", kind: "text",
-      x: CX - 96, y: CY + 6, w: 80, align: "start", size: 14 },
+      x: CX - 96, y: CY + 6, w: 80, align: "start", size: 14,
+      placeholder: "" },
     { id: "swing", role: "swing", kind: "text",
-      x: CX - 96, y: CY + 26, w: 80, align: "start", size: 14 },
+      x: CX - 96, y: CY + 26, w: 80, align: "start", size: 14,
+      placeholder: "" },
 
     // Setpoint, smaller, to the right of the room reading.
     { id: "sp", role: "setpoint", kind: "text",

@@ -27,6 +27,7 @@ export const ROLE_SLOTS: Record<string, string[]> = {
   current_l3: ["current_l3"],
   power_factor: ["power_factor"],
   frequency: ["frequency"],
+  volume_total: ["volume_total", "water_total", "volume"],
 };
 
 /**
@@ -48,6 +49,9 @@ const ROLE_PATTERNS: Record<string, RegExp> = {
   current_l3: /phase_3_a$|_current_l3$/,
   power_factor: /power_factor$/,
   frequency: /frequency$/,
+  // Cumulative volume. Anchored to totals: a daily or weekly register is
+  // not a lifetime total and must never be bound as one.
+  volume_total: /_cubicmetre$|_volume_total$|_water_total$|watermeter_total$/,
 };
 
 const UNAVAILABLE = new Set(["unavailable", "unknown", "none", ""]);

@@ -143,7 +143,8 @@ export const BRC1E63: Faceplate = {
     { id: "mode", role: "hvac_mode", kind: "text",
       x: LX + 10, y: LY + 8, w: 88, align: "start", size: 22 },
     { id: "fan", role: "fan_speed", kind: "text",
-      x: LX + 26, y: LY + 58, w: 24, align: "start", size: 13 },
+      x: LX + 26, y: LY + 58, w: 24, align: "start", size: 13,
+      placeholder: "" },
 
     // -- Clock ----------------------------------------------------------
     { id: "clock", role: "clock", kind: "text",
@@ -164,7 +165,8 @@ export const BRC1E63: Faceplate = {
 
     // -- Status strip ----------------------------------------------------
     { id: "status", role: "hvac_action", kind: "text",
-      x: LX + 8, y: FOOT + 1, w: LW - 16, align: "start", size: 12 },
+      x: LX + 8, y: FOOT + 1, w: LW - 16, align: "start", size: 12,
+      placeholder: "" },
 
     // -- Keys -------------------------------------------------------------
     { id: "k-mode", role: "", kind: "button",

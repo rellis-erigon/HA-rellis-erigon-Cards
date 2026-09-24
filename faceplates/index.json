@@ -15,6 +15,14 @@
       ]
     },
     {
+      "id": "d10",
+      "name": "Multi-jet water register",
+      "card": "bms-meter-card",
+      "description": "Mechanical register: five-digit odometer with an x100 multiplier over four sweep dials. Reads in US gallons.",
+      "emulates": "Multi-jet mechanical water meter register",
+      "pages": []
+    },
+    {
       "id": "daikin-brc1e63",
       "name": "Daikin BRC1E63",
       "card": "hvac-controller-card",

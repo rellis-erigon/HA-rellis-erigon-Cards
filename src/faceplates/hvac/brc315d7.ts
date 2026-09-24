@@ -103,8 +103,10 @@ export const BRC315D7: Faceplate = {
     { id: "t2", role: "", kind: "text", text: "--:--",
       x: LX + 92, y: LY + 58, w: 108, align: "middle", size: 22 },
     // Temperature block.
+    // unit: "" — the degree glyph is drawn beside it.
     { id: "sp", role: "setpoint", kind: "text",
-      x: LX + 214, y: LY + 14, w: 64, align: "middle", decimals: 0, size: 38 },
+      x: LX + 214, y: LY + 14, w: 64, align: "middle", unit: "",
+      decimals: 0, size: 38 },
     { id: "spunit", role: "", kind: "text", text: "°C",
       x: LX + 276, y: LY + 38, w: 20, align: "start", size: 12 },
     { id: "room", role: "room_temp", kind: "text",
