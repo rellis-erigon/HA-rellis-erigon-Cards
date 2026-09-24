@@ -2,8 +2,8 @@
  * Mechanical multi-jet water meter register.
  *
  * Drawn from a photograph: a brass register housing over a white dial, with
- * a five-digit odometer whose last cell is the highlighted decade, a
- * multiplier printed beside it, and four sweep dials of decreasing
+ * a seven-digit odometer whose last cell is the highlighted decade and
+ * four sweep dials of decreasing
  * significance across the bottom.
  *
  * This is the first faceplate where several regions share one role. A
@@ -23,11 +23,14 @@ const CY = 200;
 
 const DIAL_Y = 286;
 const DIAL_R = 27;
+// The odometer reads whole units; the dials read below it. On a real
+// register the x1 hand tracks the odometer's last digit, which is why it is
+// kept rather than treated as a duplicate.
 const DIALS = [
-  { id: "d10", x: 104, scale: 10, label: "x10" },
-  { id: "d1", x: 168, scale: 1, label: "x1" },
-  { id: "d01", x: 232, scale: 0.1, label: "x0.1" },
-  { id: "d001", x: 296, scale: 0.01, label: "x0.01" },
+  { id: "d1", x: 104, scale: 1, label: "x1" },
+  { id: "d01", x: 168, scale: 0.1, label: "x0.1" },
+  { id: "d001", x: 232, scale: 0.01, label: "x0.01" },
+  { id: "d0001", x: 296, scale: 0.001, label: "x0.001" },
 ];
 
 const CHASSIS = svg`
@@ -66,7 +69,7 @@ const CHASSIS = svg`
   <text class="mj-brand" x="${CX}" y="78" text-anchor="middle">MEASURED AUTOMATION</text>
 
   <!-- Odometer surround -->
-  <rect x="112" y="110" width="176" height="40" rx="3"
+  <rect x="88" y="110" width="224" height="42" rx="3"
         fill="#2b2b28" stroke="#15150f" stroke-width="1.5" />
 
 
@@ -83,7 +86,7 @@ export const MULTIJET_REGISTER: Faceplate = {
   id: "multijet-water-register",
   name: "Multi-jet water register",
   description:
-    "Mechanical register: five-digit odometer with an x100 multiplier over four sweep dials. Reads in US gallons.",
+    "Mechanical register: seven-digit odometer over four sweep dials, all reading one cumulative total.",
   emulates: "Multi-jet mechanical water meter register",
   card: "bms-meter-card",
   render: "svg",
@@ -92,13 +95,16 @@ export const MULTIJET_REGISTER: Faceplate = {
   artNode: CHASSIS,
   regions: [
     // The odometer and every dial read the same role at different decades.
+    // Seven digits at whole units. Five at x100 lost the reading entirely:
+    // a meter at 88,985 litres showed 00889, which is neither the total nor
+    // anything anyone could act on.
     { id: "odo", role: "volume_total", kind: "odometer",
-      x: 116, y: 114, w: 168, h: 32, digits: 5, redDigits: 1, scale: 100 },
+      x: 92, y: 114, w: 216, h: 34, digits: 7, redDigits: 1, scale: 1 },
     // The unit comes from whatever is bound, not from the artwork.
     { id: "units", role: "volume_total", kind: "text", show: "unit",
-      x: CX - 100, y: 160, w: 200, align: "middle", size: 14, text: "UNITS" },
-    { id: "mult", role: "", kind: "text", text: "x100",
-      x: 296, y: 118, w: 48, align: "start", size: 15 },
+      x: CX - 100, y: 164, w: 200, align: "middle", size: 14, text: "UNITS" },
+    { id: "mult", role: "", kind: "text", text: "x1",
+      x: 316, y: 120, w: 40, align: "start", size: 14 },
 
     ...DIALS.map((dial) => ({
       id: dial.id,

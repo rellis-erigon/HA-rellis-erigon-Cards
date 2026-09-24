@@ -65,6 +65,21 @@ Requests for new models are welcome — open an issue with the manufacturer and
 model, a straight-on photograph, and the manual or datasheet if you have it.
 Without a photograph taken square-on it cannot really be done.
 
+## If a change does not appear
+
+Home Assistant's frontend is a progressive web app with a service worker, so
+a plain reload — and often a hard reload — will serve the cached bundle. A
+query string on the resource URL is not always enough either.
+
+What reliably works is deploying to a path that has never been fetched:
+
+```
+/local/ha-cards/<build>/bms-meter-card.js
+```
+
+Keep the build stamp in the directory name and update the resource to match.
+The browser cannot have a stale copy of a URL it has never seen.
+
 ## Trademarks
 
 See [TRADEMARKS.md](TRADEMARKS.md). All product names and marks belong to

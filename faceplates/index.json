@@ -70,7 +70,7 @@
       "id": "multijet-water-register",
       "name": "Multi-jet water register",
       "card": "bms-meter-card",
-      "description": "Mechanical register: five-digit odometer with an x100 multiplier over four sweep dials. Reads in US gallons.",
+      "description": "Mechanical register: seven-digit odometer over four sweep dials, all reading one cumulative total.",
       "emulates": "Multi-jet mechanical water meter register",
       "pages": []
     },

@@ -269,7 +269,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
   <text class="mj-brand" x="${De}" y="78" text-anchor="middle">MEASURED AUTOMATION</text>
 
   <!-- Odometer surround -->
-  <rect x="112" y="110" width="176" height="40" rx="3"
+  <rect x="88" y="110" width="224" height="42" rx="3"
         fill="#2b2b28" stroke="#15150f" stroke-width="1.5" />
 
 
@@ -280,7 +280,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
     <text x="64" y="234">Size: 5/8" x 1/2"</text>
     <text x="64" y="248">100&#176;F  150 PSI</text>
   </g>
-`,Ue={id:"multijet-water-register",name:"Multi-jet water register",description:"Mechanical register: five-digit odometer with an x100 multiplier over four sweep dials. Reads in US gallons.",emulates:"Multi-jet mechanical water meter register",card:"bms-meter-card",render:"svg",display:"positive",size:[400,400],artNode:Oe,regions:[{id:"odo",role:"volume_total",kind:"odometer",x:116,y:114,w:168,h:32,digits:5,redDigits:1,scale:100},{id:"units",role:"volume_total",kind:"text",show:"unit",x:100,y:160,w:200,align:"middle",size:14,text:"UNITS"},{id:"mult",role:"",kind:"text",text:"x100",x:296,y:118,w:48,align:"start",size:15},...[{id:"d10",x:104,scale:10,label:"x10"},{id:"d1",x:168,scale:1,label:"x1"},{id:"d01",x:232,scale:.1,label:"x0.1"},{id:"d001",x:296,scale:.01,label:"x0.01"}].map(e=>({id:e.id,role:"volume_total",kind:"needle",x:e.x,y:286,r:27,scale:e.scale,label:e.label}))]},Ge=180,Te=208,He={id:"daikin-brc1h63k",name:"Daikin BRC1H63K (Madoka)",description:"Round wall controller with an illuminated status ring and a dark display. Mode, room temperature and three touch keys.",emulates:"Daikin BRC1H63K Madoka",card:"hvac-controller-card",render:"svg",display:"negative",size:[360,400],artNode:V`
+`,Ue={id:"multijet-water-register",name:"Multi-jet water register",description:"Mechanical register: seven-digit odometer over four sweep dials, all reading one cumulative total.",emulates:"Multi-jet mechanical water meter register",card:"bms-meter-card",render:"svg",display:"positive",size:[400,400],artNode:Oe,regions:[{id:"odo",role:"volume_total",kind:"odometer",x:92,y:114,w:216,h:34,digits:7,redDigits:1,scale:1},{id:"units",role:"volume_total",kind:"text",show:"unit",x:100,y:164,w:200,align:"middle",size:14,text:"UNITS"},{id:"mult",role:"",kind:"text",text:"x1",x:316,y:120,w:40,align:"start",size:14},...[{id:"d1",x:104,scale:1,label:"x1"},{id:"d01",x:168,scale:.1,label:"x0.1"},{id:"d001",x:232,scale:.01,label:"x0.01"},{id:"d0001",x:296,scale:.001,label:"x0.001"}].map(e=>({id:e.id,role:"volume_total",kind:"needle",x:e.x,y:286,r:27,scale:e.scale,label:e.label}))]},Ge=180,Te=208,He={id:"daikin-brc1h63k",name:"Daikin BRC1H63K (Madoka)",description:"Round wall controller with an illuminated status ring and a dark display. Mode, room temperature and three touch keys.",emulates:"Daikin BRC1H63K Madoka",card:"hvac-controller-card",render:"svg",display:"negative",size:[360,400],artNode:V`
   <defs>
     <linearGradient id="madoka-plate" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#eeece6" />
