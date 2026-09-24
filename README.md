@@ -1,78 +1,86 @@
-# Daikin Controller Card
+# HA Cards
 
-A Home Assistant custom Lovelace card that visually emulates Daikin wired wall controllers with selectable inputs and outputs per entity.
+Home Assistant Lovelace cards that look like the equipment they represent —
+a power meter that reads like a power meter, a controller that reads like the
+controller on the wall.
 
-## Supported Controllers
+Built for the three building-systems bridges on this estate
+([Niagara](https://github.com/rellis-erigon/Niagara--HA),
+[Crestron](https://github.com/rellis-erigon/Crestron-CIP-HA),
+[Q-SYS](https://github.com/rellis-erigon/QSYS-QRC-HA)), but the cards work
+with any entities you point them at.
 
-| Model | Type | Status |
-|-------|------|--------|
-| BRC1E63 | Wired, Full LCD, Backlit | ✅ Phase 1 |
-| BRC1H63K | Wired, Bluetooth, Sensor | 🔜 Phase 2 |
-| BRC2E61 | Wired Simplified, 85mm | 🔜 Phase 2 |
-| BRC315D7 | Wired, Schedule, VRV | 🔜 Phase 2 |
+See [PLAN.md](PLAN.md) for the full design and roadmap.
 
-## Installation
+## Cards
 
-### HACS (Recommended)
+| Card | Status | Faceplates |
+|------|--------|-----------|
+| `bms-meter-card` | Available | PM2200-style, generic 3-phase |
+| `hvac-controller-card` | Planned | Daikin BRC1E63 and others |
+| `distribution-board-card` | Planned | — |
+| `pump-system-card` | Planned | Triplex set |
+| `fire-panel-card` | Planned | AMPAC FireFinder and others |
+| `qsys-zone-card`, `crestron-room-card` | Planned | — |
 
-1. Open HACS in Home Assistant
-2. Click the three-dot menu in the top right and select **Custom repositories**
-3. Paste this repository URL: `https://github.com/rellis-erigon/HA-Dakin-Controller-Card-`
-4. Select **Dashboard** as the category
-5. Click **Add**
-6. Search for "Daikin Controller Card" in HACS and click **Install**
-7. Refresh your browser (hard refresh: Ctrl+Shift+R / Cmd+Shift+R)
+## Installing
 
-### Manual
+Add this repository to HACS as a **Dashboard** repository, install, then add
+a resource for **only the cards you use**:
 
-1. Download `daikin-controller-card.js` from the [latest release](https://github.com/rellis-erigon/HA-Dakin-Controller-Card-/releases/latest)
-2. Copy to your `config/www/` directory
-3. Add the resource in HA: Settings > Dashboards > Resources
-   - URL: `/local/daikin-controller-card.js`
-   - Type: JavaScript Module
-4. Refresh your browser
-
-## Configuration
-
-```yaml
-type: custom:daikin-controller-card
-entity: climate.living_room_ac
-controller: BRC1E63
-name: Living Room
+```
+/hacsfiles/HA-Cards/bms-meter-card.js      (JavaScript Module)
 ```
 
-| Option | Type | Required | Default | Description |
-|--------|------|----------|---------|-------------|
-| `entity` | string | Yes | — | Climate entity ID |
-| `controller` | string | No | `BRC1E63` | Controller model to emulate |
-| `name` | string | No | Entity name | Display name |
+or `all-cards.js` if you would rather add one resource and be done.
 
-### Controller Models
+## Using the meter card
 
-- `BRC1E63` — Full-featured wired controller with LCD display
-- `BRC1H63K` — Stylish controller with Bluetooth
-- `BRC2E61` — Compact simplified controller
-- `BRC315D7` — VRV controller with scheduling
+```yaml
+type: custom:bms-meter-card
+faceplate: schneider-pm2200
+name: DB-L3-KE Power
+entities:
+  energy_total: sensor.db_l3_ke_power_metertotal
+  power_total: sensor.db_l3_ke_power_3phase_active_power
+  volts_l1: sensor.db_l3_ke_power_phase_1_v
+  # ...
+```
 
-## Features (Phase 1)
+Roles left out are matched from the entity ids where the naming is
+recognisable, so on a typed Niagara device the `entities:` block is usually
+unnecessary. **A role with nothing bound renders as an unlit display rather
+than disappearing** — an unlit segment is honest; a hidden one makes a
+half-configured card look complete. An entity that is unavailable reads
+differently again, because a confident number from a dead point is the one
+outcome worth designing against.
 
-- LCD-style display with room temp, setpoint, and mode
-- Mode buttons: Cool, Heat, Dry, Fan, Auto
-- Temperature up/down controls
-- Fan speed cycling
-- Power on/off toggle
-- Mode-tinted LCD display
-- Visual card editor
-- Controller model selector
+## Adding a faceplate
+
+A faceplate is data. See `src/faceplates/meter/generic3phase.ts` for the
+smallest complete example: artwork, a size, and a list of regions that each
+name a *role* rather than an entity.
+
+Requests for new models are welcome — open an issue with the manufacturer and
+model, a straight-on photograph, and the manual or datasheet if you have it.
+Without a photograph taken square-on it cannot really be done.
+
+## Trademarks
+
+See [TRADEMARKS.md](TRADEMARKS.md). All product names and marks belong to
+their respective owners; this project is independent and unaffiliated.
 
 ## Development
 
 ```bash
 npm install
-npm run build    # Build once
-npm run watch    # Watch mode
+npm run build          # rollup + faceplate catalogue
+npm run check          # typecheck only
 ```
 
-## License
+If the native Rollup binary cannot load in your environment, build with the
+WASM build instead:
 
-MIT
+```bash
+node node_modules/@rollup/wasm-node/dist/bin/rollup -c
+```

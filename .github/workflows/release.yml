@@ -49,5 +49,7 @@ jobs:
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
           name: ${{ steps.tag.outputs.tag }}
-          files: dist/daikin-controller-card.js
+          files: |
+            dist/*.js
+            faceplates/index.json
           generate_release_notes: true

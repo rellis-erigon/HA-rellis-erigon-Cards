@@ -1,0 +1,153 @@
+# Card samples — reference dashboard.
+#
+# Entity ids here are documentation examples. Replace them with your own,
+# or drop the entities block entirely: roles are matched from entity ids
+# where the naming is recognisable.
+#
+# Generated from the live samples dashboard, with site detail removed.
+
+views:
+- title: About
+  path: about
+  icon: mdi:information-outline
+  cards:
+  - type: markdown
+    content: '# Card samples
+
+
+      Every faceplate in the catalogue, drawn against real data from this site. The same device
+      is used across a card''s samples so the **drawings** can be compared rather than the
+      readings.
+
+
+      - Meters bound to **DB-1**
+
+      - Controllers bound to **Room 1**
+
+
+      Each caption gives the `faceplate:` id to copy. Source and documentation: `rellis-erigon/HA-Cards`.
+
+
+      Product names and marks belong to their respective owners; these cards are independent
+      and unaffiliated.'
+- title: Meters
+  path: bms-meter-card
+  icon: mdi:gauge
+  cards:
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+    - type: markdown
+      content: "### Circutor CVM-E3-MINI\n`faceplate: circutor-cvm-e3-mini`  \nEmulates Circutor\
+        \ CVM-E3-MINI-WiEth.  \nPages: power, volts, amps, energy."
+    - type: custom:bms-meter-card
+      faceplate: circutor-cvm-e3-mini
+      name: ''
+      entities:
+        energy_total: sensor.db_1_energy_total
+        power_total: sensor.db_1_power_total
+        power_l1: sensor.db_1_power_l1
+        power_l2: sensor.db_1_power_l2
+        power_l3: sensor.db_1_power_l3
+        volts_l1: sensor.db_1_volts_l1
+        volts_l2: sensor.db_1_volts_l2
+        volts_l3: sensor.db_1_volts_l3
+        power_factor: sensor.db_1_power_factor
+    - type: markdown
+      content: "### DIN-rail 3-phase analyser\n`faceplate: din-3phase-analyser`  \nPages:\
+        \ volts, amps, power."
+    - type: custom:bms-meter-card
+      faceplate: din-3phase-analyser
+      name: ''
+      entities:
+        energy_total: sensor.db_1_energy_total
+        power_total: sensor.db_1_power_total
+        power_l1: sensor.db_1_power_l1
+        power_l2: sensor.db_1_power_l2
+        power_l3: sensor.db_1_power_l3
+        volts_l1: sensor.db_1_volts_l1
+        volts_l2: sensor.db_1_volts_l2
+        volts_l3: sensor.db_1_volts_l3
+        power_factor: sensor.db_1_power_factor
+    - type: markdown
+      content: '### Generic 3-phase meter
+
+        `faceplate: generic-3phase`'
+    - type: custom:bms-meter-card
+      faceplate: generic-3phase
+      name: ''
+      entities:
+        energy_total: sensor.db_1_energy_total
+        power_total: sensor.db_1_power_total
+        power_l1: sensor.db_1_power_l1
+        power_l2: sensor.db_1_power_l2
+        power_l3: sensor.db_1_power_l3
+        volts_l1: sensor.db_1_volts_l1
+        volts_l2: sensor.db_1_volts_l2
+        volts_l3: sensor.db_1_volts_l3
+        power_factor: sensor.db_1_power_factor
+    - type: markdown
+      content: "### Schneider EasyLogic PM2200\n`faceplate: schneider-pm2200`  \nEmulates\
+        \ Schneider Electric EasyLogic PM2200.  \nPages: summary, amps, volts, power."
+    - type: custom:bms-meter-card
+      faceplate: schneider-pm2200
+      name: ''
+      entities:
+        energy_total: sensor.db_1_energy_total
+        power_total: sensor.db_1_power_total
+        power_l1: sensor.db_1_power_l1
+        power_l2: sensor.db_1_power_l2
+        power_l3: sensor.db_1_power_l3
+        volts_l1: sensor.db_1_volts_l1
+        volts_l2: sensor.db_1_volts_l2
+        volts_l3: sensor.db_1_volts_l3
+        power_factor: sensor.db_1_power_factor
+- title: Controllers
+  path: hvac-controller-card
+  icon: mdi:thermostat
+  cards:
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+    - type: markdown
+      content: "### Daikin BRC1E63\n`faceplate: daikin-brc1e63`  \nEmulates Daikin BRC1E63\
+        \ / BRC1E53 navigation remote controller."
+    - type: custom:hvac-controller-card
+      faceplate: daikin-brc1e63
+      name: ''
+      entities:
+        room_temp: sensor.ac_1_room_temp
+        setpoint: sensor.ac_1_setpoint
+        hvac_mode: sensor.ac_1_hvac_mode
+    - type: markdown
+      content: "### Daikin BRC1H63K (Madoka)\n`faceplate: daikin-brc1h63k`  \nEmulates Daikin\
+        \ BRC1H63K Madoka."
+    - type: custom:hvac-controller-card
+      faceplate: daikin-brc1h63k
+      name: ''
+      entities:
+        room_temp: sensor.ac_1_room_temp
+        setpoint: sensor.ac_1_setpoint
+        hvac_mode: sensor.ac_1_hvac_mode
+    - type: markdown
+      content: "### Daikin BRC2E61\n`faceplate: daikin-brc2e61`  \nEmulates Daikin BRC2E61\
+        \ simplified remote controller."
+    - type: custom:hvac-controller-card
+      faceplate: daikin-brc2e61
+      name: ''
+      entities:
+        room_temp: sensor.ac_1_room_temp
+        setpoint: sensor.ac_1_setpoint
+        hvac_mode: sensor.ac_1_hvac_mode
+    - type: markdown
+      content: "### Daikin BRC315D7\n`faceplate: daikin-brc315d7`  \nEmulates Daikin BRC315D7\
+        \ schedule remote controller."
+    - type: custom:hvac-controller-card
+      faceplate: daikin-brc315d7
+      name: ''
+      entities:
+        room_temp: sensor.ac_1_room_temp
+        setpoint: sensor.ac_1_setpoint
+        hvac_mode: sensor.ac_1_hvac_mode

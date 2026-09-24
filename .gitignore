@@ -1,3 +1,6 @@
 node_modules/
-.DS_Store
-*.log
+*.tsbuildinfo
+
+# Reference photographs of third-party products: kept locally, not
+# redistributed. See references/README.md.
+references/
