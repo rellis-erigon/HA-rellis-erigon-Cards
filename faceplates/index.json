@@ -86,6 +86,14 @@
         "volts",
         "power"
       ]
+    },
+    {
+      "id": "vertical-pumpset",
+      "name": "Vertical multistage pump set",
+      "card": "pump-system-card",
+      "description": "Packaged booster skid: vertical multistage pumps on a common manifold with a bladder vessel and control panel. Choose how many pumps.",
+      "emulates": null,
+      "pages": []
     }
   ]
 }

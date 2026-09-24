@@ -16,10 +16,10 @@ See [PLAN.md](PLAN.md) for the full design and roadmap.
 
 | Card | Status | Faceplates |
 |------|--------|-----------|
-| `bms-meter-card` | Available | PM2200-style, generic 3-phase |
-| `hvac-controller-card` | Planned | Daikin BRC1E63 and others |
+| `bms-meter-card` | Available | CVM-E3-MINI, PM2200, DIN-rail, generic, water register |
+| `hvac-controller-card` | Available | Daikin BRC1E63, BRC2E61, BRC1H63K, BRC315D7 |
 | `distribution-board-card` | Planned | — |
-| `pump-system-card` | Planned | Triplex set |
+| `pump-system-card` | Available | Vertical multistage set, 1–10 pumps |
 | `fire-panel-card` | Planned | AMPAC FireFinder and others |
 | `qsys-zone-card`, `crestron-room-card` | Planned | — |
 
@@ -54,6 +54,24 @@ than disappearing** — an unlit segment is honest; a hidden one makes a
 half-configured card look complete. An entity that is unavailable reads
 differently again, because a confident number from a dead point is the one
 outcome worth designing against.
+
+## Faceplates that build themselves
+
+Most faceplates are fixed artwork. Some are not: a pump set is the same
+equipment at different widths, so `vertical-pumpset` declares an option and
+builds its skid, manifold and roles from it.
+
+```yaml
+type: custom:pump-system-card
+faceplate: vertical-pumpset
+options:
+  pumps: 6
+```
+
+Roles follow the count — `pump1_run` through `pump6_run`, and the same for
+`_speed` and `_fault` — alongside `system_pressure`, `pressure_setpoint` and
+`common_fault`. They match the Niagara pump-set template's slot names, so a
+device typed there resolves without a role map.
 
 ## Adding a faceplate
 

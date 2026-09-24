@@ -159,3 +159,25 @@ views:
         room_temp: sensor.ac_1_room_temp
         setpoint: sensor.ac_1_setpoint
         hvac_mode: sensor.ac_1_hvac_mode
+- title: Plant
+  path: pump-system-card
+  icon: mdi:pump
+  cards:
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+    - type: markdown
+      content: '### Vertical multistage pump set
+
+        `faceplate: vertical-pumpset`'
+    - type: custom:pump-system-card
+      faceplate: vertical-pumpset
+      name: ''
+      entities:
+        system_pressure: sensor.pumpset_pressure
+        pump1_speed: sensor.pumpset_pump1_speed
+        pump2_speed: sensor.pumpset_pump2_speed
+        pump3_speed: sensor.pumpset_pump3_speed
+      options:
+        pumps: 3

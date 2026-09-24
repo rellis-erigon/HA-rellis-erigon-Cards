@@ -8,6 +8,7 @@ import terser from "@rollup/plugin-terser";
 const cards = {
   "bms-meter-card": "src/cards/meter/bms-meter-card.ts",
   "hvac-controller-card": "src/cards/hvac/hvac-controller-card.ts",
+  "pump-system-card": "src/cards/plant/pump-system-card.ts",
 };
 
 const plugins = [

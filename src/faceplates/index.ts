@@ -15,9 +15,10 @@ import { MULTIJET_REGISTER } from "./meter/multijet-register";
 import { MADOKA_BRC1H as BRC1H63K_MADOKA } from "./hvac/madoka-brc1h";
 import { BRC1E63 } from "./hvac/brc1e63";
 import { BRC315D7 } from "./hvac/brc315d7";
+import { PUMPSET } from "./plant/pumpset";
 import { BRC2E61 } from "./hvac/brc2e61";
 
-export const FACEPLATES: Faceplate[] = [CVM_E3_MINI, PM2200, DIN_3PHASE, GENERIC_3PHASE, MULTIJET_REGISTER, BRC1E63, BRC2E61, BRC1H63K_MADOKA, BRC315D7];
+export const FACEPLATES: Faceplate[] = [CVM_E3_MINI, PM2200, DIN_3PHASE, GENERIC_3PHASE, MULTIJET_REGISTER, BRC1E63, BRC2E61, BRC1H63K_MADOKA, BRC315D7, PUMPSET];
 
 export function faceplatesFor(card: string): Faceplate[] {
   return FACEPLATES.filter((f) => f.card === card);
@@ -26,4 +27,27 @@ export function faceplatesFor(card: string): Faceplate[] {
 export function getFaceplate(card: string, id?: string): Faceplate {
   const available = faceplatesFor(card);
   return available.find((f) => f.id === id) ?? available[0];
+}
+
+
+/**
+ * Apply option values to a faceplate that builds itself.
+ *
+ * Faceplates with fixed artwork come back untouched, so every card can call
+ * this without caring which kind it has.
+ */
+export function resolveFaceplate(
+  faceplate: Faceplate,
+  values: Record<string, number> = {}
+): Faceplate {
+  if (!faceplate.build) return faceplate;
+  const merged: Record<string, number> = {};
+  for (const option of faceplate.options ?? []) {
+    const given = values[option.key];
+    merged[option.key] =
+      typeof given === "number" && Number.isFinite(given)
+        ? Math.max(option.min, Math.min(option.max, given))
+        : option.default;
+  }
+  return { ...faceplate, ...faceplate.build(merged) };
 }

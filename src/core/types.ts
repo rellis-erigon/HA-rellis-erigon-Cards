@@ -90,6 +90,17 @@ export interface Region {
   text?: string;
 }
 
+/** A choice a faceplate exposes, shown in the card editor. */
+export interface FaceplateOption {
+  key: string;
+  label: string;
+  type: "number";
+  min: number;
+  max: number;
+  default: number;
+  help?: string;
+}
+
 export interface Faceplate {
   id: string;
   name: string;
@@ -118,6 +129,20 @@ export interface Faceplate {
   pages?: string[];
   /** Shown in the picker and the README. */
   description?: string;
+  /**
+   * Options this faceplate takes. A pump set is not one drawing — the
+   * layout depends on how many pumps are in it — so a faceplate can declare
+   * choices and build itself from them.
+   */
+  options?: FaceplateOption[];
+  /**
+   * Produce the artwork and regions for a set of option values. Faceplates
+   * without options leave this out and carry fixed artwork instead.
+   */
+  build?: (values: Record<string, number>) => Pick<
+    Faceplate,
+    "size" | "artNode" | "regions"
+  >;
   /** Manufacturer and model this emulates, for attribution. */
   emulates?: string;
 }
@@ -155,6 +180,8 @@ export interface FaceplateCardConfig {
   page?: string;
   /** A climate entity to read every role from, for HVAC faceplates. */
   climate?: string;
+  /** Values for the faceplate's declared options. */
+  options?: Record<string, number>;
 }
 
 /** A role resolved to something renderable, or explicitly to nothing. */
