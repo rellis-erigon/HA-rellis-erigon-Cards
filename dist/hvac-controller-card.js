@@ -16,15 +16,15 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
       font-size=${t.size??22}
       text-anchor=${s}
     >${i}</text>
-  `}(e,i);case"lamp":return function(t,e){const i=!e.dark&&void 0!==e.state&&!["off","0","false","normal","ok"].includes(e.state.toLowerCase()),s=(t.w??12)/2;return j`
+  `}(e,i);case"lamp":return function(t,e){const i=e.state?.trim()??"",s=""===i?NaN:Number(i),r=!e.dark&&void 0!==e.state&&(Number.isFinite(s)?0!==s:!["off","false","normal","ok"].includes(i.toLowerCase())),o=(t.w??12)/2;return j`
     <circle
-      class="lamp ${i?"lit":""}"
-      cx=${t.x+s}
-      cy=${t.y+s}
-      r=${s}
-      fill=${i?t.on??"#e34":t.off??"#3a1418"}
+      class="lamp ${r?"lit":""}"
+      cx=${t.x+o}
+      cy=${t.y+o}
+      r=${o}
+      fill=${r?t.on??"#e34":t.off??"#3a1418"}
     />
-    ${t.label?j`<text class="lamp-label" x=${t.x+s} y=${t.y+2*s+12}
+    ${t.label?j`<text class="lamp-label" x=${t.x+o} y=${t.y+2*o+12}
               text-anchor="middle">${t.label}</text>`:""}
   `}(e,i);case"bar":return function(t,e){const i=t.w??100,s=t.h??10,r=t.max??100,o=e.dark||void 0===e.value?0:Math.max(0,Math.min(1,e.value/r));return j`
     <rect class="bar-track" x=${t.x} y=${t.y} width=${i} height=${s} rx="2" />
@@ -460,7 +460,7 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
     <text class="brc315-icon" x="${344}" y="${140}">&#9788;</text>
     <text class="brc315-icon" x="${321}" y="${140}">&#9832;</text>
   </g>
-`,oe=348,ae=318,le=74;const ne={id:"vertical-pumpset",name:"Vertical multistage pump set",description:"Packaged booster skid: vertical multistage pumps on a common manifold with a bladder vessel and control panel. Choose how many pumps.",card:"pump-system-card",render:"svg",display:"negative",size:[494,430],options:[{key:"pumps",label:"Pumps",type:"number",min:1,max:10,default:3,help:"The skid widens to suit; roles are pump1_… through pumpN_…"}],build:function(t){const e=t.pumps??3,i=112+96*(e-1)+190,s=56+96*(e-1)+70,r=[...Array(e).keys()].map(t=>56+96*t),o=j`
+`,oe=348,ae=318,le=74;const ne={id:"vertical-pumpset",name:"Vertical multistage pump set",description:"Packaged booster skid: vertical multistage pumps on a common manifold with a bladder vessel and control panel. Choose how many pumps.",card:"pump-system-card",render:"svg",display:"negative",size:[494,452],options:[{key:"pumps",label:"Pumps",type:"number",min:1,max:10,default:3,help:"The skid widens to suit; roles are pump1_… through pumpN_…"}],build:function(t){const e=t.pumps??3,i=112+96*(e-1)+190,s=56+96*(e-1)+70,r=[...Array(e).keys()].map(t=>56+96*t),o=j`
     <defs>
       <linearGradient id="ps-steel" x1="0" y1="0" x2="1" y2="0">
         <stop offset="0%" stop-color="#8f979e" />
@@ -528,7 +528,7 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
     <!-- Panel HMI -->
     <rect x="${s+36}" y="74" width="94" height="58" rx="3"
           fill="#14323d" stroke="#0d222a" stroke-width="2" />
-  `,a=[{id:"press",role:"system_pressure",kind:"text",x:s+42,y:78,w:82,align:"middle",decimals:2,size:22},{id:"sp",role:"pressure_setpoint",kind:"text",x:s+42,y:106,w:82,align:"middle",label:"",decimals:2,size:13},{id:"fault",role:"common_fault",kind:"lamp",x:s+138,y:60,w:12,on:"#ef4444",off:"#3a2020"}];return r.forEach((t,e)=>{const i=e+1;a.push({id:`run${i}`,role:`pump${i}_run`,kind:"lamp",x:t-7,y:28,w:14,on:"#3ddc84",off:"#16281d"}),a.push({id:`flt${i}`,role:`pump${i}_fault`,kind:"lamp",x:t+14,y:28,w:10,on:"#ef4444",off:"#2a1717"}),a.push({id:`spd${i}`,role:`pump${i}_speed`,kind:"text",x:t-34,y:394,w:68,align:"middle",unit:"%",decimals:0,size:15,placeholder:""}),a.push({id:`lbl${i}`,role:"",kind:"text",text:`P${i}`,x:t-34,y:414,w:68,align:"middle",size:12})}),{size:[i,430],artNode:o,regions:a}},regions:[]},de=80,ce=80,he=240,pe=96,fe=104,xe=208,ye=[Lt,Et,It,Ct,Tt,ee,{id:"daikin-brc2e61",name:"Daikin BRC2E61",description:"Simplified wired controller: a small central display surrounded by large flat keys for power, temperature, fan and louvre.",emulates:"Daikin BRC2E61 simplified remote controller",card:"hvac-controller-card",render:"svg",display:"positive",size:[400,400],artNode:j`
+  `,a=[{id:"press",role:"system_pressure",kind:"text",x:s+42,y:78,w:82,align:"middle",decimals:2,size:22},{id:"sp",role:"pressure_setpoint",kind:"text",x:s+42,y:106,w:82,align:"middle",label:"",decimals:2,size:13},{id:"fault",role:"common_fault",kind:"lamp",x:s+138,y:60,w:12,on:"#ef4444",off:"#3a2020"}];return r.forEach((t,e)=>{const i=e+1;a.push({id:`run${i}`,role:`pump${i}_run`,kind:"lamp",x:t-7,y:28,w:14,on:"#3ddc84",off:"#16281d"}),a.push({id:`flt${i}`,role:`pump${i}_fault`,kind:"lamp",x:t+14,y:28,w:10,on:"#ef4444",off:"#2a1717"}),a.push({id:`spd${i}`,role:`pump${i}_speed`,kind:"text",x:t-34,y:394,w:68,align:"middle",unit:"%",decimals:0,size:15,placeholder:""}),a.push({id:`amp${i}`,role:`pump${i}_current`,kind:"text",x:t-34,y:412,w:68,align:"middle",unit:"A",decimals:1,size:13,placeholder:""}),a.push({id:`lbl${i}`,role:"",kind:"text",text:`P${i}`,x:t-34,y:432,w:68,align:"middle",size:12})}),{size:[i,452],artNode:o,regions:a}},regions:[]},de=80,ce=80,he=240,pe=96,fe=104,xe=208,ye=[Lt,Et,It,Ct,Tt,ee,{id:"daikin-brc2e61",name:"Daikin BRC2E61",description:"Simplified wired controller: a small central display surrounded by large flat keys for power, temperature, fan and louvre.",emulates:"Daikin BRC2E61 simplified remote controller",card:"hvac-controller-card",render:"svg",display:"positive",size:[400,400],artNode:j`
   <defs>
     <linearGradient id="brc2-body" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#fdfdfd" />

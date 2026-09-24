@@ -115,10 +115,16 @@ function lampRegion(region: Region, reading: Reading): SVGTemplateResult {
   // A lamp is lit for a truthy state and dark otherwise. Unbound is dark
   // too — an unlit lamp is honest and looks like real hardware with
   // nothing to report, where a hidden one looks like a complete card.
+  // Numeric states are compared as numbers: Niagara exports a fault history
+  // as "0.0", which a string comparison against "0" would read as a fault.
+  const state = reading.state?.trim() ?? "";
+  const number = state === "" ? NaN : Number(state);
   const lit =
     !reading.dark &&
     reading.state !== undefined &&
-    !["off", "0", "false", "normal", "ok"].includes(reading.state.toLowerCase());
+    (Number.isFinite(number)
+      ? number !== 0
+      : !["off", "false", "normal", "ok"].includes(state.toLowerCase()));
   const radius = (region.w ?? 12) / 2;
   return svg`
     <circle

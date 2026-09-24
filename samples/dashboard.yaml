@@ -1,11 +1,3 @@
-# Card samples — reference dashboard.
-#
-# Entity ids here are documentation examples. Replace them with your own,
-# or drop the entities block entirely: roles are matched from entity ids
-# where the naming is recognisable.
-#
-# Generated from the live samples dashboard, with site detail removed.
-
 views:
 - title: About
   path: about
@@ -44,7 +36,7 @@ views:
     - type: custom:bms-meter-card
       faceplate: circutor-cvm-e3-mini
       name: ''
-      entities:
+      entities: &id001
         energy_total: sensor.db_1_energy_total
         power_total: sensor.db_1_power_total
         power_l1: sensor.db_1_power_l1
@@ -60,16 +52,7 @@ views:
     - type: custom:bms-meter-card
       faceplate: din-3phase-analyser
       name: ''
-      entities:
-        energy_total: sensor.db_1_energy_total
-        power_total: sensor.db_1_power_total
-        power_l1: sensor.db_1_power_l1
-        power_l2: sensor.db_1_power_l2
-        power_l3: sensor.db_1_power_l3
-        volts_l1: sensor.db_1_volts_l1
-        volts_l2: sensor.db_1_volts_l2
-        volts_l3: sensor.db_1_volts_l3
-        power_factor: sensor.db_1_power_factor
+      entities: *id001
     - type: markdown
       content: '### Generic 3-phase meter
 
@@ -77,16 +60,7 @@ views:
     - type: custom:bms-meter-card
       faceplate: generic-3phase
       name: ''
-      entities:
-        energy_total: sensor.db_1_energy_total
-        power_total: sensor.db_1_power_total
-        power_l1: sensor.db_1_power_l1
-        power_l2: sensor.db_1_power_l2
-        power_l3: sensor.db_1_power_l3
-        volts_l1: sensor.db_1_volts_l1
-        volts_l2: sensor.db_1_volts_l2
-        volts_l3: sensor.db_1_volts_l3
-        power_factor: sensor.db_1_power_factor
+      entities: *id001
     - type: markdown
       content: "### Multi-jet water register\n`faceplate: multijet-water-register`  \nEmulates\
         \ Multi-jet mechanical water meter register."
@@ -101,16 +75,7 @@ views:
     - type: custom:bms-meter-card
       faceplate: schneider-pm2200
       name: ''
-      entities:
-        energy_total: sensor.db_1_energy_total
-        power_total: sensor.db_1_power_total
-        power_l1: sensor.db_1_power_l1
-        power_l2: sensor.db_1_power_l2
-        power_l3: sensor.db_1_power_l3
-        volts_l1: sensor.db_1_volts_l1
-        volts_l2: sensor.db_1_volts_l2
-        volts_l3: sensor.db_1_volts_l3
-        power_factor: sensor.db_1_power_factor
+      entities: *id001
 - title: Controllers
   path: hvac-controller-card
   icon: mdi:thermostat
@@ -125,7 +90,7 @@ views:
     - type: custom:hvac-controller-card
       faceplate: daikin-brc1e63
       name: ''
-      entities:
+      entities: &id002
         room_temp: sensor.ac_1_room_temp
         setpoint: sensor.ac_1_setpoint
         hvac_mode: sensor.ac_1_hvac_mode
@@ -135,30 +100,21 @@ views:
     - type: custom:hvac-controller-card
       faceplate: daikin-brc1h63k
       name: ''
-      entities:
-        room_temp: sensor.ac_1_room_temp
-        setpoint: sensor.ac_1_setpoint
-        hvac_mode: sensor.ac_1_hvac_mode
+      entities: *id002
     - type: markdown
       content: "### Daikin BRC2E61\n`faceplate: daikin-brc2e61`  \nEmulates Daikin BRC2E61\
         \ simplified remote controller."
     - type: custom:hvac-controller-card
       faceplate: daikin-brc2e61
       name: ''
-      entities:
-        room_temp: sensor.ac_1_room_temp
-        setpoint: sensor.ac_1_setpoint
-        hvac_mode: sensor.ac_1_hvac_mode
+      entities: *id002
     - type: markdown
       content: "### Daikin BRC315D7\n`faceplate: daikin-brc315d7`  \nEmulates Daikin BRC315D7\
         \ schedule remote controller."
     - type: custom:hvac-controller-card
       faceplate: daikin-brc315d7
       name: ''
-      entities:
-        room_temp: sensor.ac_1_room_temp
-        setpoint: sensor.ac_1_setpoint
-        hvac_mode: sensor.ac_1_hvac_mode
+      entities: *id002
 - title: Plant
   path: pump-system-card
   icon: mdi:pump
@@ -175,9 +131,17 @@ views:
       faceplate: vertical-pumpset
       name: ''
       entities:
-        system_pressure: sensor.pumpset_pressure
+        system_pressure: sensor.pumpset_system_pressure
         pump1_speed: sensor.pumpset_pump1_speed
+        pump1_current: sensor.pumpset_pump1_current
         pump2_speed: sensor.pumpset_pump2_speed
+        pump2_current: sensor.pumpset_pump2_current
         pump3_speed: sensor.pumpset_pump3_speed
+        pump3_current: sensor.pumpset_pump3_current
+        pump1_run: sensor.pumpset_pump1_run
+        pump2_run: sensor.pumpset_pump2_run
+        pump3_run: sensor.pumpset_pump3_run
+        pressure_setpoint: sensor.pumpset_pressure_setpoint
+        common_fault: sensor.pumpset_common_fault
       options:
         pumps: 3

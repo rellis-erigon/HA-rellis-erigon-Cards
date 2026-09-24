@@ -18,7 +18,7 @@ import { Faceplate, Region } from "../../core/types";
 const PITCH = 96;          // centre-to-centre spacing of the pumps
 const LEFT = 56;           // skid overhang before the first pump
 const PANEL_W = 190;       // control panel and vessel at the right
-const H = 430;
+const H = 452;
 
 const SKID_Y = 348;        // top of the skid rail
 const MANIFOLD_Y = 318;    // the common header the pumps discharge into
@@ -137,8 +137,15 @@ function build(values: Record<string, number>) {
       unit: "%", decimals: 0, size: 15, placeholder: "",
     });
     regions.push({
+      // Current is the honest indicator of whether a pump is doing work.
+      // A drive can report 0% and still draw, and vice versa.
+      id: `amp${n}`, role: `pump${n}_current`, kind: "text",
+      x: x - 34, y: SKID_Y + 64, w: 68, align: "middle",
+      unit: "A", decimals: 1, size: 13, placeholder: "",
+    });
+    regions.push({
       id: `lbl${n}`, role: "", kind: "text", text: `P${n}`,
-      x: x - 34, y: SKID_Y + 66, w: 68, align: "middle", size: 12,
+      x: x - 34, y: SKID_Y + 84, w: 68, align: "middle", size: 12,
     });
   });
 
