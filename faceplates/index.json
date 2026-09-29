@@ -472,10 +472,10 @@
     },
     {
       "id": "zone-mixer",
-      "name": "Zone Mixer",
+      "name": "Zone Mixer (console)",
       "card": "audio-zone-card",
-      "description": "A full strip per zone: click-to-position fader, balance, source and an optional three-band EQ. Name each zone in the editor.",
-      "emulates": "DSP zone mixer strip",
+      "description": "Channel strips side by side with vertical faders: source, optional EQ, pan, fader, mute and a scribble strip. Click a fader to move it.",
+      "emulates": "Audio mixing console channel strip",
       "pages": [],
       "roles": [
         "zone1_balance",
@@ -485,16 +485,24 @@
         "zone2_balance",
         "zone2_mute",
         "zone2_source",
-        "zone2_volume"
+        "zone2_volume",
+        "zone3_balance",
+        "zone3_mute",
+        "zone3_source",
+        "zone3_volume",
+        "zone4_balance",
+        "zone4_mute",
+        "zone4_source",
+        "zone4_volume"
       ],
       "options": [
         {
           "key": "zones",
-          "label": "Zones",
+          "label": "Channels",
           "type": "number",
           "min": 1,
           "max": 12,
-          "default": 2
+          "default": 4
         },
         {
           "key": "eq",

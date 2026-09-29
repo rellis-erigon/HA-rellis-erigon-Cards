@@ -16,7 +16,8 @@ export type RegionKind =
   | "button"
   | "ring"
   | "odometer"
-  | "needle";
+  | "needle"
+  | "fader";
 
 export interface Region {
   id: string;
@@ -77,6 +78,12 @@ export interface Region {
    * odometer at 100, then dials at 10, 1, 0.1 and so on.
    */
   scale?: number;
+  /**
+   * fader only: length of throw, tick count, and cap size. A fader is
+   * always vertical — that is the whole point of it. `h` is the travel,
+   * `w` the width of the hit area the cap moves within.
+   */
+  ticks?: number;
   /** odometer only: how many digit cells. */
   digits?: number;
   /** odometer only: how many trailing cells are the highlighted decade. */

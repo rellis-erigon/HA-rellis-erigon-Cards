@@ -166,8 +166,42 @@ class AudioZoneCard extends LitElement {
     .bar-fill {
       fill: #4ea1ff;
     }
-    .bar-hit {
+    .bar-hit,
+    .fader-hit {
       cursor: pointer;
+    }
+    /* A console fader: slotted track, travelled section, moulded cap. */
+    .fader-slot {
+      fill: #0a0c0f;
+      stroke: #2b313a;
+      stroke-width: 1;
+    }
+    .fader-travelled {
+      fill: #2b6fb5;
+    }
+    .fader-tick {
+      stroke: #2b313a;
+      stroke-width: 1;
+    }
+    .fader-cap {
+      fill: #d7dce3;
+      stroke: #8f97a3;
+      stroke-width: 1;
+    }
+    .fader-line {
+      stroke: #3d434c;
+      stroke-width: 2;
+    }
+    .fader.dark .fader-cap {
+      fill: #4a5058;
+      stroke: #3a4048;
+    }
+    .fader.dark .fader-travelled {
+      fill: #253241;
+    }
+    /* Strip labels sit on the backlit scribble plate. */
+    .display-negative .lcd-value.chrome {
+      fill: #cdd3dc;
     }
     .lamp {
       stroke: #0d1013;

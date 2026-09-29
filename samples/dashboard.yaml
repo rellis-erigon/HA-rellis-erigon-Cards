@@ -47,17 +47,22 @@ views:
       options:
         zones: 4
     - type: markdown
-      content: "### Zone Mixer\n`faceplate: zone-mixer`  \nEmulates DSP zone mixer strip."
+      content: "### Zone Mixer (console)\n`faceplate: zone-mixer`  \nEmulates Audio mixing\
+        \ console channel strip."
     - type: custom:audio-zone-card
       faceplate: zone-mixer
-      title: Zone Mixer
+      title: Zone Mixer (console)
       entities:
         zone1_mute: switch.zone1_mute
         zone1_volume: number.zone1_volume
         zone2_mute: switch.zone2_mute
         zone2_volume: number.zone2_volume
+        zone3_mute: switch.zone3_mute
+        zone3_volume: number.zone3_volume
+        zone4_mute: switch.zone4_mute
+        zone4_volume: number.zone4_volume
       options:
-        zones: 2
+        zones: 4
         eq: 0
 - title: Meters
   path: bms-meter-card

@@ -77,6 +77,8 @@ function renderRegion(ctx: RenderContext, region: Region): SVGTemplateResult {
       return odometerRegion(region, reading);
     case "needle":
       return needleRegion(region, reading);
+    case "fader":
+      return faderRegion(ctx, region, reading);
     case "button":
       return buttonRegion(ctx, region);
   }
@@ -188,6 +190,67 @@ function barRegion(
           @click=${seek}
         />`
       : ""}
+  `;
+}
+
+/**
+ * A console fader: a slotted track with a cap that travels up it.
+ *
+ * Vertical by definition. A horizontal bar can show a level, but it does
+ * not read as a fader, and a rack of them does not read as a mixer — the
+ * thing an operator recognises is a column of caps at different heights.
+ *
+ * Click anywhere on the throw to send the cap there. Up is more.
+ */
+function faderRegion(
+  ctx: RenderContext, region: Region, reading: Reading,
+): SVGTemplateResult {
+  const width = region.w ?? 44;
+  const travel = region.h ?? 200;
+  const max = region.max ?? 100;
+  const min = region.min ?? 0;
+  const span = max - min || 1;
+  const centre = region.x + width / 2;
+
+  const fraction =
+    reading.dark || reading.value === undefined
+      ? 0
+      : Math.max(0, Math.min(1, (reading.value - min) / span));
+  // Cap travel is inset by half a cap at each end so it never overhangs.
+  const capH = 16;
+  const usable = travel - capH;
+  const capY = region.y + usable * (1 - fraction);
+
+  const seek = (event: MouseEvent) => {
+    const box = (event.currentTarget as SVGGraphicsElement).getBoundingClientRect();
+    if (!box.height) return;
+    const at = Math.min(1, Math.max(0, 1 - (event.clientY - box.top) / box.height));
+    ctx.onAction(region, min + at * span);
+  };
+
+  const ticks = region.ticks ?? 5;
+  return svg`
+    <g class="fader ${reading.dark ? "dark" : ""}">
+      ${[...Array(ticks).keys()].map((i) => {
+        const y = region.y + capH / 2 + (usable * i) / (ticks - 1 || 1);
+        return svg`<line class="fader-tick"
+          x1=${region.x + 4} y1=${y} x2=${region.x + width - 4} y2=${y} />`;
+      })}
+      <rect class="fader-slot" x=${centre - 3} y=${region.y + capH / 2 - 2}
+            width="6" height=${usable + 4} rx="3" />
+      <rect class="fader-travelled" x=${centre - 3}
+            y=${capY + capH / 2 - 2}
+            width="6" height=${region.y + usable + capH / 2 + 2 - (capY + capH / 2)}
+            rx="3" />
+      <rect class="fader-cap" x=${centre - 15} y=${capY}
+            width="30" height=${capH} rx="3" />
+      <line class="fader-line" x1=${centre - 13} y1=${capY + capH / 2}
+            x2=${centre + 13} y2=${capY + capH / 2} />
+      ${region.action === "set_level"
+        ? svg`<rect class="fader-hit" x=${region.x} y=${region.y}
+            width=${width} height=${travel} fill="transparent" @click=${seek} />`
+        : ""}
+    </g>
   `;
 }
 

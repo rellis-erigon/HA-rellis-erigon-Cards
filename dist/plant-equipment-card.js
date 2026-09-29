@@ -783,24 +783,29 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
     <text x="14" y="18" fill="#8b93a1" font-size="12"
           font-family="inherit" letter-spacing="1.5">ZONE OUTPUTS</text>
     ${o}
-  `;return{size:[Ft,i],artNode:l,regions:r}}},Vt=560;const Kt={id:"zone-mixer",name:"Zone Mixer",card:"audio-zone-card",render:"svg",display:"negative",size:[Vt,238],regions:[],labelPrefix:"zone",description:"A full strip per zone: click-to-position fader, balance, source and an optional three-band EQ. Name each zone in the editor.",emulates:"DSP zone mixer strip",options:[{key:"zones",label:"Zones",type:"number",min:1,max:12,default:2,help:"Roles are zone1_… through zoneN_…"},{key:"eq",label:"Three-band EQ (0 off, 1 on)",type:"number",min:0,max:1,default:0,help:"Adds low/mid/high per zone. Most BGM zones have none."}],build:function(e){const t=Math.max(1,Math.min(12,Math.round(e.zones??2))),i=1===Math.round(e.eq??0),r=96+(i?52:0),o=34+t*r+12,l=[],s=[];for(let e=0;e<t;e++){const t=e+1,o=34+e*r;if(s.push(F`
-      <rect class="strip" x="8" y=${o} width=${544} height=${r-8}
+  `;return{size:[Ft,i],artNode:l,regions:r}}},Vt=104,Kt=210;const qt={id:"zone-mixer",name:"Zone Mixer (console)",card:"audio-zone-card",render:"svg",display:"negative",size:[462,600],regions:[],labelPrefix:"zone",description:"Channel strips side by side with vertical faders: source, optional EQ, pan, fader, mute and a scribble strip. Click a fader to move it.",emulates:"Audio mixing console channel strip",options:[{key:"zones",label:"Channels",type:"number",min:1,max:12,default:4,help:"One strip per zone; roles are zone1_… through zoneN_…"},{key:"eq",label:"Three-band EQ (0 off, 1 on)",type:"number",min:0,max:1,default:0,help:"Adds high/mid/low per strip, above the pan."}],build:function(e){const t=Math.max(1,Math.min(12,Math.round(e.zones??4))),i=1===Math.round(e.eq??0),r=82+(i?96:0),o=r+44,l=o+Kt+104,s=28+t*Vt+6*(t-1),a=[],n=[];for(let e=0;e<t;e++){const t=e+1,s=14+110*e,d=s+52;n.push(F`
+      <rect x=${s} y=${36} width=${Vt} height=${l-36-12}
             rx="6" fill="#15171b" stroke="#272b32" />
-      <line x1="8" y1=${o+30} x2=${552} y2=${o+30}
-            stroke="#22262c" stroke-width="1" />
-      ${i?F`<line x1="8" y1=${o+96-10} x2=${552}
-                y2=${o+96-10} stroke="#22262c" stroke-width="1" />`:""}
-    `),l.push({id:`name${t}`,role:"",kind:"text",text:`ZONE ${t}`,x:20,y:o+21,w:150,align:"start",size:13}),l.push({id:`src${t}`,role:`zone${t}_source`,kind:"text",x:180,y:o+21,w:180,align:"start",size:13,placeholder:""}),l.push({id:`srcbtn${t}`,role:"",kind:"button",text:"SOURCE",action:"source_cycle",target:`zone${t}_source`,x:368,y:o+6,w:64,h:20}),l.push({id:`mlamp${t}`,role:`zone${t}_mute`,kind:"lamp",x:442,y:o+9,w:12,on:"#ef4444",off:"#2a1717"}),l.push({id:`mute${t}`,role:"",kind:"button",text:"MUTE",action:"mute_toggle",target:`zone${t}_mute`,x:462,y:o+6,w:58,h:20}),l.push({id:`bar${t}`,role:`zone${t}_volume`,kind:"bar",action:"set_level",target:`zone${t}_volume`,x:20,y:o+48,w:300,h:12,min:-80,max:10}),l.push({id:`db${t}`,role:`zone${t}_volume`,kind:"text",x:20,y:o+80,w:120,align:"start",unit:"dB",decimals:1,size:15}),l.push({id:`down${t}`,role:"",kind:"button",text:"−",action:"level_down",target:`zone${t}_volume`,x:332,y:o+42,w:38,h:22}),l.push({id:`up${t}`,role:"",kind:"button",text:"+",action:"level_up",target:`zone${t}_volume`,x:376,y:o+42,w:38,h:22}),l.push({id:`bal${t}`,role:`zone${t}_balance`,kind:"bar",action:"set_level",target:`zone${t}_balance`,x:430,y:o+48,w:110,h:12,min:-100,max:100}),l.push({id:`ball${t}`,role:"",kind:"text",text:"L",x:430,y:o+80,w:20,align:"start",size:11}),l.push({id:`balr${t}`,role:"",kind:"text",text:"R",x:520,y:o+80,w:20,align:"start",size:11}),l.push({id:`balv${t}`,role:`zone${t}_balance`,kind:"text",x:450,y:o+80,w:70,align:"middle",decimals:0,size:12,unit:"",placeholder:""}),!i)continue;const a=o+96-2;["low","mid","high"].forEach((e,i)=>{const r=20+176*i;l.push({id:`${e}${t}`,role:`zone${t}_eq_${e}`,kind:"bar",action:"set_level",target:`zone${t}_eq_${e}`,x:r,y:a+12,w:112,h:10,min:-18,max:18}),l.push({id:`${e}lbl${t}`,role:"",kind:"text",text:e.toUpperCase(),x:r,y:a+8,w:60,align:"start",size:10}),l.push({id:`${e}v${t}`,role:`zone${t}_eq_${e}`,kind:"text",x:r+118,y:a+22,w:50,align:"start",unit:"dB",decimals:1,size:12,placeholder:""})})}const a=F`
-    <rect x="0" y="0" width=${Vt} height=${o} rx="8" fill="#0e1013" />
-    <rect x="0" y="0" width=${Vt} height="26" rx="8" fill="#171a1f" />
-    <rect x="0" y="18" width=${Vt} height="8" fill="#171a1f" />
+      ${i?F`<line x1=${s+8} y1=${r-6} x2=${s+Vt-8}
+                y2=${r-6} stroke="#22262c" />`:""}
+      <line x1=${s+8} y1=${o-8} x2=${s+Vt-8}
+            y2=${o-8} stroke="#22262c" />
+      <!-- Scribble strip. Backlit rather than paper: the strip sits at
+           the foot of a dark console and the card draws its text light,
+           so a cream plate would be light-on-light. -->
+      <rect x=${s+6} y=${l-46} width=${92} height="26"
+            rx="3" fill="#1d2127" stroke="#343a44" />
+    `),a.push({id:`src${t}`,role:`zone${t}_source`,kind:"text",x:s+6,y:56,w:92,align:"middle",size:12,placeholder:""}),a.push({id:`srcbtn${t}`,role:"",kind:"button",text:"SRC",action:"source_cycle",target:`zone${t}_source`,x:d-26,y:64,w:52,h:18}),i&&["high","mid","low"].forEach((e,i)=>{const r=82+30*i;a.push({id:`${e}lbl${t}`,role:"",kind:"text",text:e.toUpperCase(),x:s+8,y:r+12,w:32,align:"start",size:9}),a.push({id:`${e}${t}`,role:`zone${t}_eq_${e}`,kind:"bar",action:"set_level",target:`zone${t}_eq_${e}`,x:s+42,y:r+4,w:54,h:8,min:-18,max:18}),a.push({id:`${e}v${t}`,role:`zone${t}_eq_${e}`,kind:"text",x:s+42,y:r+24,w:54,align:"end",unit:"",decimals:1,size:9,placeholder:""})}),a.push({id:`panl${t}`,role:"",kind:"text",text:"L",x:s+8,y:r+26,w:12,align:"start",size:9}),a.push({id:`panr${t}`,role:"",kind:"text",text:"R",x:s+Vt-18,y:r+26,w:12,align:"start",size:9}),a.push({id:`pan${t}`,role:`zone${t}_balance`,kind:"bar",action:"set_level",target:`zone${t}_balance`,x:s+20,y:r+16,w:64,h:8,min:-100,max:100}),a.push({id:`panlbl${t}`,role:"",kind:"text",text:"PAN",x:s+8,y:r+12,w:40,align:"start",size:9}),a.push({id:`fad${t}`,role:`zone${t}_volume`,kind:"fader",action:"set_level",target:`zone${t}_volume`,x:d-26,y:o,w:52,h:Kt,min:-80,max:10,ticks:7}),a.push({id:`down${t}`,role:"",kind:"button",text:"−",action:"level_down",target:`zone${t}_volume`,x:s+8,y:o+105-28,w:22,h:22}),a.push({id:`up${t}`,role:"",kind:"button",text:"+",action:"level_up",target:`zone${t}_volume`,x:s+8,y:o+105+6,w:22,h:22}),a.push({id:`db${t}`,role:`zone${t}_volume`,kind:"text",x:s+6,y:o+Kt+20,w:92,align:"middle",unit:"dB",decimals:1,size:14}),a.push({id:`mlamp${t}`,role:`zone${t}_mute`,kind:"lamp",x:s+10,y:o+Kt+32,w:12,on:"#ef4444",off:"#2a1717"}),a.push({id:`mute${t}`,role:"",kind:"button",text:"MUTE",action:"mute_toggle",target:`zone${t}_mute`,x:s+28,y:o+Kt+29,w:66,h:20}),a.push({id:`name${t}`,role:"",kind:"text",text:`ZONE ${t}`,x:s+8,y:l-28,w:88,align:"middle",size:11,unit:""})}return{size:[s,l],artNode:F`
+    <rect x="0" y="0" width=${s} height=${l} rx="8" fill="#0e1013" />
+    <rect x="0" y="0" width=${s} height="26" rx="8" fill="#171a1f" />
+    <rect x="0" y="18" width=${s} height="8" fill="#171a1f" />
     <text x="14" y="18" fill="#8b93a1" font-size="12" letter-spacing="1.5"
           font-family="inherit">ZONE MIXER</text>
-    ${s}
-  `;return{size:[Vt,o],artNode:a,regions:l}}},qt=420,Zt=[Se,ke,Me,_e,Le,Ze,ct,Re,Je,rt,jt,{id:"av-room-controller",name:"AV Room Controller",card:"room-controller-card",render:"svg",display:"negative",size:[qt,300],artNode:F`
-  <rect x="0" y="0" width=${qt} height=${300} rx="10" fill="#101216" />
-  <rect x="0" y="0" width=${qt} height="34" rx="10" fill="#1a1e24" />
-  <rect x="0" y="24" width=${qt} height="10" fill="#1a1e24" />
+    ${n}
+  `,regions:a}}},Zt=420,Yt=[Se,ke,Me,_e,Le,Ze,ct,Re,Je,rt,jt,{id:"av-room-controller",name:"AV Room Controller",card:"room-controller-card",render:"svg",display:"negative",size:[Zt,300],artNode:F`
+  <rect x="0" y="0" width=${Zt} height=${300} rx="10" fill="#101216" />
+  <rect x="0" y="0" width=${Zt} height="34" rx="10" fill="#1a1e24" />
+  <rect x="0" y="24" width=${Zt} height="10" fill="#1a1e24" />
   <text x="16" y="23" fill="#8b93a1" font-size="12" letter-spacing="1.5"
         font-family="inherit">ROOM CONTROL</text>
 
@@ -817,7 +822,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
   <!-- Status row -->
   <rect x="16" y="196" width=${388} height="46" rx="6"
         fill="#14171c" stroke="#252a31" />
-`,regions:[{id:"source",role:"source",kind:"text",x:32,y:76,w:356,align:"start",size:20,placeholder:""},{id:"source_label",role:"",kind:"text",text:"SOURCE",x:32,y:100,w:120,align:"start",size:11},{id:"display_lamp",role:"display_power",kind:"lamp",x:374,y:58,w:14,on:"#3ddc84",off:"#16281d"},{id:"power",role:"",kind:"button",text:"DISPLAY",action:"power_toggle",target:"display_power",x:288,y:86,w:100,h:22},{id:"vol_bar",role:"volume",kind:"bar",x:28,y:154,w:210,h:12,min:0,max:100},{id:"vol_text",role:"volume",kind:"text",x:250,y:165,w:60,align:"start",decimals:0,size:18},{id:"vol_down",role:"",kind:"button",text:"−",action:"level_down",target:"volume",x:316,y:148,w:40,h:24},{id:"vol_up",role:"",kind:"button",text:"+",action:"level_up",target:"volume",x:360,y:148,w:40,h:24},{id:"mute_lamp",role:"mute",kind:"lamp",x:30,y:210,w:12,on:"#ef4444",off:"#2a1717"},{id:"mute",role:"",kind:"button",text:"MUTE",action:"mute_toggle",target:"mute",x:52,y:206,w:64,h:24},{id:"mic_lamp",role:"mic_live",kind:"lamp",label:"MIC",x:150,y:210,w:12,on:"#f59e0b",off:"#2a2317"},{id:"fault_lamp",role:"fault",kind:"lamp",label:"FAULT",x:220,y:210,w:12,on:"#ef4444",off:"#2a1717"},{id:"online_lamp",role:"online",kind:"lamp",label:"ONLINE",x:300,y:210,w:12,on:"#3ddc84",off:"#16281d"}],description:"A room at a glance: source, display power, volume and mute, with mic, fault and online indicators. Bind whichever joins carry them."},ft,yt,gt,wt,bt,Pt,Lt,Tt,Ot,Dt,Ht,Wt,Kt];function Yt(e){return Zt.filter(t=>t.card===e)}function Qt(e,t){const i=Yt(e);return i.find(e=>e.id===t)??i[0]}function Xt(e,t={}){if(!e.build)return e;const i={};for(const r of e.options??[]){const e=t[r.key];i[r.key]="number"==typeof e&&Number.isFinite(e)?Math.max(r.min,Math.min(r.max,e)):r.default}return{...e,...e.build(i)}}const Jt="opt__",ei="ent__",ti="lbl__";function ii(e){const t=e.replace(/_/g," ").trim();return t.charAt(0).toUpperCase()+t.slice(1)}const ri={energy_total:/metertotal$|_energy_total$|_kwh_total$/,power_total:/3phase_active_power$|_active_power$|_power_total$/,power_l1:/active_power_p1$/,power_l2:/active_power_p2$/,power_l3:/active_power_p3$/,volts_l1:/phase_1_v$|_l1_n$|_voltage_l1$/,volts_l2:/phase_2_v$|_l2_n$|_voltage_l2$/,volts_l3:/phase_3_v$|_l3_n$|_voltage_l3$/,current_l1:/phase_1_a$|_current_l1$/,current_l2:/phase_2_a$|_current_l2$/,current_l3:/phase_3_a$|_current_l3$/,power_factor:/power_factor$/,frequency:/frequency$/,volume_total:/_cubicmetre$|_volume_total$|_water_total$|watermeter_total$/,bypass_total:/_bypass_total$|_bypass_cubicmetre$/,flow_rate:/_flow_rate$|_flowrate$|_l_min$|_l_s$|_m3_h$/,battery:/_battery$|_battery_level$|_batt$/,alarm:/_alarm$|_common_fault$/,reverse_flow:/_reverse_flow$|_reverse$/},oi=new Set(["unavailable","unknown","none",""]),li={volts_avg:["volts_l1","volts_l2","volts_l3"],current_avg:["current_l1","current_l2","current_l3"]};function si(e,t){if(!t)return{dark:!0,stale:!1};const i=e.states[t];if(!i)return{entityId:t,dark:!0,stale:!1};const r=String(i.state);if(oi.has(r.toLowerCase()))return{entityId:t,state:r,dark:!0,stale:!0};const o=Number(r);return{entityId:t,state:r,value:Number.isFinite(o)?o:void 0,unit:i.attributes.unit_of_measurement,dark:!1,stale:!1}}function ai(e,t){if(!t)return;const i=(t.title??t.name??"").trim();return i||(e&&t.device?function(e,t){const i=e.devices??{},r=i[t]??Object.values(i).find(e=>{const i=t.trim().toLowerCase();return(e.name_by_user??"").trim().toLowerCase()===i||(e.name??"").trim().toLowerCase()===i});return(r?.name_by_user||r?.name)??void 0}(e,t.device):void 0)}function ni(e){const[t,i]=e.faceplate.size,r=(o=e.faceplate,l=e.page,o.regions.filter(e=>!e.page||e.page===l));var o,l;return W`
+`,regions:[{id:"source",role:"source",kind:"text",x:32,y:76,w:356,align:"start",size:20,placeholder:""},{id:"source_label",role:"",kind:"text",text:"SOURCE",x:32,y:100,w:120,align:"start",size:11},{id:"display_lamp",role:"display_power",kind:"lamp",x:374,y:58,w:14,on:"#3ddc84",off:"#16281d"},{id:"power",role:"",kind:"button",text:"DISPLAY",action:"power_toggle",target:"display_power",x:288,y:86,w:100,h:22},{id:"vol_bar",role:"volume",kind:"bar",x:28,y:154,w:210,h:12,min:0,max:100},{id:"vol_text",role:"volume",kind:"text",x:250,y:165,w:60,align:"start",decimals:0,size:18},{id:"vol_down",role:"",kind:"button",text:"−",action:"level_down",target:"volume",x:316,y:148,w:40,h:24},{id:"vol_up",role:"",kind:"button",text:"+",action:"level_up",target:"volume",x:360,y:148,w:40,h:24},{id:"mute_lamp",role:"mute",kind:"lamp",x:30,y:210,w:12,on:"#ef4444",off:"#2a1717"},{id:"mute",role:"",kind:"button",text:"MUTE",action:"mute_toggle",target:"mute",x:52,y:206,w:64,h:24},{id:"mic_lamp",role:"mic_live",kind:"lamp",label:"MIC",x:150,y:210,w:12,on:"#f59e0b",off:"#2a2317"},{id:"fault_lamp",role:"fault",kind:"lamp",label:"FAULT",x:220,y:210,w:12,on:"#ef4444",off:"#2a1717"},{id:"online_lamp",role:"online",kind:"lamp",label:"ONLINE",x:300,y:210,w:12,on:"#3ddc84",off:"#16281d"}],description:"A room at a glance: source, display power, volume and mute, with mic, fault and online indicators. Bind whichever joins carry them."},ft,yt,gt,wt,bt,Pt,Lt,Tt,Ot,Dt,Ht,Wt,qt];function Qt(e){return Yt.filter(t=>t.card===e)}function Xt(e,t){const i=Qt(e);return i.find(e=>e.id===t)??i[0]}function Jt(e,t={}){if(!e.build)return e;const i={};for(const r of e.options??[]){const e=t[r.key];i[r.key]="number"==typeof e&&Number.isFinite(e)?Math.max(r.min,Math.min(r.max,e)):r.default}return{...e,...e.build(i)}}const ei="opt__",ti="ent__",ii="lbl__";function ri(e){const t=e.replace(/_/g," ").trim();return t.charAt(0).toUpperCase()+t.slice(1)}const oi={energy_total:/metertotal$|_energy_total$|_kwh_total$/,power_total:/3phase_active_power$|_active_power$|_power_total$/,power_l1:/active_power_p1$/,power_l2:/active_power_p2$/,power_l3:/active_power_p3$/,volts_l1:/phase_1_v$|_l1_n$|_voltage_l1$/,volts_l2:/phase_2_v$|_l2_n$|_voltage_l2$/,volts_l3:/phase_3_v$|_l3_n$|_voltage_l3$/,current_l1:/phase_1_a$|_current_l1$/,current_l2:/phase_2_a$|_current_l2$/,current_l3:/phase_3_a$|_current_l3$/,power_factor:/power_factor$/,frequency:/frequency$/,volume_total:/_cubicmetre$|_volume_total$|_water_total$|watermeter_total$/,bypass_total:/_bypass_total$|_bypass_cubicmetre$/,flow_rate:/_flow_rate$|_flowrate$|_l_min$|_l_s$|_m3_h$/,battery:/_battery$|_battery_level$|_batt$/,alarm:/_alarm$|_common_fault$/,reverse_flow:/_reverse_flow$|_reverse$/},li=new Set(["unavailable","unknown","none",""]),si={volts_avg:["volts_l1","volts_l2","volts_l3"],current_avg:["current_l1","current_l2","current_l3"]};function ai(e,t){if(!t)return{dark:!0,stale:!1};const i=e.states[t];if(!i)return{entityId:t,dark:!0,stale:!1};const r=String(i.state);if(li.has(r.toLowerCase()))return{entityId:t,state:r,dark:!0,stale:!0};const o=Number(r);return{entityId:t,state:r,value:Number.isFinite(o)?o:void 0,unit:i.attributes.unit_of_measurement,dark:!1,stale:!1}}function ni(e,t){if(!t)return;const i=(t.title??t.name??"").trim();return i||(e&&t.device?function(e,t){const i=e.devices??{},r=i[t]??Object.values(i).find(e=>{const i=t.trim().toLowerCase();return(e.name_by_user??"").trim().toLowerCase()===i||(e.name??"").trim().toLowerCase()===i});return(r?.name_by_user||r?.name)??void 0}(e,t.device):void 0)}function di(e){const[t,i]=e.faceplate.size,r=(o=e.faceplate,l=e.page,o.regions.filter(e=>!e.page||e.page===l));var o,l;return W`
     <svg
       class="faceplate display-${e.faceplate.display??"positive"}"
       viewBox="0 0 ${t} ${i}"
@@ -826,7 +831,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       aria-label=${e.faceplate.name}
     >
       ${function(e){if("image"===e.render&&e.art){const[t,i]=e.size;return F`<image href=${e.art} x="0" y="0" width=${t} height=${i} />`}return F`${e.artNode??""}`}(e.faceplate)}
-      ${r.map(t=>function(e,t){const i=e.climate&&!e.bindings[t.role]?function(e,t,i){const r=e.states[t];if(!r)return{entityId:t,dark:!0,stale:!1};if(oi.has(String(r.state).toLowerCase()))return{entityId:t,state:r.state,dark:!0,stale:!0};const o=r.attributes,l=(e,i)=>{if(null==e)return{entityId:t,dark:!0,stale:!1};const r=Number(e);return{entityId:t,state:String(e),value:Number.isFinite(r)?r:void 0,unit:i,dark:!1,stale:!1}};switch(i){case"hvac_mode":return l(r.state);case"hvac_action":return l(o.hvac_action??r.state);case"setpoint":return l(o.temperature,"°C");case"room_temp":return l(o.current_temperature,"°C");case"fan_speed":return l(o.fan_mode);case"swing":return l(o.swing_mode);case"power":return l("off"===r.state?"off":"on");case"humidity":return l(o.current_humidity,"%");default:return{entityId:t,dark:!0,stale:!1}}}(e.hass,e.climate,t.role):function(e,t,i){if(t[i])return si(e,t[i]);if("clock"===i){const e=new Date;return{state:`${String(e.getHours()).padStart(2,"0")}:${String(e.getMinutes()).padStart(2,"0")}`,dark:!1,stale:!1}}const r=li[i];if(!r)return{dark:!0,stale:!1};const o=r.map(i=>si(e,t[i]));if(o.some(e=>e.dark||void 0===e.value))return{dark:!0,stale:o.some(e=>e.stale)};const l=o.reduce((e,t)=>e+(t.value??0),0);return{value:l/o.length,state:String(l/o.length),unit:o[0].unit,dark:!1,stale:!1}}(e.hass,e.bindings,t.role);switch(t.kind){case"text":return function(e,t){const i=e.role?"unit"===e.show?(t.unit??e.text??"").toUpperCase():t.dark&&void 0!==e.placeholder?e.placeholder:function(e,t=1,i){if(e.dark)return"--";if(void 0===e.value)return e.state??"--";const r=e.value.toFixed(t),o=i??e.unit??"";return o?`${r} ${o}`:r}(t,e.decimals??1,e.unit):e.text??"";if(!e.role&&!e.text)return F``;const r=e.align??"start",o=e.x+("end"===r?e.w??0:"middle"===r?(e.w??0)/2:0);return F`
+      ${r.map(t=>function(e,t){const i=e.climate&&!e.bindings[t.role]?function(e,t,i){const r=e.states[t];if(!r)return{entityId:t,dark:!0,stale:!1};if(li.has(String(r.state).toLowerCase()))return{entityId:t,state:r.state,dark:!0,stale:!0};const o=r.attributes,l=(e,i)=>{if(null==e)return{entityId:t,dark:!0,stale:!1};const r=Number(e);return{entityId:t,state:String(e),value:Number.isFinite(r)?r:void 0,unit:i,dark:!1,stale:!1}};switch(i){case"hvac_mode":return l(r.state);case"hvac_action":return l(o.hvac_action??r.state);case"setpoint":return l(o.temperature,"°C");case"room_temp":return l(o.current_temperature,"°C");case"fan_speed":return l(o.fan_mode);case"swing":return l(o.swing_mode);case"power":return l("off"===r.state?"off":"on");case"humidity":return l(o.current_humidity,"%");default:return{entityId:t,dark:!0,stale:!1}}}(e.hass,e.climate,t.role):function(e,t,i){if(t[i])return ai(e,t[i]);if("clock"===i){const e=new Date;return{state:`${String(e.getHours()).padStart(2,"0")}:${String(e.getMinutes()).padStart(2,"0")}`,dark:!1,stale:!1}}const r=si[i];if(!r)return{dark:!0,stale:!1};const o=r.map(i=>ai(e,t[i]));if(o.some(e=>e.dark||void 0===e.value))return{dark:!0,stale:o.some(e=>e.stale)};const l=o.reduce((e,t)=>e+(t.value??0),0);return{value:l/o.length,state:String(l/o.length),unit:o[0].unit,dark:!1,stale:!1}}(e.hass,e.bindings,t.role);switch(t.kind){case"text":return function(e,t){const i=e.role?"unit"===e.show?(t.unit??e.text??"").toUpperCase():t.dark&&void 0!==e.placeholder?e.placeholder:function(e,t=1,i){if(e.dark)return"--";if(void 0===e.value)return e.state??"--";const r=e.value.toFixed(t),o=i??e.unit??"";return o?`${r} ${o}`:r}(t,e.decimals??1,e.unit):e.text??"";if(!e.role&&!e.text)return F``;const r=e.align??"start",o=e.x+("end"===r?e.w??0:"middle"===r?(e.w??0)/2:0);return F`
     ${e.label?F`<text class="lcd-label" x=${e.x} y=${e.y-10}>${e.label}</text>`:""}
     <text
       class="lcd-value ${e.role?"":"chrome"} ${e.role&&t.dark?"dark":""} ${t.stale?"stale":""}"
@@ -909,7 +914,24 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       ${e.label?F`<text class="dial-label" x=${e.x} y=${e.y+i+13}
                 text-anchor="middle">${e.label}</text>`:""}
     </g>
-  `}(t,i);case"button":return function(e,t){const i=t.w??44,r=t.h??26;return F`
+  `}(t,i);case"fader":return function(e,t,i){const r=t.w??44,o=t.h??200,l=t.max??100,s=t.min??0,a=l-s||1,n=t.x+r/2,d=i.dark||void 0===i.value?0:Math.max(0,Math.min(1,(i.value-s)/a)),c=16,h=o-c,p=t.y+h*(1-d),f=i=>{const r=i.currentTarget.getBoundingClientRect();if(!r.height)return;const o=Math.min(1,Math.max(0,1-(i.clientY-r.top)/r.height));e.onAction(t,s+o*a)},x=t.ticks??5;return F`
+    <g class="fader ${i.dark?"dark":""}">
+      ${[...Array(x).keys()].map(e=>{const i=t.y+c/2+h*e/(x-1||1);return F`<line class="fader-tick"
+          x1=${t.x+4} y1=${i} x2=${t.x+r-4} y2=${i} />`})}
+      <rect class="fader-slot" x=${n-3} y=${t.y+c/2-2}
+            width="6" height=${h+4} rx="3" />
+      <rect class="fader-travelled" x=${n-3}
+            y=${p+c/2-2}
+            width="6" height=${t.y+h+c/2+2-(p+c/2)}
+            rx="3" />
+      <rect class="fader-cap" x=${n-15} y=${p}
+            width="30" height=${c} rx="3" />
+      <line class="fader-line" x1=${n-13} y1=${p+c/2}
+            x2=${n+13} y2=${p+c/2} />
+      ${"set_level"===t.action?F`<rect class="fader-hit" x=${t.x} y=${t.y}
+            width=${r} height=${o} fill="transparent" @click=${f} />`:""}
+    </g>
+  `}(e,t,i);case"button":return function(e,t){const i=t.w??44,r=t.h??26;return F`
     <g class="button" @click=${()=>e.onAction(t)} role="button" tabindex="0">
       <rect x=${t.x} y=${t.y} width=${i} height=${r} rx="4" />
       <text
@@ -920,18 +942,18 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
     </g>
   `}(e,t)}}(e,t))}
     </svg>
-  `}const di="plant-equipment-card";class ci extends ne{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${di}-editor`)}static getStubConfig(){return{type:`custom:${di}`,faceplate:"supply-fan-top"}}_faceplate(){return Xt(Qt(di,this._config?.faceplate),this._config?.options??{})}render(){if(!this._config||!this.hass)return V;const e=this._faceplate(),t=[...new Set(e.regions.map(e=>e.role))].filter(Boolean),i=function(e,t,i={},r=[]){const o={};for(const l of t){if(i[l]){o[l]=i[l];continue}const t=r.length?r:Object.keys(e.states),s=ri[l];if(!s)continue;const a=t.find(e=>s.test(e));a&&(o[l]=a)}return o}(this.hass,t,this._config.entities??{},this._config.device?function(e,t){const i=e.entities??{};let r=t;const o=e.devices??{};if(!o[t]){const e=t.trim().toLowerCase(),i=Object.entries(o).find(([i,r])=>(r.name_by_user??"").trim().toLowerCase()===e||(r.name??"").trim().toLowerCase()===e||i===t);i&&(r=i[0])}const l=Object.values(i).filter(e=>e.device_id===r).map(e=>e.entity_id).filter(t=>void 0!==e.states[t]).sort();return l.length?l:Object.keys(e.states).filter(e=>e.includes(t)).sort()}(this.hass,this._config.device):[]),r=t.filter(e=>i[e]).length,o=ai(this.hass,this._config);return W`
+  `}const ci="plant-equipment-card";class hi extends ne{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${ci}-editor`)}static getStubConfig(){return{type:`custom:${ci}`,faceplate:"supply-fan-top"}}_faceplate(){return Jt(Xt(ci,this._config?.faceplate),this._config?.options??{})}render(){if(!this._config||!this.hass)return V;const e=this._faceplate(),t=[...new Set(e.regions.map(e=>e.role))].filter(Boolean),i=function(e,t,i={},r=[]){const o={};for(const l of t){if(i[l]){o[l]=i[l];continue}const t=r.length?r:Object.keys(e.states),s=oi[l];if(!s)continue;const a=t.find(e=>s.test(e));a&&(o[l]=a)}return o}(this.hass,t,this._config.entities??{},this._config.device?function(e,t){const i=e.entities??{};let r=t;const o=e.devices??{};if(!o[t]){const e=t.trim().toLowerCase(),i=Object.entries(o).find(([i,r])=>(r.name_by_user??"").trim().toLowerCase()===e||(r.name??"").trim().toLowerCase()===e||i===t);i&&(r=i[0])}const l=Object.values(i).filter(e=>e.device_id===r).map(e=>e.entity_id).filter(t=>void 0!==e.states[t]).sort();return l.length?l:Object.keys(e.states).filter(e=>e.includes(t)).sort()}(this.hass,this._config.device):[]),r=t.filter(e=>i[e]).length,o=ni(this.hass,this._config);return W`
       <ha-card>
         ${o?W`<div class="title">${o}</div>`:V}
         <div class="frame">
-          ${ni({hass:this.hass,faceplate:e,bindings:i,page:"",onAction:()=>{}})}
+          ${di({hass:this.hass,faceplate:e,bindings:i,page:"",onAction:()=>{}})}
         </div>
         ${0===r?W`<div class="hint">
               Nothing bound. Map the roles this faceplate names in YAML,
               or point the card at a device with <code>device:</code>.
             </div>`:V}
       </ha-card>
-    `}}ci.properties={hass:{attribute:!1},_config:{state:!0}},ci.styles=l`
+    `}}hi.properties={hass:{attribute:!1},_config:{state:!0}},hi.styles=l`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -987,7 +1009,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(di,ci),function(e,t={}){class i extends ne{constructor(){super(...arguments),this._label=e=>{const i=e.name;if("title"===i)return"Title";if("faceplate"===i)return"Faceplate";if("device"===i)return"Device (fills every point below)";if(i.startsWith(Jt)){const e=i.slice(5),t=(this._faceplate().options??[]).find(t=>t.key===e);return t?.label??ii(e)}if(i.startsWith(ti))return`${ii(i.slice(5))} name`;if(i.startsWith(ei))return ii(i.slice(5));const r=(t.numbers??[]).find(e=>e.key===i);return r?.label??ii(i)}}setConfig(e){this._config=e}_faceplate(){return Xt(Qt(e,this._config?.faceplate),this._config?.options??{})}_labelKeys(){const e=this._faceplate();return e.labelPrefix?e.regions.map(e=>/^name(\d+)$/.exec(e.id)?.[1]).filter(e=>Boolean(e)).map(t=>`${e.labelPrefix}${t}`):[]}_roles(){const e=[...new Set(this._faceplate().regions.map(e=>e.role))].filter(Boolean);return t.expandRoles?t.expandRoles(e):e}_emit(e){this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0}))}_data(){const i=this._config??{},r={title:i.title??i.name??"",faceplate:Qt(e,i.faceplate).id,device:i.device??""};for(const e of this._faceplate().options??[])r[Jt+e.key]=i.options?.[e.key]??e.default;for(const e of t.numbers??[])r[e.key]=i[e.key];for(const e of this._labelKeys())r[ti+e]=i.labels?.[e]??"";for(const e of this._roles())r[ei+e]=i.entities?.[e]??"";return r}_fromData(i){const r={...this._config,type:this._config?.type??`custom:${e}`,faceplate:String(i.faceplate??"")},o=String(i.title??"").trim();o?r.title=o:delete r.title,o&&delete r.name;const l=String(i.device??"").trim();l?r.device=l:delete r.device;const s={};for(const e of this._faceplate().options??[]){const t=Number(i[Jt+e.key]);Number.isFinite(t)&&(s[e.key]=t)}Object.keys(s).length?r.options=s:delete r.options;for(const e of t.numbers??[]){const t=Number(i[e.key]);Number.isFinite(t)?r[e.key]=t:delete r[e.key]}const a={};for(const e of this._labelKeys()){const t=String(i[ti+e]??"").trim();t&&(a[e]=t)}Object.keys(a).length?r.labels=a:delete r.labels;const n={};for(const e of this._roles()){const t=String(i[ei+e]??"").trim();t&&(n[e]=t)}return Object.keys(n).length?r.entities=n:delete r.entities,r}_schema(){const i=this._faceplate(),r=Yt(e).map(e=>({value:e.id,label:e.emulates?`${e.name} — ${e.emulates}`:e.name})),o=[{name:"title",selector:{text:{}}},{name:"faceplate",selector:{select:{mode:"dropdown",options:r}}},{name:"device",selector:{device:{}}}];for(const e of i.options??[])o.push({name:Jt+e.key,selector:{number:{min:e.min,max:e.max,mode:"box"}}});for(const e of t.numbers??[])o.push({name:e.key,selector:{number:{min:e.min,max:e.max,step:e.step??1,mode:"box"}}});for(const e of this._labelKeys())o.push({name:ti+e,selector:{text:{}}});for(const e of this._roles())o.push({name:ei+e,selector:{entity:{}}});return o}render(){if(!this._config)return V;const e=this._faceplate(),t=this._roles(),i=t.filter(e=>this._config?.entities?.[e]).length,r=W`
+  `,customElements.define(ci,hi),function(e,t={}){class i extends ne{constructor(){super(...arguments),this._label=e=>{const i=e.name;if("title"===i)return"Title";if("faceplate"===i)return"Faceplate";if("device"===i)return"Device (fills every point below)";if(i.startsWith(ei)){const e=i.slice(5),t=(this._faceplate().options??[]).find(t=>t.key===e);return t?.label??ri(e)}if(i.startsWith(ii))return`${ri(i.slice(5))} name`;if(i.startsWith(ti))return ri(i.slice(5));const r=(t.numbers??[]).find(e=>e.key===i);return r?.label??ri(i)}}setConfig(e){this._config=e}_faceplate(){return Jt(Xt(e,this._config?.faceplate),this._config?.options??{})}_labelKeys(){const e=this._faceplate();return e.labelPrefix?e.regions.map(e=>/^name(\d+)$/.exec(e.id)?.[1]).filter(e=>Boolean(e)).map(t=>`${e.labelPrefix}${t}`):[]}_roles(){const e=[...new Set(this._faceplate().regions.map(e=>e.role))].filter(Boolean);return t.expandRoles?t.expandRoles(e):e}_emit(e){this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0}))}_data(){const i=this._config??{},r={title:i.title??i.name??"",faceplate:Xt(e,i.faceplate).id,device:i.device??""};for(const e of this._faceplate().options??[])r[ei+e.key]=i.options?.[e.key]??e.default;for(const e of t.numbers??[])r[e.key]=i[e.key];for(const e of this._labelKeys())r[ii+e]=i.labels?.[e]??"";for(const e of this._roles())r[ti+e]=i.entities?.[e]??"";return r}_fromData(i){const r={...this._config,type:this._config?.type??`custom:${e}`,faceplate:String(i.faceplate??"")},o=String(i.title??"").trim();o?r.title=o:delete r.title,o&&delete r.name;const l=String(i.device??"").trim();l?r.device=l:delete r.device;const s={};for(const e of this._faceplate().options??[]){const t=Number(i[ei+e.key]);Number.isFinite(t)&&(s[e.key]=t)}Object.keys(s).length?r.options=s:delete r.options;for(const e of t.numbers??[]){const t=Number(i[e.key]);Number.isFinite(t)?r[e.key]=t:delete r[e.key]}const a={};for(const e of this._labelKeys()){const t=String(i[ii+e]??"").trim();t&&(a[e]=t)}Object.keys(a).length?r.labels=a:delete r.labels;const n={};for(const e of this._roles()){const t=String(i[ti+e]??"").trim();t&&(n[e]=t)}return Object.keys(n).length?r.entities=n:delete r.entities,r}_schema(){const i=this._faceplate(),r=Qt(e).map(e=>({value:e.id,label:e.emulates?`${e.name} — ${e.emulates}`:e.name})),o=[{name:"title",selector:{text:{}}},{name:"faceplate",selector:{select:{mode:"dropdown",options:r}}},{name:"device",selector:{device:{}}}];for(const e of i.options??[])o.push({name:ei+e.key,selector:{number:{min:e.min,max:e.max,mode:"box"}}});for(const e of t.numbers??[])o.push({name:e.key,selector:{number:{min:e.min,max:e.max,step:e.step??1,mode:"box"}}});for(const e of this._labelKeys())o.push({name:ii+e,selector:{text:{}}});for(const e of this._roles())o.push({name:ti+e,selector:{entity:{}}});return o}render(){if(!this._config)return V;const e=this._faceplate(),t=this._roles(),i=t.filter(e=>this._config?.entities?.[e]).length,r=W`
         <p class="note">${e.description??""}</p>
         <p class="note">
           ${i} of ${t.length} points set.
@@ -1011,7 +1033,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
           <label>
             Faceplate
             <select @change=${o("faceplate")}>
-              ${Yt(e).map(e=>W`<option value=${e.id}
+              ${Qt(e).map(e=>W`<option value=${e.id}
                   ?selected=${e.id===i.faceplate}>${e.name}</option>`)}
             </select>
           </label>
@@ -1023,8 +1045,8 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
               <label>
                 ${e.label}
                 <input type="number" min=${e.min} max=${e.max}
-                  .value=${String(i[Jt+e.key]??e.default)}
-                  @change=${o(Jt+e.key)} />
+                  .value=${String(i[ei+e.key]??e.default)}
+                  @change=${o(ei+e.key)} />
                 ${e.help?W`<span class="note">${e.help}</span>`:V}
               </label>
             `)}
@@ -1039,10 +1061,10 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
             `)}
           ${this._labelKeys().map(e=>W`
               <label>
-                ${ii(e)} name
-                <input .value=${String(i[ti+e]??"")}
+                ${ri(e)} name
+                <input .value=${String(i[ii+e]??"")}
                   placeholder="shown on the strip"
-                  @change=${o(ti+e)} />
+                  @change=${o(ii+e)} />
               </label>
             `)}
           <datalist id="fp-entities">
@@ -1050,10 +1072,10 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
           </datalist>
           ${this._roles().map(e=>W`
               <label>
-                ${ii(e)}
+                ${ri(e)}
                 <input list="fp-entities" placeholder="entity id"
-                  .value=${String(i[ei+e]??"")}
-                  @change=${o(ei+e)} />
+                  .value=${String(i[ti+e]??"")}
+                  @change=${o(ti+e)} />
               </label>
             `)}
         </div>
@@ -1085,4 +1107,4 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
         font-size: 12px;
         color: var(--secondary-text-color);
       }
-    `,customElements.define(`${e}-editor`,i)}(di),window.customCards??=[],window.customCards.push({type:di,name:"Plant Equipment Card",description:"Supply and exhaust fans, hot water units and circulators.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});
+    `,customElements.define(`${e}-editor`,i)}(ci),window.customCards??=[],window.customCards.push({type:ci,name:"Plant Equipment Card",description:"Supply and exhaust fans, hot water units and circulators.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});
