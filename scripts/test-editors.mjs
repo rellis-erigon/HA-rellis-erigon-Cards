@@ -99,6 +99,47 @@ for (const card of CARDS) {
   editor.remove();
 }
 
+// A repeated strip is named in config, not by any entity, so the editor
+// has to offer a Name field per strip or the names are unreachable.
+{
+  const Editor = customElements.get("audio-zone-card-editor");
+  const editor = new Editor();
+  editor.hass = hass;
+  editor.setConfig({
+    type: "custom:audio-zone-card",
+    faceplate: "zone-mixer",
+    options: { zones: 3, eq: 1 },
+  });
+  document.body.appendChild(editor);
+  await new Promise((r) => setTimeout(r, 120));
+  const root = editor.shadowRoot ?? editor;
+  const text = [...root.querySelectorAll("label")].map((l) => l.textContent.trim());
+  const names = text.filter((t) => t.startsWith("Zone") && t.includes("name"));
+  const points = [...root.querySelectorAll('input[list="fp-entities"]')];
+
+  let emitted;
+  editor.addEventListener("config-changed", (e) => { emitted = e.detail.config; });
+  const nameField = [...root.querySelectorAll("input")].find(
+    (el) => el.placeholder === "shown on the strip"
+  );
+  nameField.value = "Reception";
+  nameField.dispatchEvent(new w.Event("change"));
+  await new Promise((r) => setTimeout(r, 60));
+
+  const ok = names.length === 3 && Object.values(emitted?.labels ?? {}).includes("Reception");
+  console.log(
+    `zone-mixer editor: ${names.length} name fields, ${points.length} points, ` +
+    `naming ${ok ? "ok" : "FAILED"}`
+  );
+  if (!ok) failures++;
+  // With EQ on, three zones must expose the nine EQ points too.
+  if (points.length < 3 * 7) {
+    console.log(`  expected at least ${3 * 7} point fields with EQ on`);
+    failures++;
+  }
+  editor.remove();
+}
+
 if (failures) {
   console.log(`${failures} editor check(s) failed`);
   process.exit(1);

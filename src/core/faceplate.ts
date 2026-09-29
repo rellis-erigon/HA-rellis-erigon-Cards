@@ -23,7 +23,7 @@ export interface RenderContext {
   /** role → entity id */
   bindings: Record<string, string>;
   page: string;
-  onAction: (region: Region) => void;
+  onAction: (region: Region, value?: number) => void;
 }
 
 /** Regions on the current page, plus those pinned to every page. */
@@ -70,7 +70,7 @@ function renderRegion(ctx: RenderContext, region: Region): SVGTemplateResult {
     case "lamp":
       return lampRegion(region, reading);
     case "bar":
-      return barRegion(region, reading);
+      return barRegion(ctx, region, reading);
     case "ring":
       return ringRegion(region, reading);
     case "odometer":
@@ -141,7 +141,9 @@ function lampRegion(region: Region, reading: Reading): SVGTemplateResult {
   `;
 }
 
-function barRegion(region: Region, reading: Reading): SVGTemplateResult {
+function barRegion(
+  ctx: RenderContext, region: Region, reading: Reading,
+): SVGTemplateResult {
   const width = region.w ?? 100;
   const height = region.h ?? 10;
   const max = region.max ?? 100;
@@ -151,6 +153,20 @@ function barRegion(region: Region, reading: Reading): SVGTemplateResult {
     reading.dark || reading.value === undefined
       ? 0
       : Math.max(0, Math.min(1, (reading.value - min) / span));
+  // Click-to-position. The fraction is taken from the element's own
+  // bounding box rather than the SVG user space, because the card is
+  // scaled to the dashboard column and offsetX would be in the wrong
+  // units. A generous hit area sits over the track: a 10px bar is a hard
+  // target, and overshooting a fader is worse than missing it.
+  const settable = region.action === "set_level";
+  const seek = (event: MouseEvent) => {
+    const target = event.currentTarget as SVGGraphicsElement;
+    const box = target.getBoundingClientRect();
+    if (!box.width) return;
+    const at = Math.min(1, Math.max(0, (event.clientX - box.left) / box.width));
+    ctx.onAction(region, min + at * span);
+  };
+
   return svg`
     <rect class="bar-track" x=${region.x} y=${region.y} width=${width} height=${height} rx="2" />
     <rect
@@ -161,6 +177,17 @@ function barRegion(region: Region, reading: Reading): SVGTemplateResult {
       height=${height}
       rx="2"
     />
+    ${settable
+      ? svg`<rect
+          class="bar-hit"
+          x=${region.x}
+          y=${region.y - 8}
+          width=${width}
+          height=${height + 16}
+          fill="transparent"
+          @click=${seek}
+        />`
+      : ""}
   `;
 }
 

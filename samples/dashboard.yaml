@@ -34,7 +34,7 @@ views:
       content: "### Q-SYS Zone Rack\n`faceplate: qsys-zone-rack`  \nEmulates Q-SYS zone outputs."
     - type: custom:audio-zone-card
       faceplate: qsys-zone-rack
-      name: ''
+      title: Q-SYS Zone Rack
       entities:
         zone1_mute: switch.zone1_mute
         zone1_volume: number.zone1_volume
@@ -46,6 +46,19 @@ views:
         zone4_volume: number.zone4_volume
       options:
         zones: 4
+    - type: markdown
+      content: "### Zone Mixer\n`faceplate: zone-mixer`  \nEmulates DSP zone mixer strip."
+    - type: custom:audio-zone-card
+      faceplate: zone-mixer
+      title: Zone Mixer
+      entities:
+        zone1_mute: switch.zone1_mute
+        zone1_volume: number.zone1_volume
+        zone2_mute: switch.zone2_mute
+        zone2_volume: number.zone2_volume
+      options:
+        zones: 2
+        eq: 0
 - title: Meters
   path: bms-meter-card
   icon: mdi:gauge
@@ -59,7 +72,7 @@ views:
         \ CVM-E3-MINI-WiEth.  \nPages: power, volts, amps, energy."
     - type: custom:bms-meter-card
       faceplate: circutor-cvm-e3-mini
-      name: ''
+      title: Circutor CVM-E3-MINI
       entities: &id001
         energy_total: sensor.db_1_energy_total
         power_total: sensor.db_1_power_total
@@ -75,7 +88,7 @@ views:
         \ water meter with main and bypass registers."
     - type: custom:bms-meter-card
       faceplate: compound-meter
-      name: ''
+      title: Compound Water Meter
       entities:
         volume_total: sensor.water_1_volume_total
     - type: markdown
@@ -83,14 +96,14 @@ views:
         \ volts, amps, power."
     - type: custom:bms-meter-card
       faceplate: din-3phase-analyser
-      name: ''
+      title: DIN-rail 3-phase analyser
       entities: *id001
     - type: markdown
       content: "### Dial Water Meter\n`faceplate: dial-water-meter`  \nEmulates Single-jet\
         \ dial-face water meter."
     - type: custom:bms-meter-card
       faceplate: dial-water-meter
-      name: ''
+      title: Dial Water Meter
       entities:
         volume_total: sensor.water_1_volume_total
     - type: markdown
@@ -99,14 +112,14 @@ views:
         `faceplate: generic-3phase`'
     - type: custom:bms-meter-card
       faceplate: generic-3phase
-      name: ''
+      title: Generic 3-phase meter
       entities: *id001
     - type: markdown
       content: "### LCD Water Meter\n`faceplate: lcd-water-meter`  \nEmulates Battery-powered\
         \ electronic water meter."
     - type: custom:bms-meter-card
       faceplate: lcd-water-meter
-      name: ''
+      title: LCD Water Meter
       entities:
         volume_total: sensor.water_1_volume_total
     - type: markdown
@@ -114,7 +127,7 @@ views:
         \ Multi-jet mechanical water meter register."
     - type: custom:bms-meter-card
       faceplate: multijet-water-register
-      name: ''
+      title: Multi-jet water register
       entities:
         volume_total: sensor.water_1_volume_total
     - type: markdown
@@ -122,14 +135,14 @@ views:
         \ Schneider Electric EasyLogic PM2200.  \nPages: summary, amps, volts, power."
     - type: custom:bms-meter-card
       faceplate: schneider-pm2200
-      name: ''
+      title: Schneider EasyLogic PM2200
       entities: *id001
     - type: markdown
       content: "### Smart Water Meter\n`faceplate: smart-water-meter`  \nEmulates Smart water\
         \ meter with leak and reverse-flow detection."
     - type: custom:bms-meter-card
       faceplate: smart-water-meter
-      name: ''
+      title: Smart Water Meter
       entities:
         volume_total: sensor.water_1_volume_total
     - type: markdown
@@ -137,7 +150,7 @@ views:
         \ bulk water meter register."
     - type: custom:bms-meter-card
       faceplate: woltmann-register
-      name: ''
+      title: Woltmann Bulk Register
       entities:
         volume_total: sensor.water_1_volume_total
 - title: Fire
@@ -153,7 +166,7 @@ views:
         \ Generic fire indicator panel (not a specific make)."
     - type: custom:fire-panel-card
       faceplate: generic-fip
-      name: ''
+      title: Fire Indicator Panel (schematic)
       entities: &id002
         room_temp: sensor.ac_1_room_temp
         setpoint: sensor.ac_1_setpoint
@@ -173,28 +186,28 @@ views:
         \ / BRC1E53 navigation remote controller."
     - type: custom:hvac-controller-card
       faceplate: daikin-brc1e63
-      name: ''
+      title: Daikin BRC1E63
       entities: *id002
     - type: markdown
       content: "### Daikin BRC1H63K (Madoka)\n`faceplate: daikin-brc1h63k`  \nEmulates Daikin\
         \ BRC1H63K Madoka."
     - type: custom:hvac-controller-card
       faceplate: daikin-brc1h63k
-      name: ''
+      title: Daikin BRC1H63K (Madoka)
       entities: *id002
     - type: markdown
       content: "### Daikin BRC2E61\n`faceplate: daikin-brc2e61`  \nEmulates Daikin BRC2E61\
         \ simplified remote controller."
     - type: custom:hvac-controller-card
       faceplate: daikin-brc2e61
-      name: ''
+      title: Daikin BRC2E61
       entities: *id002
     - type: markdown
       content: "### Daikin BRC315D7\n`faceplate: daikin-brc315d7`  \nEmulates Daikin BRC315D7\
         \ schedule remote controller."
     - type: custom:hvac-controller-card
       faceplate: daikin-brc315d7
-      name: ''
+      title: Daikin BRC315D7
       entities: *id002
 - title: Fans & Plant
   path: plant-equipment-card
@@ -209,7 +222,7 @@ views:
         \ or chilled water circulation pump set."
     - type: custom:plant-equipment-card
       faceplate: circulation-pump-set
-      name: ''
+      title: Circulation Pump Set
       entities:
         common_fault: sensor.pumpset_common_fault
         pump1_current: sensor.pumpset_pump1_current
@@ -223,14 +236,14 @@ views:
       content: "### Exhaust Fan\n`faceplate: exhaust-fan`  \nEmulates Axial exhaust fan."
     - type: custom:plant-equipment-card
       faceplate: exhaust-fan
-      name: ''
+      title: Exhaust Fan
       entities: *id002
     - type: markdown
       content: "### Hot Water Unit\n`faceplate: hot-water-unit`  \nEmulates Calorifier / plate\
         \ hot water unit."
     - type: custom:plant-equipment-card
       faceplate: hot-water-unit
-      name: ''
+      title: Hot Water Unit
       entities: *id002
       options:
         units: 1
@@ -239,21 +252,21 @@ views:
         \ Centrifugal supply fan."
     - type: custom:plant-equipment-card
       faceplate: supply-fan-left
-      name: ''
+      title: "Supply Fan \u2014 in from left"
       entities: *id002
     - type: markdown
       content: "### Supply Fan \u2014 in from right\n`faceplate: supply-fan-right`  \nEmulates\
         \ Centrifugal supply fan."
     - type: custom:plant-equipment-card
       faceplate: supply-fan-right
-      name: ''
+      title: "Supply Fan \u2014 in from right"
       entities: *id002
     - type: markdown
       content: "### Supply Fan \u2014 in from top\n`faceplate: supply-fan-top`  \nEmulates\
         \ Centrifugal supply fan."
     - type: custom:plant-equipment-card
       faceplate: supply-fan-top
-      name: ''
+      title: "Supply Fan \u2014 in from top"
       entities: *id002
 - title: Plant
   path: pump-system-card
@@ -269,7 +282,7 @@ views:
         `faceplate: vertical-pumpset`'
     - type: custom:pump-system-card
       faceplate: vertical-pumpset
-      name: ''
+      title: Vertical multistage pump set
       entities:
         common_fault: sensor.pumpset_common_fault
         pressure_setpoint: sensor.pumpset_pressure_setpoint
@@ -299,5 +312,5 @@ views:
         `faceplate: av-room-controller`'
     - type: custom:room-controller-card
       faceplate: av-room-controller
-      name: ''
+      title: AV Room Controller
       entities: *id002

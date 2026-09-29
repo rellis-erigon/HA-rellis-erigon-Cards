@@ -469,6 +469,43 @@
         "flow_rate",
         "volume_total"
       ]
+    },
+    {
+      "id": "zone-mixer",
+      "name": "Zone Mixer",
+      "card": "audio-zone-card",
+      "description": "A full strip per zone: click-to-position fader, balance, source and an optional three-band EQ. Name each zone in the editor.",
+      "emulates": "DSP zone mixer strip",
+      "pages": [],
+      "roles": [
+        "zone1_balance",
+        "zone1_mute",
+        "zone1_source",
+        "zone1_volume",
+        "zone2_balance",
+        "zone2_mute",
+        "zone2_source",
+        "zone2_volume"
+      ],
+      "options": [
+        {
+          "key": "zones",
+          "label": "Zones",
+          "type": "number",
+          "min": 1,
+          "max": 12,
+          "default": 2
+        },
+        {
+          "key": "eq",
+          "label": "Three-band EQ (0 off, 1 on)",
+          "type": "number",
+          "min": 0,
+          "max": 1,
+          "default": 0
+        }
+      ],
+      "roles_vary_with_options": true
     }
   ]
 }

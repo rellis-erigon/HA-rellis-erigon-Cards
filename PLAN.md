@@ -250,7 +250,15 @@ against any one backend.
   so either the bridge grows a mixer-aware naming mode or the card binds
   by explicit role map. Do not rename existing entities to fit this: that
   breaks every dashboard and statistic already pointing at them.
-- Several rows need engine work that does not exist yet: a **meter** region
+- **Done since this was written:** the click-to-position fader and the
+  source selector, both on `zone-mixer`. A bar with `action: "set_level"`
+  takes the click's position from its own bounding box, converts it to the
+  region's scale, then clamps to the *entity's* min/max and snaps to its
+  step — the drawing's range must never drive a block past its staging.
+- Still missing: a **meter** region
+  that updates fast enough to be worth calling a meter, a **matrix** region
+  for the crosspoint grid, and a fader the user can *drag* rather than
+  click. Click-to-position covers most of what dragging would.
   that updates fast enough to be worth calling a meter, a **matrix** region
   for the crosspoint grid, and a **fader** the user can drag rather than
   step. The trim keys on `audio-zone-card` were a deliberate shortcut

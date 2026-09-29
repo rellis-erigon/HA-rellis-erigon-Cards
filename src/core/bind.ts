@@ -119,6 +119,29 @@ export function deviceEntityIds(hass: HomeAssistant, device: string): string[] {
   return Object.keys(hass.states).filter((id) => id.includes(device)).sort();
 }
 
+/**
+ * What a device is called in Home Assistant.
+ *
+ * A card pointed at a device should not also have to be told its name.
+ * The user's own rename wins, as it does everywhere else in HA.
+ */
+export function deviceDisplayName(
+  hass: HomeAssistant, device: string,
+): string | undefined {
+  const devices = hass.devices ?? {};
+  const entry =
+    devices[device] ??
+    Object.values(devices).find((d) => {
+      const wanted = device.trim().toLowerCase();
+      return (
+        (d.name_by_user ?? "").trim().toLowerCase() === wanted ||
+        (d.name ?? "").trim().toLowerCase() === wanted
+      );
+    });
+  const name = entry?.name_by_user || entry?.name;
+  return name ?? undefined;
+}
+
 /** Build the role → entity id map for a card. */
 export function resolveRoles(
   hass: HomeAssistant,

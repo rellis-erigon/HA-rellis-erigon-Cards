@@ -30,6 +30,7 @@ export interface EditorOptions {
 
 const OPT = "opt__";
 const ENT = "ent__";
+const LBL = "lbl__";
 
 /** "pump1_speed" -> "Pump1 speed", for a label beside the picker. */
 function humanise(role: string): string {
@@ -57,6 +58,20 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
         getFaceplate(card, this._config?.faceplate),
         this._config?.options ?? {}
       );
+    }
+
+    /**
+     * The strips this faceplate lets the operator name. A repeated strip
+     * draws its label region as name1, name2…, and nothing in Home
+     * Assistant carries "what this zone is called" — so it is config.
+     */
+    private _labelKeys(): string[] {
+      const faceplate = this._faceplate();
+      if (!faceplate.labelPrefix) return [];
+      return faceplate.regions
+        .map((r) => /^name(\d+)$/.exec(r.id)?.[1])
+        .filter((n): n is string => Boolean(n))
+        .map((n) => `${faceplate.labelPrefix}${n}`);
     }
 
     private _roles(): string[] {
@@ -90,6 +105,9 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
       }
       for (const number of opts.numbers ?? []) {
         data[number.key] = (config as unknown as Record<string, unknown>)[number.key];
+      }
+      for (const key of this._labelKeys()) {
+        data[LBL + key] = config.labels?.[key] ?? "";
       }
       for (const role of this._roles()) {
         data[ENT + role] = config.entities?.[role] ?? "";
@@ -131,6 +149,14 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
           delete (config as unknown as Record<string, unknown>)[number.key];
         }
       }
+
+      const labels: Record<string, string> = {};
+      for (const key of this._labelKeys()) {
+        const value = String(data[LBL + key] ?? "").trim();
+        if (value) labels[key] = value;
+      }
+      if (Object.keys(labels).length) config.labels = labels;
+      else delete config.labels;
 
       const entities: Record<string, string> = {};
       for (const role of this._roles()) {
@@ -175,6 +201,9 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
           },
         });
       }
+      for (const key of this._labelKeys()) {
+        schema.push({ name: LBL + key, selector: { text: {} } });
+      }
       for (const role of this._roles()) {
         schema.push({ name: ENT + role, selector: { entity: {} } });
       }
@@ -190,6 +219,9 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
         const key = name.slice(OPT.length);
         const option = (this._faceplate().options ?? []).find((o) => o.key === key);
         return option?.label ?? humanise(key);
+      }
+      if (name.startsWith(LBL)) {
+        return `${humanise(name.slice(LBL.length))} name`;
       }
       if (name.startsWith(ENT)) return humanise(name.slice(ENT.length));
       const number = (opts.numbers ?? []).find((n) => n.key === name);
@@ -277,6 +309,16 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
                   step=${number.step ?? 1}
                   .value=${String(data[number.key] ?? "")}
                   @change=${change(number.key)} />
+              </label>
+            `
+          )}
+          ${this._labelKeys().map(
+            (key) => html`
+              <label>
+                ${humanise(key)} name
+                <input .value=${String(data[LBL + key] ?? "")}
+                  placeholder="shown on the strip"
+                  @change=${change(LBL + key)} />
               </label>
             `
           )}

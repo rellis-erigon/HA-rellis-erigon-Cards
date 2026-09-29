@@ -28,12 +28,13 @@ import { HOT_WATER_UNIT } from "./plant/hot-water-unit";
 import { CIRCULATION_PUMPS } from "./plant/circulation-pumps";
 import { GENERIC_FIP } from "./fire/generic-fip";
 import { QSYS_ZONES } from "./audio/qsys-zones";
+import { ZONE_MIXER } from "./audio/zone-mixer";
 import { ROOM_CONTROLLER } from "./av/room-controller";
 
 export const FACEPLATES: Faceplate[] = [CVM_E3_MINI, PM2200, DIN_3PHASE, GENERIC_3PHASE, MULTIJET_REGISTER, BRC1E63, BRC2E61, BRC1H63K_MADOKA, BRC315D7, PUMPSET, QSYS_ZONES, ROOM_CONTROLLER,
   WOLTMANN_REGISTER, LCD_WATER_METER, DIAL_WATER_METER, COMPOUND_METER, SMART_WATER_METER,
   SUPPLY_FAN_TOP, SUPPLY_FAN_LEFT, SUPPLY_FAN_RIGHT, EXHAUST_FAN,
-  HOT_WATER_UNIT, CIRCULATION_PUMPS, GENERIC_FIP];
+  HOT_WATER_UNIT, CIRCULATION_PUMPS, GENERIC_FIP, ZONE_MIXER];
 
 export function faceplatesFor(card: string): Faceplate[] {
   return FACEPLATES.filter((f) => f.card === card);

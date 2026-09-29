@@ -17,7 +17,7 @@ import { defineFaceplateEditor } from "../../core/card-editor";
 import { renderFaceplate } from "../../core/faceplate";
 import { deviceEntityIds, resolveRoles } from "../../core/bind";
 import { getFaceplate, resolveFaceplate } from "../../faceplates/index";
-import { runControlAction, withLabels, DEFAULT_STEP } from "../../core/controls";
+import { cardTitle, runControlAction, withLabels, DEFAULT_STEP } from "../../core/controls";
 import { Faceplate, FaceplateCardConfig, HomeAssistant, Region } from "../../core/types";
 
 const CARD = "audio-zone-card";
@@ -68,7 +68,7 @@ class AudioZoneCard extends LitElement {
     }, 4000);
   }
 
-  private async _onAction(region: Region): Promise<void> {
+  private async _onAction(region: Region, value?: number): Promise<void> {
     if (!this.hass || !this._config) return;
     await runControlAction(
       this.hass,
@@ -76,12 +76,16 @@ class AudioZoneCard extends LitElement {
       region,
       (message) => this._notify(message),
       Number(this._config.step ?? DEFAULT_STEP),
+      value,
     );
   }
 
   override render(): TemplateResult | typeof nothing {
     if (!this._config || !this.hass) return nothing;
-    const faceplate = withLabels(this._faceplate(), this._config.labels, "zone");
+    const base = this._faceplate();
+    const faceplate = withLabels(
+      base, this._config.labels, base.labelPrefix ?? "zone"
+    );
     const roles = [...new Set(faceplate.regions.map((r) => r.role))].filter(Boolean);
     const bindings = resolveRoles(
       this.hass,
@@ -91,18 +95,18 @@ class AudioZoneCard extends LitElement {
     );
     const bound = roles.filter((role) => bindings[role]).length;
 
+    const name = cardTitle(this.hass, this._config);
+
     return html`
       <ha-card>
-        ${this._config.title || this._config.name
-          ? html`<div class="title">${this._config.title ?? this._config.name}</div>`
-          : nothing}
+        ${name ? html`<div class="title">${name}</div>` : nothing}
         <div class="frame">
           ${renderFaceplate({
             hass: this.hass,
             faceplate,
             bindings,
             page: "",
-            onAction: (region) => void this._onAction(region),
+            onAction: (region, value) => void this._onAction(region, value),
           })}
         </div>
         ${this._error ? html`<div class="hint">${this._error}</div>` : nothing}
@@ -124,8 +128,15 @@ class AudioZoneCard extends LitElement {
     }
     .title {
       font-weight: 600;
-      padding: 0 4px 8px;
+      font-size: 13px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
       color: var(--primary-text-color);
+      background: var(--secondary-background-color, rgba(127, 127, 127, 0.14));
+      border-left: 3px solid var(--primary-color);
     }
     .faceplate {
       width: 100%;
@@ -154,6 +165,9 @@ class AudioZoneCard extends LitElement {
     }
     .bar-fill {
       fill: #4ea1ff;
+    }
+    .bar-hit {
+      cursor: pointer;
     }
     .lamp {
       stroke: #0d1013;

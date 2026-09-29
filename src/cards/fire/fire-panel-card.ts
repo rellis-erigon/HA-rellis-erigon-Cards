@@ -15,6 +15,7 @@
 
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
 import { defineFaceplateEditor } from "../../core/card-editor";
+import { cardTitle } from "../../core/controls";
 import { renderFaceplate } from "../../core/faceplate";
 import { deviceEntityIds, resolveRoles } from "../../core/bind";
 import { getFaceplate, resolveFaceplate } from "../../faceplates/index";
@@ -85,11 +86,11 @@ class FirePanelCard extends LitElement {
     // the normal case, not an edge one. Say it on the face of the card.
     const unmonitored = CRITICAL.filter((role) => !bindings[role]);
 
+    const name = cardTitle(this.hass, this._config);
+
     return html`
       <ha-card>
-        ${this._config.title || this._config.name
-          ? html`<div class="title">${this._config.title ?? this._config.name}</div>`
-          : nothing}
+        ${name ? html`<div class="title">${name}</div>` : nothing}
         <div class="banner">BMS MONITORING — NOT THE FIRE PANEL</div>
         ${unmonitored.length
           ? html`<div class="gap">
@@ -125,8 +126,15 @@ class FirePanelCard extends LitElement {
     }
     .title {
       font-weight: 600;
-      padding: 0 4px 8px;
+      font-size: 13px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
       color: var(--primary-text-color);
+      background: var(--secondary-background-color, rgba(127, 127, 127, 0.14));
+      border-left: 3px solid var(--primary-color);
     }
     .faceplate {
       width: 100%;

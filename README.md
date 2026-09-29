@@ -19,7 +19,7 @@ See [PLAN.md](PLAN.md) for the full design and roadmap.
 | `bms-meter-card` | Available | CVM-E3-MINI, PM2200, DIN-rail, generic, and six water registers (multi-jet, Woltmann, LCD, dial, compound, smart) |
 | `hvac-controller-card` | Available | Daikin BRC1E63, BRC2E61, BRC1H63K, BRC315D7 |
 | `pump-system-card` | Available | Vertical multistage set, 1–10 pumps |
-| `audio-zone-card` | Available | Q-SYS zone rack, 1–16 zones |
+| `audio-zone-card` | Available | `qsys-zone-rack` (compact, 1–16 zones) and `zone-mixer` (full strip, 1–12 zones: click-to-position fader, balance, source, optional 3-band EQ) |
 | `room-controller-card` | Available | Generic AV room |
 | `plant-equipment-card` | Available | Supply fans (top/left/right inlet), exhaust fan, hot water unit 1–2, circulators 1–4 |
 | `fire-panel-card` | Available | Generic FIP, 0–24 zones. **Monitoring only** — permanent banner, nothing clickable |
@@ -36,6 +36,9 @@ entity declares.
 Add card → search for it → fill in the fields. Every card has a visual
 editor with a **field per point**, so nothing has to be written by hand:
 
+- **Title** — the nameplate along the top of the card. Left blank, it
+  falls back to the name of the device in **Device** below, so a card
+  pointed at a device is never anonymous.
 - **Faceplate** — which graphic, with the model it emulates listed.
 - **Device** — set this and every point below is matched from that
   device's entities. Takes the device id or its name.

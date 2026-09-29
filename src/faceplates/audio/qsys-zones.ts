@@ -100,6 +100,7 @@ export const QSYS_ZONES: Faceplate = {
     "One strip per audio zone: level bar in dB, mute with an indicator, "
     + "and trim keys. Widens to the number of zones you set.",
   emulates: "Q-SYS zone outputs",
+  labelPrefix: "zone",
   options: [{
     key: "zones",
     label: "Zones",

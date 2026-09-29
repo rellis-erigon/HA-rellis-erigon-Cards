@@ -93,7 +93,10 @@ export interface Region {
     | "fan_cycle"
     | "mute_toggle"
     | "level_up"
-    | "level_down";
+    | "level_down"
+    // Click anywhere on a fader to go there, rather than stepping to it.
+    | "set_level"
+    | "source_cycle";
   /**
    * For action "page": which page to show. For the audio actions: which
    * *role* the button acts on, so one strip in a rack of them knows which
@@ -158,6 +161,12 @@ export interface Faceplate {
   >;
   /** Manufacturer and model this emulates, for attribution. */
   emulates?: string;
+  /**
+   * Set when the faceplate repeats a strip whose label the operator names
+   * — "zone" gives labels keyed zone1, zone2… The editor uses this to
+   * offer a Name field per strip.
+   */
+  labelPrefix?: string;
 }
 
 /** Minimal shape of the bits of Home Assistant a card touches. */
