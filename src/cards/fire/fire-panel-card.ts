@@ -21,6 +21,13 @@ import { Faceplate, FaceplateCardConfig, HomeAssistant } from "../../core/types"
 
 const CARD = "fire-panel-card";
 
+/**
+ * The roles whose absence must be stated rather than shown as dark. Zone
+ * lamps are not here: a panel with no zone points is obviously a summary
+ * mimic, but a missing FIRE or BRIGADE signal is not obvious at all.
+ */
+const CRITICAL = ["fire_alarm", "fault", "isolate", "brigade_signal", "power"];
+
 class FirePanelCard extends LitElement {
   static override properties = {
     hass: { attribute: false },
@@ -70,12 +77,25 @@ class FirePanelCard extends LitElement {
     );
     const bound = roles.filter((role) => bindings[role]).length;
 
+    // A dark lamp means "not in alarm". On a life-safety mimic an unbound
+    // FIRE lamp is therefore a lie by omission: it looks like an all-clear
+    // when in truth nothing is being watched. Real panels here export the
+    // sprinkler detail and not the panel's own alarm summary, so this is
+    // the normal case, not an edge one. Say it on the face of the card.
+    const unmonitored = CRITICAL.filter((role) => !bindings[role]);
+
     return html`
       <ha-card>
         ${this._config.name
           ? html`<div class="title">${this._config.name}</div>`
           : nothing}
         <div class="banner">BMS MONITORING — NOT THE FIRE PANEL</div>
+        ${unmonitored.length
+          ? html`<div class="gap">
+              Not monitored by the BMS:
+              ${unmonitored.map((r) => r.replace(/_/g, " ").toUpperCase()).join(", ")}
+            </div>`
+          : nothing}
         <div class="frame">
           ${renderFaceplate({
             hass: this.hass,
@@ -151,6 +171,16 @@ class FirePanelCard extends LitElement {
       padding: 6px 8px;
       border-radius: 6px;
       margin: 0 0 10px;
+    }
+    .gap {
+      background: #78350f;
+      color: #fde68a;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      padding: 5px 8px;
+      border-radius: 6px;
+      margin: -4px 0 10px;
     }
     .hint {
       padding: 8px 4px 2px;

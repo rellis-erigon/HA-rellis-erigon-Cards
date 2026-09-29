@@ -897,10 +897,14 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
   <!-- Status row -->
   <rect x="16" y="196" width=${388} height="46" rx="6"
         fill="#14171c" stroke="#252a31" />
-`,regions:[{id:"source",role:"source",kind:"text",x:32,y:76,w:356,align:"start",size:20,placeholder:""},{id:"source_label",role:"",kind:"text",text:"SOURCE",x:32,y:100,w:120,align:"start",size:11},{id:"display_lamp",role:"display_power",kind:"lamp",x:374,y:58,w:14,on:"#3ddc84",off:"#16281d"},{id:"power",role:"",kind:"button",text:"DISPLAY",action:"power_toggle",target:"display_power",x:288,y:86,w:100,h:22},{id:"vol_bar",role:"volume",kind:"bar",x:28,y:154,w:210,h:12,min:0,max:100},{id:"vol_text",role:"volume",kind:"text",x:250,y:165,w:60,align:"start",decimals:0,size:18},{id:"vol_down",role:"",kind:"button",text:"−",action:"level_down",target:"volume",x:316,y:148,w:40,h:24},{id:"vol_up",role:"",kind:"button",text:"+",action:"level_up",target:"volume",x:360,y:148,w:40,h:24},{id:"mute_lamp",role:"mute",kind:"lamp",x:30,y:210,w:12,on:"#ef4444",off:"#2a1717"},{id:"mute",role:"",kind:"button",text:"MUTE",action:"mute_toggle",target:"mute",x:52,y:206,w:64,h:24},{id:"mic_lamp",role:"mic_live",kind:"lamp",label:"MIC",x:150,y:210,w:12,on:"#f59e0b",off:"#2a2317"},{id:"fault_lamp",role:"fault",kind:"lamp",label:"FAULT",x:220,y:210,w:12,on:"#ef4444",off:"#2a1717"},{id:"online_lamp",role:"online",kind:"lamp",label:"ONLINE",x:300,y:210,w:12,on:"#3ddc84",off:"#16281d"}],description:"A room at a glance: source, display power, volume and mute, with mic, fault and online indicators. Bind whichever joins carry them."},gt,wt,vt,zt,Mt,Rt,Gt,Ut,Dt,Ft,Vt,qt];function Xt(e){return Qt.filter(t=>t.card===e)}function ei(e,t){const i=Xt(e);return i.find(e=>e.id===t)??i[0]}const ti="fire-panel-card";class ii extends ne{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${ti}-editor`)}static getStubConfig(){return{type:`custom:${ti}`,faceplate:"generic-fip",options:{zones:8}}}_faceplate(){return function(e,t={}){if(!e.build)return e;const i={};for(const r of e.options??[]){const e=t[r.key];i[r.key]="number"==typeof e&&Number.isFinite(e)?Math.max(r.min,Math.min(r.max,e)):r.default}return{...e,...e.build(i)}}(ei(ti,this._config?.faceplate),this._config?.options??{})}render(){if(!this._config||!this.hass)return V;const e=this._faceplate(),t=[...new Set(e.regions.map(e=>e.role))].filter(Boolean),i=function(e,t,i={},r=[]){const o={};for(const l of t){if(i[l]){o[l]=i[l];continue}const t=r.length?r:Object.keys(e.states),s=ce[l];if(!s)continue;const a=t.find(e=>s.test(e));a&&(o[l]=a)}return o}(this.hass,t,this._config.entities??{},this._config.device?function(e,t){const i=e.entities??{};let r=t;const o=e.devices??{};if(!o[t]){const e=t.trim().toLowerCase(),i=Object.entries(o).find(([i,r])=>(r.name_by_user??"").trim().toLowerCase()===e||(r.name??"").trim().toLowerCase()===e||i===t);i&&(r=i[0])}const l=Object.values(i).filter(e=>e.device_id===r).map(e=>e.entity_id).filter(t=>void 0!==e.states[t]).sort();return l.length?l:Object.keys(e.states).filter(e=>e.includes(t)).sort()}(this.hass,this._config.device):[]),r=t.filter(e=>i[e]).length;return B`
+`,regions:[{id:"source",role:"source",kind:"text",x:32,y:76,w:356,align:"start",size:20,placeholder:""},{id:"source_label",role:"",kind:"text",text:"SOURCE",x:32,y:100,w:120,align:"start",size:11},{id:"display_lamp",role:"display_power",kind:"lamp",x:374,y:58,w:14,on:"#3ddc84",off:"#16281d"},{id:"power",role:"",kind:"button",text:"DISPLAY",action:"power_toggle",target:"display_power",x:288,y:86,w:100,h:22},{id:"vol_bar",role:"volume",kind:"bar",x:28,y:154,w:210,h:12,min:0,max:100},{id:"vol_text",role:"volume",kind:"text",x:250,y:165,w:60,align:"start",decimals:0,size:18},{id:"vol_down",role:"",kind:"button",text:"−",action:"level_down",target:"volume",x:316,y:148,w:40,h:24},{id:"vol_up",role:"",kind:"button",text:"+",action:"level_up",target:"volume",x:360,y:148,w:40,h:24},{id:"mute_lamp",role:"mute",kind:"lamp",x:30,y:210,w:12,on:"#ef4444",off:"#2a1717"},{id:"mute",role:"",kind:"button",text:"MUTE",action:"mute_toggle",target:"mute",x:52,y:206,w:64,h:24},{id:"mic_lamp",role:"mic_live",kind:"lamp",label:"MIC",x:150,y:210,w:12,on:"#f59e0b",off:"#2a2317"},{id:"fault_lamp",role:"fault",kind:"lamp",label:"FAULT",x:220,y:210,w:12,on:"#ef4444",off:"#2a1717"},{id:"online_lamp",role:"online",kind:"lamp",label:"ONLINE",x:300,y:210,w:12,on:"#3ddc84",off:"#16281d"}],description:"A room at a glance: source, display power, volume and mute, with mic, fault and online indicators. Bind whichever joins carry them."},gt,wt,vt,zt,Mt,Rt,Gt,Ut,Dt,Ft,Vt,qt];function Xt(e){return Qt.filter(t=>t.card===e)}function ei(e,t){const i=Xt(e);return i.find(e=>e.id===t)??i[0]}const ti="fire-panel-card",ii=["fire_alarm","fault","isolate","brigade_signal","power"];class ri extends ne{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${ti}-editor`)}static getStubConfig(){return{type:`custom:${ti}`,faceplate:"generic-fip",options:{zones:8}}}_faceplate(){return function(e,t={}){if(!e.build)return e;const i={};for(const r of e.options??[]){const e=t[r.key];i[r.key]="number"==typeof e&&Number.isFinite(e)?Math.max(r.min,Math.min(r.max,e)):r.default}return{...e,...e.build(i)}}(ei(ti,this._config?.faceplate),this._config?.options??{})}render(){if(!this._config||!this.hass)return V;const e=this._faceplate(),t=[...new Set(e.regions.map(e=>e.role))].filter(Boolean),i=function(e,t,i={},r=[]){const o={};for(const l of t){if(i[l]){o[l]=i[l];continue}const t=r.length?r:Object.keys(e.states),s=ce[l];if(!s)continue;const a=t.find(e=>s.test(e));a&&(o[l]=a)}return o}(this.hass,t,this._config.entities??{},this._config.device?function(e,t){const i=e.entities??{};let r=t;const o=e.devices??{};if(!o[t]){const e=t.trim().toLowerCase(),i=Object.entries(o).find(([i,r])=>(r.name_by_user??"").trim().toLowerCase()===e||(r.name??"").trim().toLowerCase()===e||i===t);i&&(r=i[0])}const l=Object.values(i).filter(e=>e.device_id===r).map(e=>e.entity_id).filter(t=>void 0!==e.states[t]).sort();return l.length?l:Object.keys(e.states).filter(e=>e.includes(t)).sort()}(this.hass,this._config.device):[]),r=t.filter(e=>i[e]).length,o=ii.filter(e=>!i[e]);return B`
       <ha-card>
         ${this._config.name?B`<div class="title">${this._config.name}</div>`:V}
         <div class="banner">BMS MONITORING — NOT THE FIRE PANEL</div>
+        ${o.length?B`<div class="gap">
+              Not monitored by the BMS:
+              ${o.map(e=>e.replace(/_/g," ").toUpperCase()).join(", ")}
+            </div>`:V}
         <div class="frame">
           ${xe({hass:this.hass,faceplate:e,bindings:i,page:"",onAction:()=>{}})}
         </div>
@@ -910,7 +914,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
               device with <code>device:</code>.
             </div>`:V}
       </ha-card>
-    `}}ii.properties={hass:{attribute:!1},_config:{state:!0}},ii.styles=l`
+    `}}ri.properties={hass:{attribute:!1},_config:{state:!0}},ri.styles=l`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -965,12 +969,22 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       border-radius: 6px;
       margin: 0 0 10px;
     }
+    .gap {
+      background: #78350f;
+      color: #fde68a;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      padding: 5px 8px;
+      border-radius: 6px;
+      margin: -4px 0 10px;
+    }
     .hint {
       padding: 8px 4px 2px;
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `;class ri extends ne{setConfig(e){this._config=e}_emit(e){const t={...this._config,...e};this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:t},bubbles:!0,composed:!0}))}render(){if(!this._config)return V;const e=Xt(ti),t=ei(ti,this._config.faceplate),i=this._config.options??{};return B`
+  `;class oi extends ne{setConfig(e){this._config=e}_emit(e){const t={...this._config,...e};this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:t},bubbles:!0,composed:!0}))}render(){if(!this._config)return V;const e=Xt(ti),t=ei(ti,this._config.faceplate),i=this._config.options??{};return B`
       <div class="editor">
         <label>
           Faceplate
@@ -995,7 +1009,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
           `)}
         <p class="note">${t.description??""}</p>
       </div>
-    `}}ri.properties={hass:{attribute:!1},_config:{state:!0}},ri.styles=l`
+    `}}oi.properties={hass:{attribute:!1},_config:{state:!0}},oi.styles=l`
     .editor {
       display: flex;
       flex-direction: column;
@@ -1023,4 +1037,4 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       font-size: 12px;
       color: var(--secondary-text-color);
     }
-  `,customElements.define(ti,ii),customElements.define(`${ti}-editor`,ri),window.customCards??=[],window.customCards.push({type:ti,name:"Fire Panel Card",description:"Zone and status mimic. Monitoring only — never the panel.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});
+  `,customElements.define(ti,ri),customElements.define(`${ti}-editor`,oi),window.customCards??=[],window.customCards.push({type:ti,name:"Fire Panel Card",description:"Zone and status mimic. Monitoring only — never the panel.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});

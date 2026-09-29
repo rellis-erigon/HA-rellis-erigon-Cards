@@ -1861,10 +1861,14 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       font-size: 12px;
       color: var(--secondary-text-color);
     }
-  `,customElements.define(vi,_i),customElements.define(`${vi}-editor`,ki),window.customCards??=[],window.customCards.push({type:vi,name:"Plant Equipment Card",description:"Supply and exhaust fans, hot water units and circulators.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const zi="fire-panel-card";class Ai extends ne{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${zi}-editor`)}static getStubConfig(){return{type:`custom:${zi}`,faceplate:"generic-fip",options:{zones:8}}}_faceplate(){return ri(oi(zi,this._config?.faceplate),this._config?.options??{})}render(){if(!this._config||!this.hass)return V;const e=this._faceplate(),t=[...new Set(e.regions.map(e=>e.role))].filter(Boolean),i=xe(this.hass,t,this._config.entities??{},this._config.device?fe(this.hass,this._config.device):[]),o=t.filter(e=>i[e]).length;return F`
+  `,customElements.define(vi,_i),customElements.define(`${vi}-editor`,ki),window.customCards??=[],window.customCards.push({type:vi,name:"Plant Equipment Card",description:"Supply and exhaust fans, hot water units and circulators.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const zi="fire-panel-card",Ai=["fire_alarm","fault","isolate","brigade_signal","power"];class Ci extends ne{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${zi}-editor`)}static getStubConfig(){return{type:`custom:${zi}`,faceplate:"generic-fip",options:{zones:8}}}_faceplate(){return ri(oi(zi,this._config?.faceplate),this._config?.options??{})}render(){if(!this._config||!this.hass)return V;const e=this._faceplate(),t=[...new Set(e.regions.map(e=>e.role))].filter(Boolean),i=xe(this.hass,t,this._config.entities??{},this._config.device?fe(this.hass,this._config.device):[]),o=t.filter(e=>i[e]).length,r=Ai.filter(e=>!i[e]);return F`
       <ha-card>
         ${this._config.name?F`<div class="title">${this._config.name}</div>`:V}
         <div class="banner">BMS MONITORING — NOT THE FIRE PANEL</div>
+        ${r.length?F`<div class="gap">
+              Not monitored by the BMS:
+              ${r.map(e=>e.replace(/_/g," ").toUpperCase()).join(", ")}
+            </div>`:V}
         <div class="frame">
           ${ge({hass:this.hass,faceplate:e,bindings:i,page:"",onAction:()=>{}})}
         </div>
@@ -1874,7 +1878,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
               device with <code>device:</code>.
             </div>`:V}
       </ha-card>
-    `}}Ai.properties={hass:{attribute:!1},_config:{state:!0}},Ai.styles=a`
+    `}}Ci.properties={hass:{attribute:!1},_config:{state:!0}},Ci.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -1929,12 +1933,22 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       border-radius: 6px;
       margin: 0 0 10px;
     }
+    .gap {
+      background: #78350f;
+      color: #fde68a;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      padding: 5px 8px;
+      border-radius: 6px;
+      margin: -4px 0 10px;
+    }
     .hint {
       padding: 8px 4px 2px;
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `;class Ci extends ne{setConfig(e){this._config=e}_emit(e){const t={...this._config,...e};this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:t},bubbles:!0,composed:!0}))}render(){if(!this._config)return V;const e=ii(zi),t=oi(zi,this._config.faceplate),i=this._config.options??{};return F`
+  `;class Ei extends ne{setConfig(e){this._config=e}_emit(e){const t={...this._config,...e};this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:t},bubbles:!0,composed:!0}))}render(){if(!this._config)return V;const e=ii(zi),t=oi(zi,this._config.faceplate),i=this._config.options??{};return F`
       <div class="editor">
         <label>
           Faceplate
@@ -1959,7 +1973,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
           `)}
         <p class="note">${t.description??""}</p>
       </div>
-    `}}Ci.properties={hass:{attribute:!1},_config:{state:!0}},Ci.styles=a`
+    `}}Ei.properties={hass:{attribute:!1},_config:{state:!0}},Ei.styles=a`
     .editor {
       display: flex;
       flex-direction: column;
@@ -1987,4 +2001,4 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       font-size: 12px;
       color: var(--secondary-text-color);
     }
-  `,customElements.define(zi,Ai),customElements.define(`${zi}-editor`,Ci),window.customCards??=[],window.customCards.push({type:zi,name:"Fire Panel Card",description:"Zone and status mimic. Monitoring only — never the panel.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});
+  `,customElements.define(zi,Ci),customElements.define(`${zi}-editor`,Ei),window.customCards??=[],window.customCards.push({type:zi,name:"Fire Panel Card",description:"Zone and status mimic. Monitoring only — never the panel.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});
