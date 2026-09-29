@@ -14,11 +14,12 @@
 
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
 import { defineFaceplateEditor } from "../../core/card-editor";
+import { hiddenNote, prepare } from "../../core/prepare";
 import { renderFaceplate } from "../../core/faceplate";
-import { deviceEntityIds, resolveRoles } from "../../core/bind";
-import { getFaceplate, resolveFaceplate } from "../../faceplates/index";
+import { deviceEntityIds } from "../../core/bind";
+import { getFaceplate } from "../../faceplates/index";
 import { cardTitle, runControlAction, withLabels, DEFAULT_STEP } from "../../core/controls";
-import { Faceplate, FaceplateCardConfig, HomeAssistant, Region } from "../../core/types";
+import { FaceplateCardConfig, HomeAssistant, Region } from "../../core/types";
 
 const CARD = "audio-zone-card";
 
@@ -54,13 +55,6 @@ class AudioZoneCard extends LitElement {
     };
   }
 
-  private _faceplate(): Faceplate {
-    return resolveFaceplate(
-      getFaceplate(CARD, this._config?.faceplate),
-      this._config?.options ?? {}
-    );
-  }
-
   private _notify(message: string): void {
     this._error = message;
     setTimeout(() => {
@@ -82,17 +76,13 @@ class AudioZoneCard extends LitElement {
 
   override render(): TemplateResult | typeof nothing {
     if (!this._config || !this.hass) return nothing;
-    const base = this._faceplate();
-    const faceplate = withLabels(
-      base, this._config.labels, base.labelPrefix ?? "zone"
-    );
-    const roles = [...new Set(faceplate.regions.map((r) => r.role))].filter(Boolean);
-    const bindings = resolveRoles(
+    const { faceplate: drawn, bindings, roles, hidden } = prepare(
       this.hass,
-      roles,
-      this._config.entities ?? {},
+      this._config,
+      getFaceplate(CARD, this._config.faceplate),
       this._config.device ? deviceEntityIds(this.hass, this._config.device) : []
     );
+    const faceplate = withLabels(drawn, this._config.labels, drawn.labelPrefix ?? "zone");
     const bound = roles.filter((role) => bindings[role]).length;
 
     const name = cardTitle(this.hass, this._config);
@@ -110,6 +100,9 @@ class AudioZoneCard extends LitElement {
           })}
         </div>
         ${this._error ? html`<div class="hint">${this._error}</div>` : nothing}
+        ${hidden
+          ? html`<div class="hint muted">${hiddenNote(hidden)}</div>`
+          : nothing}
         ${bound === 0
           ? html`<div class="hint">
               Nothing bound. Map <code>zone1_volume</code> and
@@ -224,6 +217,10 @@ class AudioZoneCard extends LitElement {
     }
     .button {
       cursor: pointer;
+    }
+    .hint.muted {
+      opacity: 0.72;
+      font-size: 12px;
     }
     .hint {
       padding: 8px 4px 2px;

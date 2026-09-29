@@ -16,10 +16,11 @@
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
 import { defineFaceplateEditor } from "../../core/card-editor";
 import { cardTitle } from "../../core/controls";
+import { hiddenNote, prepare } from "../../core/prepare";
 import { renderFaceplate } from "../../core/faceplate";
-import { deviceEntityIds, resolveRoles } from "../../core/bind";
-import { getFaceplate, resolveFaceplate } from "../../faceplates/index";
-import { Faceplate, FaceplateCardConfig, HomeAssistant } from "../../core/types";
+import { deviceEntityIds } from "../../core/bind";
+import { getFaceplate } from "../../faceplates/index";
+import { FaceplateCardConfig, HomeAssistant } from "../../core/types";
 
 const CARD = "fire-panel-card";
 
@@ -60,23 +61,15 @@ class FirePanelCard extends LitElement {
     };
   }
 
-  private _faceplate(): Faceplate {
-    return resolveFaceplate(
-      getFaceplate(CARD, this._config?.faceplate),
-      this._config?.options ?? {}
-    );
-  }
-
   override render(): TemplateResult | typeof nothing {
     if (!this._config || !this.hass) return nothing;
-    const faceplate = this._faceplate();
-    const roles = [...new Set(faceplate.regions.map((r) => r.role))].filter(Boolean);
-    const bindings = resolveRoles(
+    const { faceplate: drawn, bindings, roles, hidden } = prepare(
       this.hass,
-      roles,
-      this._config.entities ?? {},
+      this._config,
+      getFaceplate(CARD, this._config.faceplate),
       this._config.device ? deviceEntityIds(this.hass, this._config.device) : []
     );
+    const faceplate = drawn;
     const bound = roles.filter((role) => bindings[role]).length;
 
     // A dark lamp means "not in alarm". On a life-safety mimic an unbound
@@ -108,6 +101,9 @@ class FirePanelCard extends LitElement {
             onAction: () => undefined,
           })}
         </div>
+        ${hidden
+          ? html`<div class="hint muted">${hiddenNote(hidden)}</div>`
+          : nothing}
         ${bound === 0
           ? html`<div class="hint">
               Nothing bound. Map <code>fire_alarm</code>,
@@ -190,6 +186,10 @@ class FirePanelCard extends LitElement {
       padding: 5px 8px;
       border-radius: 6px;
       margin: -4px 0 10px;
+    }
+    .hint.muted {
+      opacity: 0.72;
+      font-size: 12px;
     }
     .hint {
       padding: 8px 4px 2px;

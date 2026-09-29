@@ -2276,6 +2276,9 @@ function build(values) {
     for (let index = 0; index < count; index++) {
         const n = index + 1;
         const x = LEFT + index * (STRIP_W + GUTTER);
+        // Regions carry a group so a control and the labels around it live
+        // or die together — a lone "PAN" over empty space is worse than no
+        // pan at all.
         const mid = x + STRIP_W / 2;
         strips.push(w `
       <rect x=${x} y=${TOP} width=${STRIP_W} height=${height - TOP - 12}
@@ -2294,12 +2297,12 @@ function build(values) {
     `);
         // -- Source ---------------------------------------------------------
         regions.push({
-            id: `src${n}`, role: `zone${n}_source`, kind: "text",
+            id: `src${n}`, role: `zone${n}_source`, kind: "text", group: `src${n}`,
             x: x + 6, y: TOP + 20, w: STRIP_W - 12, align: "middle",
             size: 12, placeholder: "",
         });
         regions.push({
-            id: `srcbtn${n}`, role: "", kind: "button", text: "SRC",
+            id: `srcbtn${n}`, role: "", kind: "button", text: "SRC", group: `src${n}`,
             action: "source_cycle", target: `zone${n}_source`,
             x: mid - 26, y: TOP + 28, w: 52, h: 18,
         });
@@ -2308,17 +2311,17 @@ function build(values) {
             ["high", "mid", "low"].forEach((band, slot) => {
                 const by = eqTop + slot * 30;
                 regions.push({
-                    id: `${band}lbl${n}`, role: "", kind: "text",
+                    id: `${band}lbl${n}`, role: "", kind: "text", group: `eq${band}${n}`,
                     text: band.toUpperCase(),
                     x: x + 8, y: by + 12, w: 32, align: "start", size: 9,
                 });
                 regions.push({
-                    id: `${band}${n}`, role: `zone${n}_eq_${band}`, kind: "bar",
+                    id: `${band}${n}`, role: `zone${n}_eq_${band}`, kind: "bar", group: `eq${band}${n}`,
                     action: "set_level", target: `zone${n}_eq_${band}`,
                     x: x + 42, y: by + 4, w: STRIP_W - 50, h: 8, min: -18, max: 18,
                 });
                 regions.push({
-                    id: `${band}v${n}`, role: `zone${n}_eq_${band}`, kind: "text",
+                    id: `${band}v${n}`, role: `zone${n}_eq_${band}`, kind: "text", group: `eq${band}${n}`,
                     x: x + 42, y: by + 24, w: STRIP_W - 50, align: "end",
                     unit: "", decimals: 1, size: 9, placeholder: "",
                 });
@@ -2326,52 +2329,52 @@ function build(values) {
         }
         // -- Pan --------------------------------------------------------------
         regions.push({
-            id: `panl${n}`, role: "", kind: "text", text: "L",
+            id: `panl${n}`, role: "", kind: "text", text: "L", group: `pan${n}`,
             x: x + 8, y: panTop + 26, w: 12, align: "start", size: 9,
         });
         regions.push({
-            id: `panr${n}`, role: "", kind: "text", text: "R",
+            id: `panr${n}`, role: "", kind: "text", text: "R", group: `pan${n}`,
             x: x + STRIP_W - 18, y: panTop + 26, w: 12, align: "start", size: 9,
         });
         regions.push({
-            id: `pan${n}`, role: `zone${n}_balance`, kind: "bar",
+            id: `pan${n}`, role: `zone${n}_balance`, kind: "bar", group: `pan${n}`,
             action: "set_level", target: `zone${n}_balance`,
             x: x + 20, y: panTop + 16, w: STRIP_W - 40, h: 8, min: -100, max: 100,
         });
         regions.push({
-            id: `panlbl${n}`, role: "", kind: "text", text: "PAN",
+            id: `panlbl${n}`, role: "", kind: "text", text: "PAN", group: `pan${n}`,
             x: x + 8, y: panTop + 12, w: 40, align: "start", size: 9,
         });
         // -- Fader -------------------------------------------------------------
         regions.push({
-            id: `fad${n}`, role: `zone${n}_volume`, kind: "fader",
+            id: `fad${n}`, role: `zone${n}_volume`, kind: "fader", group: `fader${n}`,
             action: "set_level", target: `zone${n}_volume`,
             x: mid - 26, y: faderTop, w: 52, h: THROW,
             min: DB_MIN, max: DB_MAX, ticks: 7,
         });
         regions.push({
-            id: `down${n}`, role: "", kind: "button", text: "−",
+            id: `down${n}`, role: "", kind: "button", text: "−", group: `fader${n}`,
             action: "level_down", target: `zone${n}_volume`,
             x: x + 8, y: faderTop + THROW / 2 - 28, w: 22, h: 22,
         });
         regions.push({
-            id: `up${n}`, role: "", kind: "button", text: "+",
+            id: `up${n}`, role: "", kind: "button", text: "+", group: `fader${n}`,
             action: "level_up", target: `zone${n}_volume`,
             x: x + 8, y: faderTop + THROW / 2 + 6, w: 22, h: 22,
         });
         regions.push({
-            id: `db${n}`, role: `zone${n}_volume`, kind: "text",
+            id: `db${n}`, role: `zone${n}_volume`, kind: "text", group: `fader${n}`,
             x: x + 6, y: faderTop + THROW + 20, w: STRIP_W - 12, align: "middle",
             unit: "dB", decimals: 1, size: 14,
         });
         // -- Mute and name -------------------------------------------------------
         regions.push({
-            id: `mlamp${n}`, role: `zone${n}_mute`, kind: "lamp",
+            id: `mlamp${n}`, role: `zone${n}_mute`, kind: "lamp", group: `mute${n}`,
             x: x + 10, y: faderTop + THROW + 32, w: 12,
             on: "#ef4444", off: "#2a1717",
         });
         regions.push({
-            id: `mute${n}`, role: "", kind: "button", text: "MUTE",
+            id: `mute${n}`, role: "", kind: "button", text: "MUTE", group: `mute${n}`,
             action: "mute_toggle", target: `zone${n}_mute`,
             x: x + 28, y: faderTop + THROW + 29, w: STRIP_W - 38, h: 20,
         });
@@ -2527,7 +2530,7 @@ function getFaceplate(card, id) {
  * Faceplates with fixed artwork come back untouched, so every card can call
  * this without caring which kind it has.
  */
-function resolveFaceplate(faceplate, values = {}) {
+function resolveFaceplate(faceplate, values = {}, ctx) {
     if (!faceplate.build)
         return faceplate;
     const merged = {};
@@ -2538,7 +2541,7 @@ function resolveFaceplate(faceplate, values = {}) {
                 ? Math.max(option.min, Math.min(option.max, given))
                 : option.default;
     }
-    return { ...faceplate, ...faceplate.build(merged) };
+    return { ...faceplate, ...faceplate.build(merged, ctx) };
 }
 
 export { FACEPLATES, faceplatesFor, getFaceplate, resolveFaceplate };

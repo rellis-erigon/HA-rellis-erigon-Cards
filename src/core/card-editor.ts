@@ -96,6 +96,7 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
       const config = this._config ?? ({} as FaceplateCardConfig);
       const data: Record<string, unknown> = {
         title: config.title ?? config.name ?? "",
+        hide_unbound: config.hide_unbound !== false,
         faceplate: getFaceplate(card, config.faceplate).id,
         device: config.device ?? "",
       };
@@ -128,6 +129,10 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
       else delete config.title;
       // `name` was the old spelling. Once a title is set, leave only one.
       if (title) delete config.name;
+
+      // On is the default, so only the explicit "off" is worth storing.
+      if (data.hide_unbound === false) config.hide_unbound = false;
+      else delete config.hide_unbound;
 
       const device = String(data.device ?? "").trim();
       if (device) config.device = device;
@@ -183,6 +188,7 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
           selector: { select: { mode: "dropdown", options: choices } },
         },
         { name: "device", selector: { device: {} } },
+        { name: "hide_unbound", selector: { boolean: {} } },
       ];
 
       for (const option of faceplate.options ?? []) {
@@ -215,6 +221,7 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
       if (name === "title") return "Title";
       if (name === "faceplate") return "Faceplate";
       if (name === "device") return "Device (fills every point below)";
+      if (name === "hide_unbound") return "Hide controls with nothing bound";
       if (name.startsWith(OPT)) {
         const key = name.slice(OPT.length);
         const option = (this._faceplate().options ?? []).find((o) => o.key === key);
@@ -240,7 +247,9 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
           ${bound} of ${roles.length} points set.
           ${this._config.device
             ? "Points left blank are matched from the device."
-            : "Points left blank stay dark on the card."}
+            : this._config.hide_unbound === false
+              ? "Points left blank stay dark on the card."
+              : "Points left blank are left off the card."}
         </p>
       `;
 
@@ -285,6 +294,16 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
                   ?selected=${f.id === data.faceplate}>${f.name}</option>`
               )}
             </select>
+          </label>
+          <label class="row">
+            <input type="checkbox"
+              .checked=${data.hide_unbound !== false}
+              @change=${(e: Event) =>
+                this._emit(this._fromData({
+                  ...data,
+                  hide_unbound: (e.target as HTMLInputElement).checked,
+                }))} />
+            Hide controls with nothing bound
           </label>
           <label>
             Device (fills every point below)
@@ -345,6 +364,11 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
         flex-direction: column;
         gap: 10px;
         padding: 8px 0;
+      }
+      label.row {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
       }
       label {
         display: flex;

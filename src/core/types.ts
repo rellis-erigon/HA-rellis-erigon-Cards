@@ -31,6 +31,12 @@ export interface Region {
   h?: number;
   /** Which page of a multi-page display this belongs to. Omit for always-on. */
   page?: string;
+  /**
+   * Regions that live or die together. A slider and the label beside it
+   * are one control to a reader, so hiding the slider must take the
+   * label with it. A group survives while any role in it is bound.
+   */
+  group?: string;
   /** printf-ish hint: decimals and a unit suffix. */
   decimals?: number;
   unit?: string;
@@ -113,6 +119,14 @@ export interface Region {
   text?: string;
 }
 
+/** What `build` is told about the card it is being drawn for. */
+export interface BuildContext {
+  /** True when a role has an entity behind it. */
+  bound: (role: string) => boolean;
+  /** False on the first pass, when the role list is still being gathered. */
+  filtering: boolean;
+}
+
 /** A choice a faceplate exposes, shown in the card editor. */
 export interface FaceplateOption {
   key: string;
@@ -162,10 +176,16 @@ export interface Faceplate {
    * Produce the artwork and regions for a set of option values. Faceplates
    * without options leave this out and carry fixed artwork instead.
    */
-  build?: (values: Record<string, number>) => Pick<
-    Faceplate,
-    "size" | "artNode" | "regions"
-  >;
+  build?: (
+    values: Record<string, number>,
+    /**
+     * What the card managed to bind. A parametric faceplate uses this to
+     * leave out whole sections nothing is connected to and size itself
+     * accordingly — hiding a region on its own leaves a hole where the
+     * artwork still is.
+     */
+    ctx?: BuildContext,
+  ) => Pick<Faceplate, "size" | "artNode" | "regions">;
   /** Manufacturer and model this emulates, for attribution. */
   emulates?: string;
   /**
@@ -239,6 +259,12 @@ export interface FaceplateCardConfig {
   options?: Record<string, number>;
   /** How much a trim key moves a level, in the level's own units. */
   step?: number;
+  /**
+   * Leave out controls with nothing bound. On by default: a faceplate
+   * declares everything the equipment could have, and most installations
+   * have some of it. The card says how many it hid.
+   */
+  hide_unbound?: boolean;
   /**
    * Names to print on a repeated faceplate, keyed by the role prefix of the
    * thing they name — `{ zone1: "Reception" }`. A rack of sixteen strips

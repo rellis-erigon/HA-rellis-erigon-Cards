@@ -44,8 +44,11 @@ editor with a **field per point**, so nothing has to be written by hand:
   device's entities. Takes the device id or its name.
 - **Options** — number of pumps, zones, units, and so on, where the
   faceplate is parametric. The point list changes to match.
-- **One field per role** — `Volts l1`, `Pump1 speed`, `Zone3 mute`. Left
-  blank, that region stays dark rather than disappearing.
+- **Hide controls with nothing bound** — on by default. A faceplate
+  declares everything the equipment could have; this leaves out what you
+  have not wired, and the card footer says how many it hid. Turn it off
+  to see the full panel with dead controls dark.
+- **One field per role** — `Volts l1`, `Pump1 speed`, `Zone3 mute`.
 
 The editor uses Home Assistant's own entity picker where it is available
 and falls back to a plain field with entity-id completion otherwise, so

@@ -9,12 +9,12 @@
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
 import { defineFaceplateEditor } from "../../core/card-editor";
 import { cardTitle } from "../../core/controls";
+import { hiddenNote, prepare } from "../../core/prepare";
 import { renderFaceplate } from "../../core/faceplate";
-import { DERIVED_ROLES, deviceEntityIds, resolveRoles } from "../../core/bind";
+import { DERIVED_ROLES, deviceEntityIds } from "../../core/bind";
 import { getFaceplate } from "../../faceplates/index";
 import {
   FaceplateCardConfig,
-  Faceplate,
   HomeAssistant,
   Region,
 } from "../../core/types";
@@ -56,13 +56,8 @@ class BmsMeterCard extends LitElement {
     return { type: `custom:${CARD}`, faceplate: "schneider-pm2200" };
   }
 
-  private _faceplate(): Faceplate {
-    return getFaceplate(CARD, this._config?.faceplate);
-  }
-
   private _onAction(region: Region): void {
-    const faceplate = this._faceplate();
-    const pages = faceplate.pages ?? [];
+    const pages = getFaceplate(CARD, this._config?.faceplate).pages ?? [];
     if (!pages.length) return;
 
     if (region.action === "page" && region.target) {
@@ -77,18 +72,16 @@ class BmsMeterCard extends LitElement {
   override render(): TemplateResult | typeof nothing {
     if (!this._config || !this.hass) return nothing;
 
-    const faceplate = this._faceplate();
-    // Derived roles are computed from their components, so what needs
-    // resolving is the components rather than the derived role itself.
-    const declared = [...new Set(faceplate.regions.map((r) => r.role))].filter(Boolean);
-    const roles = [
-      ...new Set(declared.flatMap((role) => DERIVED_ROLES[role] ?? [role])),
-    ];
-    const bindings = resolveRoles(
+    const { faceplate, bindings, roles, hidden } = prepare(
       this.hass,
-      roles,
-      this._config.entities ?? {},
-      this._config.device ? deviceEntityIds(this.hass, this._config.device) : []
+      this._config,
+      getFaceplate(CARD, this._config.faceplate),
+      this._config.device ? deviceEntityIds(this.hass, this._config.device) : [],
+      // Derived roles are computed from their components, so what needs
+      // resolving is the components rather than the derived role itself.
+      (declared: string[]) => [
+        ...new Set(declared.flatMap((role) => DERIVED_ROLES[role] ?? [role])),
+      ]
     );
 
     const unbound = roles.filter((role) => !bindings[role]);
@@ -98,6 +91,9 @@ class BmsMeterCard extends LitElement {
     return html`
       <ha-card>
         ${name ? html`<div class="title">${name}</div>` : nothing}
+        ${hidden
+          ? html`<div class="hint muted">${hiddenNote(hidden)}</div>`
+          : nothing}
         <div class="frame">
           ${renderFaceplate({
             hass: this.hass,

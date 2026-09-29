@@ -427,8 +427,18 @@ all, so the template should say so plainly.
   faceplate is accurate, but the card carries a permanent unmistakable band
   reading "BMS monitoring — not the fire panel", and no region is ever
   clickable.
-- **Unbound roles stay dark.** Never hide a region because nothing is bound;
-  hiding it makes a half-configured card look complete.
+- **Unbound controls are hidden, and the card says so.** This reverses the
+  original rule here, which was that unbound regions stay dark so a
+  half-configured card looks half-configured. In practice a faceplate
+  declares everything the equipment *could* have and most installations
+  have some of it, so that rule left every card speckled with dead
+  controls. The honesty is kept instead by a footer — "9 controls hidden
+  — nothing bound to them" — so clean never quietly means not wired up.
+  `hide_unbound: false` restores the old behaviour per card.
+- **A control and its labels hide together.** Regions carry a `group`; a
+  lone "PAN" over empty space is worse than no pan at all. The fire card
+  is the exception that proves it: there, a missing signal is named in
+  the banner rather than merely omitted.
 - **Stale data must be visible.** These integrations already track staleness.
   A faceplate showing a confident number from a dead point is exactly the
   failure the Niagara diagnostics work exists to prevent.

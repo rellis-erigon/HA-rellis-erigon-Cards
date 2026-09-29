@@ -6,7 +6,7 @@
  * faceplates/index.json instead, which is generated from this list.
  */
 
-import { Faceplate } from "../core/types";
+import { BuildContext, Faceplate } from "../core/types";
 import { PM2200 } from "./meter/pm2200";
 import { GENERIC_3PHASE } from "./meter/generic3phase";
 import { DIN_3PHASE } from "./meter/din3phase";
@@ -54,7 +54,8 @@ export function getFaceplate(card: string, id?: string): Faceplate {
  */
 export function resolveFaceplate(
   faceplate: Faceplate,
-  values: Record<string, number> = {}
+  values: Record<string, number> = {},
+  ctx?: BuildContext
 ): Faceplate {
   if (!faceplate.build) return faceplate;
   const merged: Record<string, number> = {};
@@ -65,5 +66,5 @@ export function resolveFaceplate(
         ? Math.max(option.min, Math.min(option.max, given))
         : option.default;
   }
-  return { ...faceplate, ...faceplate.build(merged) };
+  return { ...faceplate, ...faceplate.build(merged, ctx) };
 }

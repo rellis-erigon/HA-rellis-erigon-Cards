@@ -14,11 +14,11 @@
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
 import { defineFaceplateEditor } from "../../core/card-editor";
 import { cardTitle } from "../../core/controls";
+import { hiddenNote, prepare } from "../../core/prepare";
 import { renderFaceplate } from "../../core/faceplate";
-import { deviceEntityIds, readClimate, resolveRoles } from "../../core/bind";
+import { deviceEntityIds, readClimate } from "../../core/bind";
 import { getFaceplate } from "../../faceplates/index";
 import {
-  Faceplate,
   FaceplateCardConfig,
   HomeAssistant,
   Region,
@@ -56,10 +56,6 @@ class HvacControllerCard extends LitElement {
 
   static getStubConfig(): FaceplateCardConfig {
     return { type: `custom:${CARD}`, faceplate: "daikin-brc1e63" };
-  }
-
-  private _faceplate(): Faceplate {
-    return getFaceplate(CARD, this._config?.faceplate);
   }
 
   /** The setpoint the keys act on, whichever way the unit is bound. */
@@ -144,12 +140,14 @@ class HvacControllerCard extends LitElement {
 
   override render(): TemplateResult | typeof nothing {
     if (!this._config || !this.hass) return nothing;
-    const faceplate = this._faceplate();
-    const roles = [...new Set(faceplate.regions.map((r) => r.role))].filter(Boolean);
-    const bindings = resolveRoles(
+    const { faceplate, bindings, hidden } = prepare(
       this.hass,
-      roles,
-      this._config.entities ?? {},
+      // A climate entity supplies every role from its attributes, so
+      // nothing is "unbound" and there is nothing to hide.
+      this._config.climate
+        ? { ...this._config, hide_unbound: false }
+        : this._config,
+      getFaceplate(CARD, this._config.faceplate),
       this._config.device ? deviceEntityIds(this.hass, this._config.device) : []
     );
 
@@ -163,6 +161,9 @@ class HvacControllerCard extends LitElement {
               Nothing bound yet. Choose a climate entity in the editor, or map
               entities per role in YAML.
             </div>`
+          : nothing}
+        ${hidden
+          ? html`<div class="hint muted">${hiddenNote(hidden)}</div>`
           : nothing}
         <div class="frame">
           ${renderFaceplate({
