@@ -18,7 +18,10 @@ import { BRC315D7 } from "./hvac/brc315d7";
 import { PUMPSET } from "./plant/pumpset";
 import { BRC2E61 } from "./hvac/brc2e61";
 
-export const FACEPLATES: Faceplate[] = [CVM_E3_MINI, PM2200, DIN_3PHASE, GENERIC_3PHASE, MULTIJET_REGISTER, BRC1E63, BRC2E61, BRC1H63K_MADOKA, BRC315D7, PUMPSET];
+import { QSYS_ZONES } from "./audio/qsys-zones";
+import { ROOM_CONTROLLER } from "./av/room-controller";
+
+export const FACEPLATES: Faceplate[] = [CVM_E3_MINI, PM2200, DIN_3PHASE, GENERIC_3PHASE, MULTIJET_REGISTER, BRC1E63, BRC2E61, BRC1H63K_MADOKA, BRC315D7, PUMPSET, QSYS_ZONES, ROOM_CONTROLLER];
 
 export function faceplatesFor(card: string): Faceplate[] {
   return FACEPLATES.filter((f) => f.card === card);

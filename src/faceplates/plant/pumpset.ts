@@ -132,9 +132,12 @@ function build(values: Record<string, number>) {
       x: x + 14, y: MOTOR_Y - 46, w: 10, on: "#ef4444", off: "#2a1717",
     });
     regions.push({
+      // No unit is forced here: speed is reported as a percentage by some
+      // drives and as output frequency by others, and the region should
+      // say whichever the bound point actually carries.
       id: `spd${n}`, role: `pump${n}_speed`, kind: "text",
       x: x - 34, y: SKID_Y + 46, w: 68, align: "middle",
-      unit: "%", decimals: 0, size: 15, placeholder: "",
+      decimals: 1, size: 15, placeholder: "",
     });
     regions.push({
       // Current is the honest indicator of whether a pump is doing work.

@@ -57,8 +57,14 @@ export interface Region {
   /** lamp only */
   on?: string;
   off?: string;
-  /** bar only */
+  /**
+   * bar only: the ends of the scale. `min` defaults to 0, which suits a
+   * percentage or a current. An audio fader does not — it reads in dB from
+   * something like -80 to +10, and a bar assuming zero at the left would
+   * show every normal level as empty.
+   */
   max?: number;
+  min?: number;
   /** ring only: stroke width, and the radius measured from x,y as centre. */
   r?: number;
   stroke?: number;
@@ -84,8 +90,15 @@ export interface Region {
     | "temp_down"
     | "power_toggle"
     | "mode_cycle"
-    | "fan_cycle";
-  /** For action "page": which page to show. */
+    | "fan_cycle"
+    | "mute_toggle"
+    | "level_up"
+    | "level_down";
+  /**
+   * For action "page": which page to show. For the audio actions: which
+   * *role* the button acts on, so one strip in a rack of them knows which
+   * zone it belongs to. It is never an entity id — the card resolves it.
+   */
   target?: string;
   text?: string;
 }
@@ -182,6 +195,14 @@ export interface FaceplateCardConfig {
   climate?: string;
   /** Values for the faceplate's declared options. */
   options?: Record<string, number>;
+  /** How much a trim key moves a level, in the level's own units. */
+  step?: number;
+  /**
+   * Names to print on a repeated faceplate, keyed by the role prefix of the
+   * thing they name — `{ zone1: "Reception" }`. A rack of sixteen strips
+   * labelled ZONE 1..16 is useless to an operator who calls them by room.
+   */
+  labels?: Record<string, string>;
 }
 
 /** A role resolved to something renderable, or explicitly to nothing. */

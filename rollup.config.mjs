@@ -9,6 +9,8 @@ const cards = {
   "bms-meter-card": "src/cards/meter/bms-meter-card.ts",
   "hvac-controller-card": "src/cards/hvac/hvac-controller-card.ts",
   "pump-system-card": "src/cards/plant/pump-system-card.ts",
+  "audio-zone-card": "src/cards/audio/audio-zone-card.ts",
+  "room-controller-card": "src/cards/av/room-controller-card.ts",
 };
 
 const plugins = [
@@ -23,6 +25,15 @@ export default [
     output: { file: `dist/${name}.js`, format: "es", sourcemap: false },
     plugins,
   })),
+  // Not a card: the faceplate registry as a plain module, so tooling can
+  // enumerate faceplates and their roles by running them rather than by
+  // pattern-matching the source. Parametric faceplates build their regions
+  // at runtime, so a regex over the source cannot see their roles at all.
+  {
+    input: "src/faceplates/index.ts",
+    output: { file: "dist/faceplates-registry.mjs", format: "es", sourcemap: false },
+    plugins: [resolve(), typescript({ tsconfig: "./tsconfig.json", outputToFilesystem: true })],
+  },
   // Convenience bundle for anyone who would rather add one resource.
   {
     input: "src/all-cards.ts",

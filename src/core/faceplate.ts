@@ -145,10 +145,12 @@ function barRegion(region: Region, reading: Reading): SVGTemplateResult {
   const width = region.w ?? 100;
   const height = region.h ?? 10;
   const max = region.max ?? 100;
+  const min = region.min ?? 0;
+  const span = max - min || 1;
   const fraction =
     reading.dark || reading.value === undefined
       ? 0
-      : Math.max(0, Math.min(1, reading.value / max));
+      : Math.max(0, Math.min(1, (reading.value - min) / span));
   return svg`
     <rect class="bar-track" x=${region.x} y=${region.y} width=${width} height=${height} rx="2" />
     <rect
