@@ -18,10 +18,28 @@ See [PLAN.md](PLAN.md) for the full design and roadmap.
 |------|--------|-----------|
 | `bms-meter-card` | Available | CVM-E3-MINI, PM2200, DIN-rail, generic, water register |
 | `hvac-controller-card` | Available | Daikin BRC1E63, BRC2E61, BRC1H63K, BRC315D7 |
-| `distribution-board-card` | Planned | — |
 | `pump-system-card` | Available | Vertical multistage set, 1–10 pumps |
+| `audio-zone-card` | Available | Q-SYS zone rack, 1–16 zones |
+| `room-controller-card` | Available | Generic AV room |
+| `distribution-board-card` | Planned | — |
 | `fire-panel-card` | Planned | AMPAC FireFinder and others |
-| `qsys-zone-card`, `crestron-room-card` | Planned | — |
+
+`audio-zone-card` and `room-controller-card` write as well as read: mute
+toggles, and the trim keys step a level entity, clamped to the range that
+entity declares.
+
+## Letting a bridge build the card for you
+
+The Niagara, Q-SYS and Crestron bridges each generate a card for what they
+have discovered, so the entity ids never have to be typed out:
+
+| Bridge | How | What you get |
+|--------|-----|--------------|
+| Niagara BMS | Type a device against a template | The faceplate card plus a list of whatever the faceplate does not draw. The face is picked per device, because a template matches equipment of every make. |
+| Q-SYS | `qsys_bridge.generate_zone_card` | One rack carrying every exposed zone, each strip labelled with the device's own name. |
+| Crestron | `crestron_cip.generate_room_card` | A room assembled by matching join names to roles — returned with its working, because it is a guess. |
+
+Each returns the card and its YAML, so you can paste it or check it first.
 
 ## Installing
 

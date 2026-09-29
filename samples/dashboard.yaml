@@ -22,6 +22,30 @@ views:
 
       Product names and marks belong to their respective owners; these cards are independent
       and unaffiliated.'
+- title: Audio
+  path: audio-zone-card
+  icon: mdi:speaker
+  cards:
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+    - type: markdown
+      content: "### Q-SYS Zone Rack\n`faceplate: qsys-zone-rack`  \nEmulates Q-SYS zone outputs."
+    - type: custom:audio-zone-card
+      faceplate: qsys-zone-rack
+      name: ''
+      entities:
+        zone1_mute: switch.zone1_mute
+        zone1_volume: number.zone1_volume
+        zone2_mute: switch.zone2_mute
+        zone2_volume: number.zone2_volume
+        zone3_mute: switch.zone3_mute
+        zone3_volume: number.zone3_volume
+        zone4_mute: switch.zone4_mute
+        zone4_volume: number.zone4_volume
+      options:
+        zones: 4
 - title: Meters
   path: bms-meter-card
   icon: mdi:gauge
@@ -131,17 +155,33 @@ views:
       faceplate: vertical-pumpset
       name: ''
       entities:
-        system_pressure: sensor.pumpset_system_pressure
-        pump1_speed: sensor.pumpset_pump1_speed
-        pump1_current: sensor.pumpset_pump1_current
-        pump2_speed: sensor.pumpset_pump2_speed
-        pump2_current: sensor.pumpset_pump2_current
-        pump3_speed: sensor.pumpset_pump3_speed
-        pump3_current: sensor.pumpset_pump3_current
-        pump1_run: sensor.pumpset_pump1_run
-        pump2_run: sensor.pumpset_pump2_run
-        pump3_run: sensor.pumpset_pump3_run
-        pressure_setpoint: sensor.pumpset_pressure_setpoint
         common_fault: sensor.pumpset_common_fault
+        pressure_setpoint: sensor.pumpset_pressure_setpoint
+        pump1_current: sensor.pumpset_pump1_current
+        pump1_run: sensor.pumpset_pump1_run
+        pump1_speed: sensor.pumpset_pump1_speed
+        pump2_current: sensor.pumpset_pump2_current
+        pump2_run: sensor.pumpset_pump2_run
+        pump2_speed: sensor.pumpset_pump2_speed
+        pump3_current: sensor.pumpset_pump3_current
+        pump3_run: sensor.pumpset_pump3_run
+        pump3_speed: sensor.pumpset_pump3_speed
+        system_pressure: sensor.pumpset_system_pressure
       options:
         pumps: 3
+- title: Rooms
+  path: room-controller-card
+  icon: mdi:television-classic
+  cards:
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+    - type: markdown
+      content: '### AV Room Controller
+
+        `faceplate: av-room-controller`'
+    - type: custom:room-controller-card
+      faceplate: av-room-controller
+      name: ''
+      entities: *id002
