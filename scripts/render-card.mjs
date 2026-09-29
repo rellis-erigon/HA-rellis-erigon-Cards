@@ -25,6 +25,14 @@ globalThis.window = w;
 globalThis.document = w.document;
 globalThis.customElements = w.customElements;
 
+// Node has its own global Event and CustomEvent, so the loop above skips
+// jsdom's — and jsdom refuses to dispatch an event object it did not
+// create. Force the window's versions, or anything the card dispatches
+// (config-changed, a button press) throws.
+for (const k of ["Event", "CustomEvent", "MouseEvent", "KeyboardEvent"]) {
+  globalThis[k] = w[k];
+}
+
 const [src, name, configPath] = process.argv.slice(2);
 const tmp = "/tmp/_card_to_render.mjs";
 copyFileSync(src, tmp);

@@ -12,9 +12,10 @@
  */
 
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
+import { defineFaceplateEditor } from "../../core/card-editor";
 import { renderFaceplate } from "../../core/faceplate";
 import { deviceEntityIds, readClimate, resolveRoles } from "../../core/bind";
-import { faceplatesFor, getFaceplate } from "../../faceplates/index";
+import { getFaceplate } from "../../faceplates/index";
 import {
   Faceplate,
   FaceplateCardConfig,
@@ -153,8 +154,8 @@ class HvacControllerCard extends LitElement {
 
     return html`
       <ha-card>
-        ${this._config.name
-          ? html`<div class="title">${this._config.name}</div>`
+        ${this._config.title || this._config.name
+          ? html`<div class="title">${this._config.title ?? this._config.name}</div>`
           : nothing}
         ${!this._config.climate && !this._config.entities
           ? html`<div class="hint">
@@ -299,112 +300,8 @@ class HvacControllerCard extends LitElement {
   `;
 }
 
-class HvacControllerCardEditor extends LitElement {
-  static override properties = {
-    hass: { attribute: false },
-    _config: { state: true },
-  };
-
-  declare hass?: HomeAssistant;
-  declare private _config?: FaceplateCardConfig;
-
-  setConfig(config: FaceplateCardConfig): void {
-    this._config = config;
-  }
-
-  private _emit(changes: Partial<FaceplateCardConfig>): void {
-    const config = { ...this._config, ...changes } as FaceplateCardConfig;
-    this.dispatchEvent(
-      new CustomEvent("config-changed", { detail: { config }, bubbles: true, composed: true })
-    );
-  }
-
-  override render(): TemplateResult | typeof nothing {
-    if (!this._config || !this.hass) return nothing;
-    const options = faceplatesFor(CARD);
-    const current = getFaceplate(CARD, this._config.faceplate);
-    const climates = Object.keys(this.hass.states)
-      .filter((id) => id.startsWith("climate."))
-      .sort();
-
-    return html`
-      <div class="editor">
-        <label>
-          Controller
-          <select @change=${(e: Event) =>
-            this._emit({ faceplate: (e.target as HTMLSelectElement).value })}>
-            ${options.map(
-              (f) => html`<option value=${f.id} ?selected=${f.id === current.id}>
-                ${f.name}
-              </option>`
-            )}
-          </select>
-        </label>
-        <p class="note">${current.description ?? ""}</p>
-        <label>
-          Climate entity
-          <select @change=${(e: Event) =>
-            this._emit({ climate: (e.target as HTMLSelectElement).value })}>
-            <option value="">— none —</option>
-            ${climates.map(
-              (id) => html`<option value=${id} ?selected=${id === this._config?.climate}>
-                ${id}
-              </option>`
-            )}
-          </select>
-        </label>
-        ${climates.length
-          ? nothing
-          : html`<p class="warn">
-              No climate entities exist on this system. Without one the
-              controller is read-only, and its readings must be mapped
-              per-role in YAML.
-            </p>`}
-        ${current.emulates
-          ? html`<p class="note">Emulates ${current.emulates}. Product names
-              and marks belong to their respective owners.</p>`
-          : nothing}
-      </div>
-    `;
-  }
-
-  static override styles = css`
-    .editor {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding: 8px 0;
-    }
-    label {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      font-size: 13px;
-      color: var(--secondary-text-color);
-    }
-    select {
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: 1px solid var(--divider-color);
-      background: var(--card-background-color);
-      color: var(--primary-text-color);
-      font: inherit;
-    }
-    .note {
-      margin: 0;
-      font-size: 12px;
-      color: var(--secondary-text-color);
-    }
-    .warn {
-      margin: 0;
-      font-size: 12px;
-      color: var(--warning-color, #d98600);
-    }
-  `;
-}
-
 customElements.define(CARD, HvacControllerCard);
-customElements.define(`${CARD}-editor`, HvacControllerCardEditor);
+defineFaceplateEditor(CARD);
 
 (window as unknown as { customCards?: unknown[] }).customCards ??= [];
 (window as unknown as { customCards: unknown[] }).customCards.push({

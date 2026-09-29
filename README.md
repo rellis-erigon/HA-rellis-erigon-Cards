@@ -31,6 +31,23 @@ See [PLAN.md](PLAN.md) for the full design and roadmap.
 toggles, and the trim keys step a level entity, clamped to the range that
 entity declares.
 
+## Adding a card the ordinary way
+
+Add card → search for it → fill in the fields. Every card has a visual
+editor with a **field per point**, so nothing has to be written by hand:
+
+- **Faceplate** — which graphic, with the model it emulates listed.
+- **Device** — set this and every point below is matched from that
+  device's entities. Takes the device id or its name.
+- **Options** — number of pumps, zones, units, and so on, where the
+  faceplate is parametric. The point list changes to match.
+- **One field per role** — `Volts l1`, `Pump1 speed`, `Zone3 mute`. Left
+  blank, that region stays dark rather than disappearing.
+
+The editor uses Home Assistant's own entity picker where it is available
+and falls back to a plain field with entity-id completion otherwise, so
+it is never blank.
+
 ## Letting a bridge build the card for you
 
 The Niagara, Q-SYS and Crestron bridges each generate a card for what they

@@ -201,6 +201,12 @@ export interface HomeAssistant {
 export interface FaceplateCardConfig {
   type: string;
   faceplate?: string;
+  /**
+   * Heading above the faceplate. `title` is what Lovelace and the
+   * generated cards use; `name` is the older spelling here and is still
+   * read so existing dashboards keep their headings.
+   */
+  title?: string;
   name?: string;
   /** Explicit role → entity mapping. Wins over everything else. */
   entities?: Record<string, string>;

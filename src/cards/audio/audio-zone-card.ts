@@ -13,9 +13,10 @@
  */
 
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
+import { defineFaceplateEditor } from "../../core/card-editor";
 import { renderFaceplate } from "../../core/faceplate";
 import { deviceEntityIds, resolveRoles } from "../../core/bind";
-import { faceplatesFor, getFaceplate, resolveFaceplate } from "../../faceplates/index";
+import { getFaceplate, resolveFaceplate } from "../../faceplates/index";
 import { runControlAction, withLabels, DEFAULT_STEP } from "../../core/controls";
 import { Faceplate, FaceplateCardConfig, HomeAssistant, Region } from "../../core/types";
 
@@ -92,8 +93,8 @@ class AudioZoneCard extends LitElement {
 
     return html`
       <ha-card>
-        ${this._config.name
-          ? html`<div class="title">${this._config.name}</div>`
+        ${this._config.title || this._config.name
+          ? html`<div class="title">${this._config.title ?? this._config.name}</div>`
           : nothing}
         <div class="frame">
           ${renderFaceplate({
@@ -184,116 +185,10 @@ class AudioZoneCard extends LitElement {
   `;
 }
 
-class AudioZoneCardEditor extends LitElement {
-  static override properties = {
-    hass: { attribute: false },
-    _config: { state: true },
-  };
-
-  declare hass?: HomeAssistant;
-  declare private _config?: FaceplateCardConfig;
-
-  setConfig(config: FaceplateCardConfig): void {
-    this._config = config;
-  }
-
-  private _emit(changes: Partial<FaceplateCardConfig>): void {
-    const config = { ...this._config, ...changes } as FaceplateCardConfig;
-    this.dispatchEvent(
-      new CustomEvent("config-changed", { detail: { config }, bubbles: true, composed: true })
-    );
-  }
-
-  override render(): TemplateResult | typeof nothing {
-    if (!this._config) return nothing;
-    const options = faceplatesFor(CARD);
-    const current = getFaceplate(CARD, this._config.faceplate);
-    const values = this._config.options ?? {};
-
-    return html`
-      <div class="editor">
-        <label>
-          Faceplate
-          <select @change=${(e: Event) =>
-            this._emit({ faceplate: (e.target as HTMLSelectElement).value })}>
-            ${options.map(
-              (f) => html`<option value=${f.id} ?selected=${f.id === current.id}>
-                ${f.name}
-              </option>`
-            )}
-          </select>
-        </label>
-        ${(current.options ?? []).map(
-          (option) => html`
-            <label>
-              ${option.label}
-              <input
-                type="number"
-                min=${option.min}
-                max=${option.max}
-                .value=${String(values[option.key] ?? option.default)}
-                @change=${(e: Event) =>
-                  this._emit({
-                    options: {
-                      ...values,
-                      [option.key]: Number((e.target as HTMLInputElement).value),
-                    },
-                  })}
-              />
-              ${option.help ? html`<span class="note">${option.help}</span>` : nothing}
-            </label>
-          `
-        )}
-        <label>
-          Trim step (dB)
-          <input
-            type="number"
-            min="0.5"
-            max="12"
-            step="0.5"
-            .value=${String(this._config.step ?? DEFAULT_STEP)}
-            @change=${(e: Event) =>
-              this._emit({ step: Number((e.target as HTMLInputElement).value) })}
-          />
-        </label>
-        <p class="note">${current.description ?? ""}</p>
-      </div>
-    `;
-  }
-
-  static override styles = css`
-    .editor {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding: 8px 0;
-    }
-    label {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      font-size: 13px;
-      color: var(--secondary-text-color);
-    }
-    select,
-    input {
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: 1px solid var(--divider-color);
-      background: var(--card-background-color);
-      color: var(--primary-text-color);
-      font: inherit;
-    }
-    .note {
-      margin: 0;
-      font-size: 12px;
-      color: var(--secondary-text-color);
-    }
-  `;
-}
-
 customElements.define(CARD, AudioZoneCard);
-customElements.define(`${CARD}-editor`, AudioZoneCardEditor);
+defineFaceplateEditor(CARD, {
+  numbers: [{ key: "step", label: "Trim step (dB)", min: 0.5, max: 12, step: 0.5 }],
+});
 
 (window as unknown as { customCards?: unknown[] }).customCards ??= [];
 (window as unknown as { customCards: unknown[] }).customCards.push({
