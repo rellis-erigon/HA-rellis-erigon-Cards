@@ -1,10 +1,16 @@
 /**
- * pump-system-card — a booster set drawn at the size it actually is.
+ * fire-panel-card — what the BMS sees of a fire panel. Nothing more.
  *
- * The faceplate is parametric: choose the number of pumps and the skid,
- * manifold and roles are built to suit, from one pump to ten. Roles follow
- * the Niagara pump-set template — `pump1_run`, `pump1_speed`, and so on —
- * so a device typed there resolves without a role map.
+ * This card is monitoring only and is built so that it cannot become
+ * anything else: no region is clickable, no action is wired, and every
+ * instance carries a permanent band reading "BMS MONITORING — NOT THE
+ * FIRE PANEL". The band is not configurable. That is deliberate.
+ *
+ * The risk being designed against is specific: a mimic accurate enough to
+ * pass for the real fascia is one somebody eventually trusts during an
+ * incident, when the BMS link may be exactly the thing that has failed.
+ * Stale or unbound zones therefore stay visibly dark rather than reading
+ * as "no alarm".
  */
 
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
@@ -13,9 +19,9 @@ import { deviceEntityIds, resolveRoles } from "../../core/bind";
 import { faceplatesFor, getFaceplate, resolveFaceplate } from "../../faceplates/index";
 import { Faceplate, FaceplateCardConfig, HomeAssistant } from "../../core/types";
 
-const CARD = "pump-system-card";
+const CARD = "fire-panel-card";
 
-class PumpSystemCard extends LitElement {
+class FirePanelCard extends LitElement {
   static override properties = {
     hass: { attribute: false },
     _config: { state: true },
@@ -40,8 +46,8 @@ class PumpSystemCard extends LitElement {
   static getStubConfig(): FaceplateCardConfig {
     return {
       type: `custom:${CARD}`,
-      faceplate: "vertical-pumpset",
-      options: { pumps: 3 },
+      faceplate: "generic-fip",
+      options: { zones: 8 },
     };
   }
 
@@ -69,20 +75,22 @@ class PumpSystemCard extends LitElement {
         ${this._config.name
           ? html`<div class="title">${this._config.name}</div>`
           : nothing}
+        <div class="banner">BMS MONITORING — NOT THE FIRE PANEL</div>
         <div class="frame">
           ${renderFaceplate({
             hass: this.hass,
             faceplate,
             bindings,
             page: "",
+            // Never actionable. See the note at the top of this file.
             onAction: () => undefined,
           })}
         </div>
         ${bound === 0
           ? html`<div class="hint">
-              Nothing bound. Map <code>pump1_run</code>,
-              <code>system_pressure</code> and the rest in YAML, or point the
-              card at a device typed as a pump set.
+              Nothing bound. Map <code>fire_alarm</code>,
+              <code>zone1_alarm</code> and the rest, or point the card at a
+              device with <code>device:</code>.
             </div>`
           : nothing}
       </ha-card>
@@ -133,6 +141,17 @@ class PumpSystemCard extends LitElement {
     .lamp.lit {
       filter: drop-shadow(0 0 5px currentColor);
     }
+    .banner {
+      background: #7f1d1d;
+      color: #fee2e2;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 1.4px;
+      text-align: center;
+      padding: 6px 8px;
+      border-radius: 6px;
+      margin: 0 0 10px;
+    }
     .hint {
       padding: 8px 4px 2px;
       color: var(--secondary-text-color);
@@ -141,7 +160,7 @@ class PumpSystemCard extends LitElement {
   `;
 }
 
-class PumpSystemCardEditor extends LitElement {
+class FirePanelCardEditor extends LitElement {
   static override properties = {
     hass: { attribute: false },
     _config: { state: true },
@@ -237,14 +256,14 @@ class PumpSystemCardEditor extends LitElement {
   `;
 }
 
-customElements.define(CARD, PumpSystemCard);
-customElements.define(`${CARD}-editor`, PumpSystemCardEditor);
+customElements.define(CARD, FirePanelCard);
+customElements.define(`${CARD}-editor`, FirePanelCardEditor);
 
 (window as unknown as { customCards?: unknown[] }).customCards ??= [];
 (window as unknown as { customCards: unknown[] }).customCards.push({
   type: CARD,
-  name: "Pump System Card",
-  description: "A booster set from one pump to ten, drawn to suit.",
+  name: "Fire Panel Card",
+  description: "Zone and status mimic. Monitoring only — never the panel.",
   preview: true,
   documentationURL: "https://github.com/rellis-erigon/HA-rellis-erigon-Cards",
 });

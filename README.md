@@ -16,11 +16,14 @@ See [PLAN.md](PLAN.md) for the full design and roadmap.
 
 | Card | Status | Faceplates |
 |------|--------|-----------|
-| `bms-meter-card` | Available | CVM-E3-MINI, PM2200, DIN-rail, generic, water register |
+| `bms-meter-card` | Available | CVM-E3-MINI, PM2200, DIN-rail, generic, and six water registers (multi-jet, Woltmann, LCD, dial, compound, smart) |
 | `hvac-controller-card` | Available | Daikin BRC1E63, BRC2E61, BRC1H63K, BRC315D7 |
 | `pump-system-card` | Available | Vertical multistage set, 1–10 pumps |
 | `audio-zone-card` | Available | Q-SYS zone rack, 1–16 zones |
 | `room-controller-card` | Available | Generic AV room |
+| `plant-equipment-card` | Available | Supply fans (top/left/right inlet), exhaust fan, hot water unit 1–2, circulators 1–4 |
+| `fire-panel-card` | Available | Generic FIP, 0–24 zones. **Monitoring only** — permanent banner, nothing clickable |
+| `audio-mixer-card` | Planned | Full DSP domain: channel strips, matrix, EQ, metering |
 | `distribution-board-card` | Planned | — |
 | `fire-panel-card` | Planned | AMPAC FireFinder and others |
 

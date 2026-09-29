@@ -28,6 +28,11 @@ export const ROLE_SLOTS: Record<string, string[]> = {
   power_factor: ["power_factor"],
   frequency: ["frequency"],
   volume_total: ["volume_total", "water_total", "volume"],
+  bypass_total: ["bypass_total"],
+  flow_rate: ["flow_rate", "flow"],
+  battery: ["battery"],
+  alarm: ["alarm", "common_fault", "fault"],
+  reverse_flow: ["reverse_flow", "reverse"],
 };
 
 /**
@@ -52,6 +57,14 @@ const ROLE_PATTERNS: Record<string, RegExp> = {
   // Cumulative volume. Anchored to totals: a daily or weekly register is
   // not a lifetime total and must never be bound as one.
   volume_total: /_cubicmetre$|_volume_total$|_water_total$|watermeter_total$/,
+  // A second register on a compound body, not a share of the first.
+  bypass_total: /_bypass_total$|_bypass_cubicmetre$/,
+  // Rate, never a total: a register bound here would climb forever and
+  // read as a flow that never stops.
+  flow_rate: /_flow_rate$|_flowrate$|_l_min$|_l_s$|_m3_h$/,
+  battery: /_battery$|_battery_level$|_batt$/,
+  alarm: /_alarm$|_common_fault$/,
+  reverse_flow: /_reverse_flow$|_reverse$/,
 };
 
 const UNAVAILABLE = new Set(["unavailable", "unknown", "none", ""]);
@@ -66,6 +79,45 @@ export const DERIVED_ROLES: Record<string, string[]> = {
   volts_avg: ["volts_l1", "volts_l2", "volts_l3"],
   current_avg: ["current_l1", "current_l2", "current_l3"],
 };
+
+/**
+ * The entity ids belonging to a device, for `device:` in a card config.
+ *
+ * Takes an id or the name shown in Home Assistant, because a device id is
+ * a 32-character hash that nobody wants to type or read back later.
+ *
+ * Only entities that currently have a state are returned. The registry
+ * also lists disabled ones, and binding a role to an entity that will
+ * never report is worse than leaving the region dark — it looks bound.
+ */
+export function deviceEntityIds(hass: HomeAssistant, device: string): string[] {
+  const registry = hass.entities ?? {};
+
+  let deviceId = device;
+  const devices = hass.devices ?? {};
+  if (!devices[device]) {
+    const wanted = device.trim().toLowerCase();
+    const match = Object.entries(devices).find(
+      ([id, d]) =>
+        (d.name_by_user ?? "").trim().toLowerCase() === wanted ||
+        (d.name ?? "").trim().toLowerCase() === wanted ||
+        id === device
+    );
+    if (match) deviceId = match[0];
+  }
+
+  const ids = Object.values(registry)
+    .filter((entry) => entry.device_id === deviceId)
+    .map((entry) => entry.entity_id)
+    .filter((id) => hass.states[id] !== undefined)
+    .sort();
+  if (ids.length) return ids;
+
+  // Last resort: treat the value as a fragment of the entity ids. Older
+  // frontends do not expose the registry, and a card that silently binds
+  // nothing is harder to diagnose than one that guesses from the name.
+  return Object.keys(hass.states).filter((id) => id.includes(device)).sort();
+}
 
 /** Build the role → entity id map for a card. */
 export function resolveRoles(

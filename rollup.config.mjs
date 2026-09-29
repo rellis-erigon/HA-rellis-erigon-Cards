@@ -11,6 +11,10 @@ const cards = {
   "pump-system-card": "src/cards/plant/pump-system-card.ts",
   "audio-zone-card": "src/cards/audio/audio-zone-card.ts",
   "room-controller-card": "src/cards/av/room-controller-card.ts",
+  // Not a card: a dashboard/view strategy, added as its own resource.
+  "plant-equipment-card": "src/cards/plant/plant-equipment-card.ts",
+  "fire-panel-card": "src/cards/fire/fire-panel-card.ts",
+  "bridge-devices-strategy": "src/strategy/bridge-devices.ts",
 };
 
 const plugins = [

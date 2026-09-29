@@ -18,10 +18,22 @@ import { BRC315D7 } from "./hvac/brc315d7";
 import { PUMPSET } from "./plant/pumpset";
 import { BRC2E61 } from "./hvac/brc2e61";
 
+import { WOLTMANN_REGISTER } from "./meter/woltmann-register";
+import { LCD_WATER_METER } from "./meter/lcd-water-meter";
+import { DIAL_WATER_METER } from "./meter/dial-water-meter";
+import { COMPOUND_METER } from "./meter/compound-meter";
+import { SMART_WATER_METER } from "./meter/smart-water-meter";
+import { SUPPLY_FAN_TOP, SUPPLY_FAN_LEFT, SUPPLY_FAN_RIGHT, EXHAUST_FAN } from "./plant/fans";
+import { HOT_WATER_UNIT } from "./plant/hot-water-unit";
+import { CIRCULATION_PUMPS } from "./plant/circulation-pumps";
+import { GENERIC_FIP } from "./fire/generic-fip";
 import { QSYS_ZONES } from "./audio/qsys-zones";
 import { ROOM_CONTROLLER } from "./av/room-controller";
 
-export const FACEPLATES: Faceplate[] = [CVM_E3_MINI, PM2200, DIN_3PHASE, GENERIC_3PHASE, MULTIJET_REGISTER, BRC1E63, BRC2E61, BRC1H63K_MADOKA, BRC315D7, PUMPSET, QSYS_ZONES, ROOM_CONTROLLER];
+export const FACEPLATES: Faceplate[] = [CVM_E3_MINI, PM2200, DIN_3PHASE, GENERIC_3PHASE, MULTIJET_REGISTER, BRC1E63, BRC2E61, BRC1H63K_MADOKA, BRC315D7, PUMPSET, QSYS_ZONES, ROOM_CONTROLLER,
+  WOLTMANN_REGISTER, LCD_WATER_METER, DIAL_WATER_METER, COMPOUND_METER, SMART_WATER_METER,
+  SUPPLY_FAN_TOP, SUPPLY_FAN_LEFT, SUPPLY_FAN_RIGHT, EXHAUST_FAN,
+  HOT_WATER_UNIT, CIRCULATION_PUMPS, GENERIC_FIP];
 
 export function faceplatesFor(card: string): Faceplate[] {
   return FACEPLATES.filter((f) => f.card === card);

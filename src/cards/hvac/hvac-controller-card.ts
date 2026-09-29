@@ -13,7 +13,7 @@
 
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
 import { renderFaceplate } from "../../core/faceplate";
-import { readClimate, resolveRoles } from "../../core/bind";
+import { deviceEntityIds, readClimate, resolveRoles } from "../../core/bind";
 import { faceplatesFor, getFaceplate } from "../../faceplates/index";
 import {
   Faceplate,
@@ -144,7 +144,12 @@ class HvacControllerCard extends LitElement {
     if (!this._config || !this.hass) return nothing;
     const faceplate = this._faceplate();
     const roles = [...new Set(faceplate.regions.map((r) => r.role))].filter(Boolean);
-    const bindings = resolveRoles(this.hass, roles, this._config.entities ?? {});
+    const bindings = resolveRoles(
+      this.hass,
+      roles,
+      this._config.entities ?? {},
+      this._config.device ? deviceEntityIds(this.hass, this._config.device) : []
+    );
 
     return html`
       <ha-card>

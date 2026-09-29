@@ -166,6 +166,43 @@ Ordered by what earns its keep first on this estate.
 | `tank-card` | Level gauge | DCW tanks |
 | `water-meter-card` | Mechanical multi-jet register | See below |
 
+### Water metering — a family, not one face
+
+Water registers vary more than electricity meters do, and a site has
+several kinds side by side. All ride on `bms-meter-card`.
+
+| Faceplate | Style | Roles |
+|---|---|---|
+| `multijet-water-register` | **Built.** Mechanical odometer plus sweep dials | `volume_total` |
+| `woltmann-register` | Straight-reading bulk register, black m³ digits, red decimals | `volume_total` |
+| `lcd-water-meter` | Digital LCD: total, instantaneous flow, battery | `volume_total`, `flow_rate`, `battery` |
+| `dial-water-meter` | Circular dial face with a sweep pointer | `volume_total`, `flow_rate` |
+| `compound-meter` | Two registers, main and bypass, on one body | `volume_total`, `bypass_total`, `flow_rate` |
+| `smart-water-meter` | LCD with leak/burst/reverse-flow annunciators | `volume_total`, `flow_rate`, `battery`, `alarm`, `reverse_flow` |
+
+Needs new role patterns for `flow_rate`, `battery` and the alarm flags —
+`ROLE_PATTERNS` currently stops at `volume_total`.
+
+### Plant mimics — `plant-equipment-card`
+
+Ductwork and pipework have a direction, and a mimic that points the wrong
+way is worse than no mimic: someone reads it as the airflow. So the fan
+faceplates differ by where the duct enters, not by a mirrored icon.
+
+| Faceplate | What it draws | Roles |
+|---|---|---|
+| `supply-fan-top` | Supply fan, duct entering from above | `run`, `fault`, `speed`, `flow`, `filter_dp` |
+| `supply-fan-left` | Supply fan, duct entering from the left | same |
+| `supply-fan-right` | Supply fan, duct entering from the right | same |
+| `exhaust-fan` | Exhaust fan, discharge to atmosphere | `run`, `fault`, `speed`, `flow` |
+| `hot-water-unit` | Calorifier with primary/secondary, **1–2 units** | `flow_temp`, `return_temp`, `setpoint`, `tank_temp`, `unitN_run`, `unitN_fault` |
+| `circulation-pump-set` | Circulator set, **1–4 pumps**, hot or cold service | `pumpN_run`, `pumpN_fault`, `flow_temp`, `return_temp`, `service` |
+
+`hot-water-unit` and `circulation-pump-set` are parametric, like the
+booster set: a duty/standby pair and a single unit are the same drawing at
+different widths. `service` on the circulator set switches the pipework
+colour between hot and cold rather than needing two faceplates.
+
 ### Fire and safety
 | Card | Faceplates at launch | Notes |
 |------|---------------------|-------|
@@ -174,8 +211,59 @@ Ordered by what earns its keep first on this estate.
 ### AV
 | Card | Faceplates at launch | Notes |
 |------|---------------------|-------|
-| `qsys-zone-card` | Fader strip | Gain and mute per zone, position-driven fader |
-| `crestron-room-card` | Room panel | Source select, volume, mics — driven by joins |
+| `audio-zone-card` | Q-SYS zone rack | **Built.** Level, mute and trim, 1–16 strips in one rack |
+| `room-controller-card` | AV room panel | **Built.** Source, display, volume, mute, mic/fault/online |
+| `audio-mixer-card` | Channel strip, matrix, zone master | **To build.** The full mixer domain — see below |
+
+#### `audio-mixer-card` — the abstract mixer domain
+
+`audio-zone-card` covers the thin slice the Q-SYS bridge exposes today: a
+gain and a mute per zone. A real DSP is much more than that, and the same
+abstraction covers Q-SYS, Crestron and Biamp because they all model the
+same objects. The card should be built against this domain rather than
+against any one backend.
+
+| Functional domain | Purpose | HA platform | Unique ID pattern | Value / type | Backend mapping |
+|---|---|---|---|---|---|
+| Channel Level | Primary fader | `number` (or `media_player`) | `number.mixer_{ch}_gain` | Float −100.0…+10.0 dB, step 0.5 | Q-SYS `input.{ch}.gain` · Crestron analog join / CIP gain offset · Biamp `set gain {ch}` |
+| Channel Mute | Mute input/output/bus | `switch` | `switch.mixer_{ch}_mute` | Boolean | Q-SYS `input.{ch}.mute` · Crestron digital join · Biamp `set mute {ch}` |
+| Polarity Invert | 180° phase | `switch` | `switch.mixer_{ch}_polarity` | Boolean | Q-SYS `invert` · Crestron phase-invert join |
+| Pan / Balance | L/R placement | `number` | `number.mixer_{ch}_pan` | Float −100 (L)…+100 (R) | Q-SYS `pan` · Crestron pan analog join |
+| Crosspoint Gain | Route level In X → Out Y | `number` | `number.mixer_matrix_in{x}_out{y}_gain` | Float −100.0…+10.0 dB | Q-SYS `crosspoint.{x}.{y}.gain` · Crestron matrix crosspoint gain |
+| Crosspoint State | Route connect/disconnect | `switch` | `switch.mixer_matrix_in{x}_out{y}_enable` | Boolean | Q-SYS `crosspoint.{x}.{y}.mute` (inverted) · Crestron crosspoint connect join |
+| Source Selector | Input feeding an output | `select` | `select.mixer_zone_{z}_source` | Options list | Q-SYS `selector.select` · Crestron analog join / router source select |
+| High-Pass Filter | Rumble filter enable | `switch` | `switch.mixer_{ch}_hpf_enable` | Boolean | Q-SYS `hpf.enable` · Crestron HPF on/off join |
+| HPF Frequency | Cutoff | `number` | `number.mixer_{ch}_hpf_freq` | Int 20…500 Hz | Q-SYS `hpf.frequency` · Crestron HPF freq join |
+| Parametric EQ Band | Band gain | `number` | `number.mixer_{ch}_eq_b{b}_gain` | Float −18.0…+18.0 dB | Q-SYS `band.{b}.gain` · Crestron PEQ gain join |
+| Compressor Threshold | Dynamics trigger | `number` | `number.mixer_{ch}_comp_threshold` | Float −60.0…0.0 dB | Q-SYS `comp.threshold` · Crestron comp threshold join |
+| Peak Level Meter | Real-time amplitude | `sensor` | `sensor.mixer_{ch}_peak_meter` | Float −100.0…0.0 dBFS, `state_class: measurement` | Q-SYS `meter.peak` · Crestron peak level join |
+| Clip Indicator | Overload / digital clip | `binary_sensor` | `binary_sensor.mixer_{ch}_clip` | Boolean, `device_class: problem` | Q-SYS `clip` · Crestron clip digital join |
+| Automixer Status | Speech gate open | `binary_sensor` | `binary_sensor.mixer_{ch}_automix_active` | Boolean | Q-SYS `automixer.ch{x}.active` · Crestron gate-open join |
+| Scene / Preset | Snapshot recall | `button` / `select` | `button.mixer_scene_{s}_recall` | Momentary / string | Q-SYS `snapshot.{s}.load` · Crestron preset recall join |
+| Talkback Mic | Operator talkback | `switch` / `button` | `switch.mixer_talkback_enable` | Momentary / toggle | Q-SYS `talkback.enable` · Crestron talkback mute join |
+| Master Zone Output | Room/zone master | `media_player` | `media_player.mixer_zone_{z}` | Volume 0.0…1.0 + mute | Aggregates level, mute and source into one HA entity |
+
+**Notes for whoever builds it.**
+
+- The unique-id column is the *target* shape, not what the bridges emit
+  today. Q-SYS currently names entities after the component and control,
+  so either the bridge grows a mixer-aware naming mode or the card binds
+  by explicit role map. Do not rename existing entities to fit this: that
+  breaks every dashboard and statistic already pointing at them.
+- Several rows need engine work that does not exist yet: a **meter** region
+  that updates fast enough to be worth calling a meter, a **matrix** region
+  for the crosspoint grid, and a **fader** the user can drag rather than
+  step. The trim keys on `audio-zone-card` were a deliberate shortcut
+  around the last of these.
+- A peak meter at a useful refresh rate is a real load question. HA state
+  updates are not a metering bus, and 32 channels of dBFS at 10 Hz is not
+  something to put on the recorder — those entities want
+  `state_class` left off and recorder exclusion, or the card should read
+  them over a separate channel.
+- `media_player` for the zone master is worth taking seriously: it gets
+  volume, mute and source select in the standard HA UI for free, and the
+  card becomes the pretty face rather than the only way to use it.
+
 
 ### Done: mechanical water meter register
 

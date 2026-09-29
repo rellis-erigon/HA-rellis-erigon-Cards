@@ -14,7 +14,7 @@
 
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
 import { renderFaceplate } from "../../core/faceplate";
-import { resolveRoles } from "../../core/bind";
+import { deviceEntityIds, resolveRoles } from "../../core/bind";
 import { faceplatesFor, getFaceplate, resolveFaceplate } from "../../faceplates/index";
 import { runControlAction, withLabels, DEFAULT_STEP } from "../../core/controls";
 import { Faceplate, FaceplateCardConfig, HomeAssistant, Region } from "../../core/types";
@@ -82,7 +82,12 @@ class AudioZoneCard extends LitElement {
     if (!this._config || !this.hass) return nothing;
     const faceplate = withLabels(this._faceplate(), this._config.labels, "zone");
     const roles = [...new Set(faceplate.regions.map((r) => r.role))].filter(Boolean);
-    const bindings = resolveRoles(this.hass, roles, this._config.entities ?? {});
+    const bindings = resolveRoles(
+      this.hass,
+      roles,
+      this._config.entities ?? {},
+      this._config.device ? deviceEntityIds(this.hass, this._config.device) : []
+    );
     const bound = roles.filter((role) => bindings[role]).length;
 
     return html`

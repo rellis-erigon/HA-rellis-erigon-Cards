@@ -1,10 +1,14 @@
 /**
- * pump-system-card — a booster set drawn at the size it actually is.
+ * plant-equipment-card — fans, hot water units and circulators.
  *
- * The faceplate is parametric: choose the number of pumps and the skid,
- * manifold and roles are built to suit, from one pump to ten. Roles follow
- * the Niagara pump-set template — `pump1_run`, `pump1_speed`, and so on —
- * so a device typed there resolves without a role map.
+ * The mechanical plant that is not a booster set. Read-only: these
+ * faceplates mirror what the BMS reports and offer no action, because a
+ * BMS point is very often exported read-only and a button that silently
+ * does nothing is worse than no button.
+ *
+ * The fan faceplates come in three inlet directions rather than one
+ * mirrored icon. Ductwork has a direction and a mimic pointing the wrong
+ * way gets read as the airflow.
  */
 
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
@@ -13,9 +17,9 @@ import { deviceEntityIds, resolveRoles } from "../../core/bind";
 import { faceplatesFor, getFaceplate, resolveFaceplate } from "../../faceplates/index";
 import { Faceplate, FaceplateCardConfig, HomeAssistant } from "../../core/types";
 
-const CARD = "pump-system-card";
+const CARD = "plant-equipment-card";
 
-class PumpSystemCard extends LitElement {
+class PlantEquipmentCard extends LitElement {
   static override properties = {
     hass: { attribute: false },
     _config: { state: true },
@@ -40,8 +44,7 @@ class PumpSystemCard extends LitElement {
   static getStubConfig(): FaceplateCardConfig {
     return {
       type: `custom:${CARD}`,
-      faceplate: "vertical-pumpset",
-      options: { pumps: 3 },
+      faceplate: "supply-fan-top",
     };
   }
 
@@ -80,9 +83,8 @@ class PumpSystemCard extends LitElement {
         </div>
         ${bound === 0
           ? html`<div class="hint">
-              Nothing bound. Map <code>pump1_run</code>,
-              <code>system_pressure</code> and the rest in YAML, or point the
-              card at a device typed as a pump set.
+              Nothing bound. Map the roles this faceplate names in YAML,
+              or point the card at a device with <code>device:</code>.
             </div>`
           : nothing}
       </ha-card>
@@ -141,7 +143,7 @@ class PumpSystemCard extends LitElement {
   `;
 }
 
-class PumpSystemCardEditor extends LitElement {
+class PlantEquipmentCardEditor extends LitElement {
   static override properties = {
     hass: { attribute: false },
     _config: { state: true },
@@ -237,14 +239,14 @@ class PumpSystemCardEditor extends LitElement {
   `;
 }
 
-customElements.define(CARD, PumpSystemCard);
-customElements.define(`${CARD}-editor`, PumpSystemCardEditor);
+customElements.define(CARD, PlantEquipmentCard);
+customElements.define(`${CARD}-editor`, PlantEquipmentCardEditor);
 
 (window as unknown as { customCards?: unknown[] }).customCards ??= [];
 (window as unknown as { customCards: unknown[] }).customCards.push({
   type: CARD,
-  name: "Pump System Card",
-  description: "A booster set from one pump to ten, drawn to suit.",
+  name: "Plant Equipment Card",
+  description: "Supply and exhaust fans, hot water units and circulators.",
   preview: true,
   documentationURL: "https://github.com/rellis-erigon/HA-rellis-erigon-Cards",
 });

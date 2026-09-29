@@ -172,8 +172,25 @@ export interface HassEntity {
   };
 }
 
+/** The entity registry as the frontend exposes it to a card. */
+export interface HassRegistryEntry {
+  entity_id: string;
+  device_id?: string | null;
+  area_id?: string | null;
+}
+
+export interface HassDevice {
+  id?: string;
+  name?: string | null;
+  name_by_user?: string | null;
+  area_id?: string | null;
+}
+
 export interface HomeAssistant {
   states: Record<string, HassEntity>;
+  /** Registry entries, keyed by entity id. Present in current frontends. */
+  entities?: Record<string, HassRegistryEntry>;
+  devices?: Record<string, HassDevice>;
   callService(
     domain: string,
     service: string,
@@ -187,7 +204,10 @@ export interface FaceplateCardConfig {
   name?: string;
   /** Explicit role → entity mapping. Wins over everything else. */
   entities?: Record<string, string>;
-  /** Resolve roles from one device's entities. */
+  /**
+   * Resolve roles from one device's entities, so a card is one line. Takes
+   * a device id, or the device's name as shown in Home Assistant.
+   */
   device?: string;
   /** Start on this page. */
   page?: string;

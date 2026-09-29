@@ -8,7 +8,7 @@
 
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
 import { renderFaceplate } from "../../core/faceplate";
-import { DERIVED_ROLES, resolveRoles } from "../../core/bind";
+import { DERIVED_ROLES, deviceEntityIds, resolveRoles } from "../../core/bind";
 import { faceplatesFor, getFaceplate } from "../../faceplates/index";
 import {
   FaceplateCardConfig,
@@ -86,7 +86,7 @@ class BmsMeterCard extends LitElement {
       this.hass,
       roles,
       this._config.entities ?? {},
-      this._config.device ? deviceEntities(this.hass, this._config.device) : []
+      this._config.device ? deviceEntityIds(this.hass, this._config.device) : []
     );
 
     const unbound = roles.filter((role) => !bindings[role]);
@@ -311,22 +311,6 @@ class BmsMeterCard extends LitElement {
       font-size: 13px;
     }
   `;
-}
-
-/** Entity ids belonging to one device, via the device registry if present. */
-function deviceEntities(hass: HomeAssistant, deviceId: string): string[] {
-  // A card cannot read the device registry directly, so this accepts either
-  // a device id (resolved by HA when available) or an entity id prefix.
-  const registry = (hass as unknown as {
-    entities?: Record<string, { device_id?: string }>;
-  }).entities;
-  if (registry) {
-    const ids = Object.keys(registry).filter(
-      (id) => registry[id]?.device_id === deviceId
-    );
-    if (ids.length) return ids;
-  }
-  return Object.keys(hass.states).filter((id) => id.includes(deviceId));
 }
 
 class BmsMeterCardEditor extends LitElement {
