@@ -11,7 +11,7 @@
  * a page. This one trades width for everything an operator reaches for.
  */
 import { svg } from "lit";
-import type { Faceplate, Region } from "../../core/types";
+import type { BuildContext, Faceplate, Region } from "../../core/types";
 
 const STRIP_W = 104;
 const GUTTER = 6;
@@ -28,22 +28,42 @@ const FOOT = 104;
 const DB_MIN = -80;
 const DB_MAX = 10;
 
-function build(values: Record<string, number>) {
+function build(values: Record<string, number>, ctx?: BuildContext) {
   const count = Math.max(1, Math.min(12, Math.round(values.zones ?? 4)));
-  const eq = Math.round(values.eq ?? 0) === 1;
+  const wanted = Math.round(values.eq ?? 0) === 1;
+  const bound = ctx?.bound ?? (() => true);
+
+  // A channel with nothing bound is not a quiet channel, it is a channel
+  // that does not exist — drawing it leaves an empty column that reads
+  // as a fault. Keep only the channels that have something, and close up.
+  const roles = (n: number) => [
+    `zone${n}_volume`, `zone${n}_mute`, `zone${n}_balance`,
+    `zone${n}_source`, `zone${n}_eq_low`, `zone${n}_eq_mid`,
+    `zone${n}_eq_high`,
+  ];
+  const all = Array.from({ length: count }, (_, i) => i + 1);
+  const live = ctx?.filtering ? all.filter((n) => roles(n).some(bound)) : all;
+  const channels = live.length ? live : [all[0]];
+
+  // Likewise a whole EQ section nobody has wired is height for nothing.
+  const eq =
+    wanted &&
+    (!ctx?.filtering ||
+      channels.some((n) =>
+        ["low", "mid", "high"].some((b) => bound(`zone${n}_eq_${b}`))));
 
   const bodyTop = TOP + ROW_SOURCE + 34;
   const eqTop = bodyTop;
   const panTop = eqTop + (eq ? EQ_H : 0);
   const faderTop = panTop + PAN_H;
   const height = faderTop + THROW + FOOT;
-  const width = LEFT * 2 + count * STRIP_W + (count - 1) * GUTTER;
+  const shown = channels.length;
+  const width = LEFT * 2 + shown * STRIP_W + (shown - 1) * GUTTER;
 
   const regions: Region[] = [];
   const strips = [];
 
-  for (let index = 0; index < count; index++) {
-    const n = index + 1;
+  for (const [index, n] of channels.entries()) {
     const x = LEFT + index * (STRIP_W + GUTTER);
     // Regions carry a group so a control and the labels around it live
     // or die together — a lone "PAN" over empty space is worse than no

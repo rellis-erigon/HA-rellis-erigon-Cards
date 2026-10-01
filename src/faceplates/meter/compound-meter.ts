@@ -78,7 +78,7 @@ export const COMPOUND_METER: Faceplate = {
       x: 334, y: 162, r: 22, scale: 0.001,
     },
     {
-      id: "flow", role: "flow_rate", kind: "text",
+      id: "flow", role: "flow_rate", kind: "text", group: "flow",
       x: 44, y: 248, w: 200, align: "start", decimals: 2, size: 18,
       label: "FLOW", placeholder: "",
     },

@@ -64,31 +64,34 @@ export const DIN_3PHASE: Faceplate = {
   card: "bms-meter-card",
   render: "svg",
   display: "positive",
+  // Row tops are 52 / 108 / 164 — the glass edge and the two rules. A
+  // label is drawn 10px above its value, so the value sits at rowTop+25
+  // to put the label inside the row rather than across the line.
   size: [W, H],
   artNode: CHASSIS,
   pages: ["volts", "amps", "power"],
   regions: [
     // Three stacked rows, one per phase, the way these units read.
     { id: "r1", role: "volts_l1", kind: "text", page: "volts",
-      x: 34, y: 62, w: 162, label: "L1", unit: "V", decimals: 1, size: 30 },
+      x: 34, y: 77, w: 162, label: "L1", unit: "V", decimals: 1, size: 28 },
     { id: "r2", role: "volts_l2", kind: "text", page: "volts",
-      x: 34, y: 118, w: 162, label: "L2", unit: "V", decimals: 1, size: 30 },
+      x: 34, y: 133, w: 162, label: "L2", unit: "V", decimals: 1, size: 28 },
     { id: "r3", role: "volts_l3", kind: "text", page: "volts",
-      x: 34, y: 174, w: 162, label: "L3", unit: "V", decimals: 1, size: 30 },
+      x: 34, y: 189, w: 162, label: "L3", unit: "V", decimals: 1, size: 28 },
 
     { id: "a1", role: "current_l1", kind: "text", page: "amps",
-      x: 34, y: 62, w: 162, label: "L1", unit: "A", decimals: 2, size: 30 },
+      x: 34, y: 77, w: 162, label: "L1", unit: "A", decimals: 2, size: 28 },
     { id: "a2", role: "current_l2", kind: "text", page: "amps",
-      x: 34, y: 118, w: 162, label: "L2", unit: "A", decimals: 2, size: 30 },
+      x: 34, y: 133, w: 162, label: "L2", unit: "A", decimals: 2, size: 28 },
     { id: "a3", role: "current_l3", kind: "text", page: "amps",
-      x: 34, y: 174, w: 162, label: "L3", unit: "A", decimals: 2, size: 30 },
+      x: 34, y: 189, w: 162, label: "L3", unit: "A", decimals: 2, size: 28 },
 
     { id: "pt", role: "power_total", kind: "text", page: "power",
-      x: 34, y: 62, w: 162, label: "Total", unit: "kW", decimals: 2, size: 30 },
+      x: 34, y: 77, w: 162, label: "Total", unit: "kW", decimals: 2, size: 28 },
     { id: "pf", role: "power_factor", kind: "text", page: "power",
-      x: 34, y: 118, w: 162, label: "PF", decimals: 2, size: 30 },
+      x: 34, y: 133, w: 162, label: "PF", decimals: 2, size: 28 },
     { id: "en", role: "energy_total", kind: "text", page: "power",
-      x: 34, y: 174, w: 162, label: "Energy", unit: "kWh", decimals: 0, size: 30 },
+      x: 34, y: 189, w: 162, label: "Energy", unit: "kWh", decimals: 0, size: 28 },
 
     { id: "k1", role: "", kind: "button", x: 32, y: 246, w: 52, h: 34,
       text: "V", action: "page", target: "volts" },

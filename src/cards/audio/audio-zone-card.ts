@@ -218,9 +218,12 @@ class AudioZoneCard extends LitElement {
     .button {
       cursor: pointer;
     }
+    /* A footnote. It has to be findable, not announced. */
     .hint.muted {
-      opacity: 0.72;
-      font-size: 12px;
+      opacity: 0.55;
+      font-size: 11px;
+      padding: 6px 4px 0;
+      text-align: right;
     }
     .hint {
       padding: 8px 4px 2px;

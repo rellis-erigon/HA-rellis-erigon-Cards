@@ -75,15 +75,17 @@ export const MADOKA_BRC1H: Faceplate = {
     { id: "mode", role: "hvac_mode", kind: "text",
       x: CX - 90, y: CY - 78, w: 180, align: "middle", size: 19 },
 
-    { id: "roomlabel", role: "", kind: "text", text: "Room",
-      x: CX - 92, y: CY - 44, w: 70, align: "start", size: 15 },
+    // Centred over the reading it names. Left-aligned it sat on its own
+    // at the edge of the glass and read as an empty field.
+    { id: "roomlabel", role: "", kind: "text", text: "Room", group: "room",
+      x: CX - 96, y: CY - 46, w: 172, align: "middle", size: 13 },
 
     // unit: "" because the faceplate prints the degree glyph separately.
-    { id: "temp", role: "room_temp", kind: "text",
+    { id: "temp", role: "room_temp", kind: "text", group: "room",
       x: CX - 96, y: CY - 26, w: 172, align: "middle", unit: "",
       decimals: 0, size: 68 },
 
-    { id: "unit", role: "", kind: "text", text: "°C",
+    { id: "unit", role: "", kind: "text", text: "°C", group: "room",
       x: CX + 78, y: CY - 18, w: 34, align: "start", size: 20 },
 
     // Fan and swing annunciators, bottom-left of the display area.
@@ -94,9 +96,13 @@ export const MADOKA_BRC1H: Faceplate = {
       x: CX - 96, y: CY + 26, w: 80, align: "start", size: 14,
       placeholder: "" },
 
-    // Setpoint, smaller, to the right of the room reading.
-    { id: "sp", role: "setpoint", kind: "text",
-      x: CX + 6, y: CY + 6, w: 90, align: "end", label: "Set",
+    // Setpoint, smaller, to the right of the room reading. Its caption
+    // is right-aligned with it rather than hung off the region's left
+    // edge, which put the word "Set" over the room reading instead.
+    { id: "splabel", role: "", kind: "text", text: "Set", group: "set",
+      x: CX + 6, y: CY + 4, w: 90, align: "end", size: 12 },
+    { id: "sp", role: "setpoint", kind: "text", group: "set",
+      x: CX + 6, y: CY + 8, w: 90, align: "end",
       decimals: 0, size: 18 },
 
     // Touch keys.

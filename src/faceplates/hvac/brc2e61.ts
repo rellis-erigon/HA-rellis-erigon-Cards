@@ -135,10 +135,12 @@ export const BRC2E61: Faceplate = {
       x: LX + 8, y: LY + 8, w: LW - 16, align: "middle", size: 20 },
 
     // Set point, large, lower left as on the unit.
-    { id: "sp", role: "setpoint", kind: "text",
+    { id: "splabel", role: "", kind: "text", text: "Set temp", group: "set",
+      x: LX + 10, y: LY + 92, w: 104, align: "start", size: 12 },
+    { id: "sp", role: "setpoint", kind: "text", group: "set",
       x: LX + 10, y: LY + 104, w: 104, align: "start", unit: "",
       decimals: 0, size: 48 },
-    { id: "spunit", role: "", kind: "text", text: "\u00b0C",
+    { id: "spunit", role: "", kind: "text", text: "\u00b0C", group: "set",
       x: LX + 96, y: LY + 128, w: 24, align: "start", size: 16 },
 
     // Fan speed to the right of it.
@@ -146,10 +148,13 @@ export const BRC2E61: Faceplate = {
       x: LX + 120, y: LY + 118, w: LW - 130, align: "end", size: 16,
       placeholder: "" },
 
-    // Room temperature, small, under the rule.
-    { id: "room", role: "room_temp", kind: "text",
-      x: LX + 8, y: LY + 158, w: LW - 16, align: "middle",
-      label: "", unit: "\u00b0C", decimals: 0, size: 16 },
+    // Room temperature, small, under the rule — captioned, because two
+    // bare numbers on one screen is a guess about which is which.
+    { id: "roomlabel", role: "", kind: "text", text: "Room", group: "room",
+      x: LX + 10, y: LY + 162, w: 60, align: "start", size: 12 },
+    { id: "room", role: "room_temp", kind: "text", group: "room",
+      x: LX + 8, y: LY + 158, w: LW - 18, align: "end",
+      unit: "\u00b0C", decimals: 0, size: 16 },
 
     // Keys, positioned over the moulded segments.
     { id: "k-power", role: "", kind: "button",

@@ -73,7 +73,7 @@ export const WOLTMANN_REGISTER: Faceplate = {
       x: 386, y: 178, r: 24, scale: 0.001,
     },
     {
-      id: "flow", role: "flow_rate", kind: "text",
+      id: "flow", role: "flow_rate", kind: "text", group: "flow",
       x: 74, y: 184, w: 200, align: "start", decimals: 2, size: 15,
       label: "FLOW", placeholder: "",
     },

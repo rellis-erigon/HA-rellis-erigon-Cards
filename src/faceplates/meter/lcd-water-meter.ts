@@ -35,12 +35,6 @@ const artNode = svg`
   <rect x="74" y="50" width=${W - 148} height="148" rx="6"
         fill="url(#lw-glass)" />
 
-  <text x="92" y="74" fill="#5d6b53" font-size="11" letter-spacing="1.6"
-        font-family="inherit">TOTAL</text>
-  <text x="92" y="162" fill="#5d6b53" font-size="11" letter-spacing="1.6"
-        font-family="inherit">FLOW</text>
-  <text x=${W - 96} y="248" text-anchor="end" fill="#8b93a1" font-size="11"
-        letter-spacing="1.4" font-family="inherit">BATTERY</text>
 `;
 
 export const LCD_WATER_METER: Faceplate = {
@@ -56,30 +50,48 @@ export const LCD_WATER_METER: Faceplate = {
     + "battery bar, on a grey-green LCD.",
   emulates: "Battery-powered electronic water meter",
   regions: [
+    // The register reads in whole units with three decimals, so six
+    // digits plus a point plus three is ten glyphs. At 42px that ran off
+    // the glass and took the unit with it; 30px fits the width the real
+    // module has.
     {
-      id: "total", role: "volume_total", kind: "text", unit: "",
-      x: 92, y: 122, w: 240, align: "start", decimals: 3, size: 42,
+      id: "total_lbl", role: "", kind: "text", text: "TOTAL", group: "total",
+      x: 92, y: 74, w: 90, align: "start", size: 11,
+    },
+    {
+      id: "total", role: "volume_total", kind: "text", unit: "", group: "total",
+      x: 92, y: 96, w: 210, align: "start", decimals: 3, size: 30,
     },
     {
       id: "total_unit", role: "volume_total", kind: "text", show: "unit",
-      x: 340, y: 122, w: 60, align: "start", size: 15,
+      group: "total",
+      x: 306, y: 106, w: 54, align: "start", size: 13,
     },
     {
-      id: "flow", role: "flow_rate", kind: "text", unit: "",
-      x: 92, y: 190, w: 180, align: "start", decimals: 2, size: 22,
+      id: "flow_lbl", role: "", kind: "text", text: "FLOW", group: "flow",
+      x: 92, y: 158, w: 90, align: "start", size: 11,
+    },
+    {
+      id: "flow", role: "flow_rate", kind: "text", unit: "", group: "flow",
+      x: 92, y: 168, w: 150, align: "start", decimals: 2, size: 22,
       placeholder: "",
     },
     {
       id: "flow_unit", role: "flow_rate", kind: "text", show: "unit",
-      x: 276, y: 190, w: 70, align: "start", size: 12,
+      group: "flow",
+      x: 248, y: 176, w: 70, align: "start", size: 12,
     },
     {
-      id: "batt", role: "battery", kind: "bar",
-      x: 68, y: 238, w: 200, h: 12, min: 0, max: 100,
+      id: "batt_lbl", role: "", kind: "text", text: "BATTERY", group: "batt",
+      x: 68, y: 242, w: 90, align: "start", size: 11,
     },
     {
-      id: "batt_pc", role: "battery", kind: "text",
-      x: 276, y: 249, w: 60, align: "start", decimals: 0, size: 13,
+      id: "batt", role: "battery", kind: "bar", group: "batt",
+      x: 160, y: 248, w: 150, h: 12, min: 0, max: 100,
+    },
+    {
+      id: "batt_pc", role: "battery", kind: "text", group: "batt",
+      x: 318, y: 242, w: 60, align: "start", decimals: 0, size: 13,
       placeholder: "",
     },
   ],

@@ -301,6 +301,13 @@ class HvacControllerCard extends LitElement {
     .button {
       cursor: pointer;
     }
+    /* A footnote. It has to be findable, not announced. */
+    .hint.muted {
+      opacity: 0.55;
+      font-size: 11px;
+      padding: 6px 4px 0;
+      text-align: right;
+    }
     .hint {
       padding: 2px 4px 10px;
       color: var(--secondary-text-color);

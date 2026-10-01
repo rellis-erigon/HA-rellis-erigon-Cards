@@ -300,29 +300,32 @@ const DIN_3PHASE = {
     card: "bms-meter-card",
     render: "svg",
     display: "positive",
+    // Row tops are 52 / 108 / 164 — the glass edge and the two rules. A
+    // label is drawn 10px above its value, so the value sits at rowTop+25
+    // to put the label inside the row rather than across the line.
     size: [W$f, H$g],
     artNode: CHASSIS$6,
     pages: ["volts", "amps", "power"],
     regions: [
         // Three stacked rows, one per phase, the way these units read.
         { id: "r1", role: "volts_l1", kind: "text", page: "volts",
-            x: 34, y: 62, w: 162, label: "L1", unit: "V", decimals: 1, size: 30 },
+            x: 34, y: 77, w: 162, label: "L1", unit: "V", decimals: 1, size: 28 },
         { id: "r2", role: "volts_l2", kind: "text", page: "volts",
-            x: 34, y: 118, w: 162, label: "L2", unit: "V", decimals: 1, size: 30 },
+            x: 34, y: 133, w: 162, label: "L2", unit: "V", decimals: 1, size: 28 },
         { id: "r3", role: "volts_l3", kind: "text", page: "volts",
-            x: 34, y: 174, w: 162, label: "L3", unit: "V", decimals: 1, size: 30 },
+            x: 34, y: 189, w: 162, label: "L3", unit: "V", decimals: 1, size: 28 },
         { id: "a1", role: "current_l1", kind: "text", page: "amps",
-            x: 34, y: 62, w: 162, label: "L1", unit: "A", decimals: 2, size: 30 },
+            x: 34, y: 77, w: 162, label: "L1", unit: "A", decimals: 2, size: 28 },
         { id: "a2", role: "current_l2", kind: "text", page: "amps",
-            x: 34, y: 118, w: 162, label: "L2", unit: "A", decimals: 2, size: 30 },
+            x: 34, y: 133, w: 162, label: "L2", unit: "A", decimals: 2, size: 28 },
         { id: "a3", role: "current_l3", kind: "text", page: "amps",
-            x: 34, y: 174, w: 162, label: "L3", unit: "A", decimals: 2, size: 30 },
+            x: 34, y: 189, w: 162, label: "L3", unit: "A", decimals: 2, size: 28 },
         { id: "pt", role: "power_total", kind: "text", page: "power",
-            x: 34, y: 62, w: 162, label: "Total", unit: "kW", decimals: 2, size: 30 },
+            x: 34, y: 77, w: 162, label: "Total", unit: "kW", decimals: 2, size: 28 },
         { id: "pf", role: "power_factor", kind: "text", page: "power",
-            x: 34, y: 118, w: 162, label: "PF", decimals: 2, size: 30 },
+            x: 34, y: 133, w: 162, label: "PF", decimals: 2, size: 28 },
         { id: "en", role: "energy_total", kind: "text", page: "power",
-            x: 34, y: 174, w: 162, label: "Energy", unit: "kWh", decimals: 0, size: 30 },
+            x: 34, y: 189, w: 162, label: "Energy", unit: "kWh", decimals: 0, size: 28 },
         { id: "k1", role: "", kind: "button", x: 32, y: 246, w: 52, h: 34,
             text: "V", action: "page", target: "volts" },
         { id: "k2", role: "", kind: "button", x: 92, y: 246, w: 52, h: 34,
@@ -630,13 +633,15 @@ const MADOKA_BRC1H = {
             x: CX$2, y: CY$2, r: FACE_R - 4, stroke: 7, on: "#2f8fff", off: "#161b21" },
         { id: "mode", role: "hvac_mode", kind: "text",
             x: CX$2 - 90, y: CY$2 - 78, w: 180, align: "middle", size: 19 },
-        { id: "roomlabel", role: "", kind: "text", text: "Room",
-            x: CX$2 - 92, y: CY$2 - 44, w: 70, align: "start", size: 15 },
+        // Centred over the reading it names. Left-aligned it sat on its own
+        // at the edge of the glass and read as an empty field.
+        { id: "roomlabel", role: "", kind: "text", text: "Room", group: "room",
+            x: CX$2 - 96, y: CY$2 - 46, w: 172, align: "middle", size: 13 },
         // unit: "" because the faceplate prints the degree glyph separately.
-        { id: "temp", role: "room_temp", kind: "text",
+        { id: "temp", role: "room_temp", kind: "text", group: "room",
             x: CX$2 - 96, y: CY$2 - 26, w: 172, align: "middle", unit: "",
             decimals: 0, size: 68 },
-        { id: "unit", role: "", kind: "text", text: "°C",
+        { id: "unit", role: "", kind: "text", text: "°C", group: "room",
             x: CX$2 + 78, y: CY$2 - 18, w: 34, align: "start", size: 20 },
         // Fan and swing annunciators, bottom-left of the display area.
         { id: "fan", role: "fan_speed", kind: "text",
@@ -645,9 +650,13 @@ const MADOKA_BRC1H = {
         { id: "swing", role: "swing", kind: "text",
             x: CX$2 - 96, y: CY$2 + 26, w: 80, align: "start", size: 14,
             placeholder: "" },
-        // Setpoint, smaller, to the right of the room reading.
-        { id: "sp", role: "setpoint", kind: "text",
-            x: CX$2 + 6, y: CY$2 + 6, w: 90, align: "end", label: "Set",
+        // Setpoint, smaller, to the right of the room reading. Its caption
+        // is right-aligned with it rather than hung off the region's left
+        // edge, which put the word "Set" over the room reading instead.
+        { id: "splabel", role: "", kind: "text", text: "Set", group: "set",
+            x: CX$2 + 6, y: CY$2 + 4, w: 90, align: "end", size: 12 },
+        { id: "sp", role: "setpoint", kind: "text", group: "set",
+            x: CX$2 + 6, y: CY$2 + 8, w: 90, align: "end",
             decimals: 0, size: 18 },
         // Touch keys.
         { id: "minus", role: "", kind: "button",
@@ -1239,19 +1248,24 @@ const BRC2E61 = {
         { id: "mode", role: "hvac_mode", kind: "text",
             x: LX + 8, y: LY + 8, w: LW - 16, align: "middle", size: 20 },
         // Set point, large, lower left as on the unit.
-        { id: "sp", role: "setpoint", kind: "text",
+        { id: "splabel", role: "", kind: "text", text: "Set temp", group: "set",
+            x: LX + 10, y: LY + 92, w: 104, align: "start", size: 12 },
+        { id: "sp", role: "setpoint", kind: "text", group: "set",
             x: LX + 10, y: LY + 104, w: 104, align: "start", unit: "",
             decimals: 0, size: 48 },
-        { id: "spunit", role: "", kind: "text", text: "\u00b0C",
+        { id: "spunit", role: "", kind: "text", text: "\u00b0C", group: "set",
             x: LX + 96, y: LY + 128, w: 24, align: "start", size: 16 },
         // Fan speed to the right of it.
         { id: "fan", role: "fan_speed", kind: "text",
             x: LX + 120, y: LY + 118, w: LW - 130, align: "end", size: 16,
             placeholder: "" },
-        // Room temperature, small, under the rule.
-        { id: "room", role: "room_temp", kind: "text",
-            x: LX + 8, y: LY + 158, w: LW - 16, align: "middle",
-            label: "", unit: "\u00b0C", decimals: 0, size: 16 },
+        // Room temperature, small, under the rule — captioned, because two
+        // bare numbers on one screen is a guess about which is which.
+        { id: "roomlabel", role: "", kind: "text", text: "Room", group: "room",
+            x: LX + 10, y: LY + 162, w: 60, align: "start", size: 12 },
+        { id: "room", role: "room_temp", kind: "text", group: "room",
+            x: LX + 8, y: LY + 158, w: LW - 18, align: "end",
+            unit: "\u00b0C", decimals: 0, size: 16 },
         // Keys, positioned over the moulded segments.
         { id: "k-power", role: "", kind: "button",
             x: 120, y: 12, w: 160, h: 62, text: "", action: "power_toggle" },
@@ -1335,7 +1349,7 @@ const WOLTMANN_REGISTER = {
             x: 386, y: 178, r: 24, scale: 0.001,
         },
         {
-            id: "flow", role: "flow_rate", kind: "text",
+            id: "flow", role: "flow_rate", kind: "text", group: "flow",
             x: 74, y: 184, w: 200, align: "start", decimals: 2, size: 15,
             label: "FLOW", placeholder: "",
         },
@@ -1375,12 +1389,6 @@ const artNode$4 = w `
   <rect x="74" y="50" width=${W$7 - 148} height="148" rx="6"
         fill="url(#lw-glass)" />
 
-  <text x="92" y="74" fill="#5d6b53" font-size="11" letter-spacing="1.6"
-        font-family="inherit">TOTAL</text>
-  <text x="92" y="162" fill="#5d6b53" font-size="11" letter-spacing="1.6"
-        font-family="inherit">FLOW</text>
-  <text x=${W$7 - 96} y="248" text-anchor="end" fill="#8b93a1" font-size="11"
-        letter-spacing="1.4" font-family="inherit">BATTERY</text>
 `;
 const LCD_WATER_METER = {
     id: "lcd-water-meter",
@@ -1394,30 +1402,48 @@ const LCD_WATER_METER = {
         + "battery bar, on a grey-green LCD.",
     emulates: "Battery-powered electronic water meter",
     regions: [
+        // The register reads in whole units with three decimals, so six
+        // digits plus a point plus three is ten glyphs. At 42px that ran off
+        // the glass and took the unit with it; 30px fits the width the real
+        // module has.
         {
-            id: "total", role: "volume_total", kind: "text", unit: "",
-            x: 92, y: 122, w: 240, align: "start", decimals: 3, size: 42,
+            id: "total_lbl", role: "", kind: "text", text: "TOTAL", group: "total",
+            x: 92, y: 74, w: 90, align: "start", size: 11,
+        },
+        {
+            id: "total", role: "volume_total", kind: "text", unit: "", group: "total",
+            x: 92, y: 96, w: 210, align: "start", decimals: 3, size: 30,
         },
         {
             id: "total_unit", role: "volume_total", kind: "text", show: "unit",
-            x: 340, y: 122, w: 60, align: "start", size: 15,
+            group: "total",
+            x: 306, y: 106, w: 54, align: "start", size: 13,
         },
         {
-            id: "flow", role: "flow_rate", kind: "text", unit: "",
-            x: 92, y: 190, w: 180, align: "start", decimals: 2, size: 22,
+            id: "flow_lbl", role: "", kind: "text", text: "FLOW", group: "flow",
+            x: 92, y: 158, w: 90, align: "start", size: 11,
+        },
+        {
+            id: "flow", role: "flow_rate", kind: "text", unit: "", group: "flow",
+            x: 92, y: 168, w: 150, align: "start", decimals: 2, size: 22,
             placeholder: "",
         },
         {
             id: "flow_unit", role: "flow_rate", kind: "text", show: "unit",
-            x: 276, y: 190, w: 70, align: "start", size: 12,
+            group: "flow",
+            x: 248, y: 176, w: 70, align: "start", size: 12,
         },
         {
-            id: "batt", role: "battery", kind: "bar",
-            x: 68, y: 238, w: 200, h: 12, min: 0, max: 100,
+            id: "batt_lbl", role: "", kind: "text", text: "BATTERY", group: "batt",
+            x: 68, y: 242, w: 90, align: "start", size: 11,
         },
         {
-            id: "batt_pc", role: "battery", kind: "text",
-            x: 276, y: 249, w: 60, align: "start", decimals: 0, size: 13,
+            id: "batt", role: "battery", kind: "bar", group: "batt",
+            x: 160, y: 248, w: 150, h: 12, min: 0, max: 100,
+        },
+        {
+            id: "batt_pc", role: "battery", kind: "text", group: "batt",
+            x: 318, y: 242, w: 60, align: "start", decimals: 0, size: 13,
             placeholder: "",
         },
     ],
@@ -1582,7 +1608,7 @@ const COMPOUND_METER = {
             x: 334, y: 162, r: 22, scale: 0.001,
         },
         {
-            id: "flow", role: "flow_rate", kind: "text",
+            id: "flow", role: "flow_rate", kind: "text", group: "flow",
             x: 44, y: 248, w: 200, align: "start", decimals: 2, size: 18,
             label: "FLOW", placeholder: "",
         },
@@ -1619,11 +1645,6 @@ const artNode$1 = w `
         fill="#171c22" stroke="#12161b" stroke-width="2" />
   <rect x="74" y="42" width=${W$4 - 148} height="164" rx="6" fill="url(#sw-glass)" />
 
-  <text x="90" y="66" fill="#5d6b53" font-size="11" letter-spacing="1.6"
-        font-family="inherit">TOTAL</text>
-  <text x="90" y="152" fill="#5d6b53" font-size="11" letter-spacing="1.6"
-        font-family="inherit">FLOW</text>
-
   <!-- Annunciator strip along the bottom of the glass -->
   <line x1="74" y1="176" x2=${W$4 - 74} y2="176" stroke="#9aa78f" stroke-width="1" />
 `;
@@ -1640,36 +1661,46 @@ const SMART_WATER_METER = {
     emulates: "Smart water meter with leak and reverse-flow detection",
     regions: [
         {
-            id: "total", role: "volume_total", kind: "text", unit: "",
-            x: 90, y: 116, w: 250, align: "start", decimals: 3, size: 40,
+            id: "total_lbl", role: "", kind: "text", text: "TOTAL", group: "total",
+            x: 90, y: 66, w: 90, align: "start", size: 11,
+        },
+        {
+            id: "total", role: "volume_total", kind: "text", unit: "", group: "total",
+            x: 90, y: 86, w: 214, align: "start", decimals: 3, size: 30,
         },
         {
             id: "total_unit", role: "volume_total", kind: "text", show: "unit",
-            x: 348, y: 116, w: 60, align: "start", size: 14,
+            group: "total",
+            x: 308, y: 96, w: 54, align: "start", size: 13,
         },
         {
-            id: "flow", role: "flow_rate", kind: "text", unit: "",
-            x: 90, y: 168, w: 170, align: "start", decimals: 2, size: 20,
+            id: "flow_lbl", role: "", kind: "text", text: "FLOW", group: "flow",
+            x: 90, y: 142, w: 90, align: "start", size: 11,
+        },
+        {
+            id: "flow", role: "flow_rate", kind: "text", unit: "", group: "flow",
+            x: 90, y: 150, w: 150, align: "start", decimals: 2, size: 20,
             placeholder: "",
         },
         {
             id: "flow_unit", role: "flow_rate", kind: "text", show: "unit",
-            x: 262, y: 168, w: 70, align: "start", size: 11,
+            group: "flow",
+            x: 246, y: 158, w: 70, align: "start", size: 11,
         },
         {
-            id: "alarm_lamp", role: "alarm", kind: "lamp", label: "LEAK",
+            id: "alarm_lamp", role: "alarm", kind: "lamp", label: "LEAK", group: "alarm",
             x: 96, y: 244, w: 14, on: "#ef4444", off: "#2a1717",
         },
         {
-            id: "rev_lamp", role: "reverse_flow", kind: "lamp", label: "REVERSE",
+            id: "rev_lamp", role: "reverse_flow", kind: "lamp", label: "REVERSE", group: "rev",
             x: 186, y: 244, w: 14, on: "#f59e0b", off: "#2a2317",
         },
         {
-            id: "batt", role: "battery", kind: "bar",
+            id: "batt", role: "battery", kind: "bar", group: "batt",
             x: 282, y: 246, w: 100, h: 11, min: 0, max: 100,
         },
         {
-            id: "batt_pc", role: "battery", kind: "text",
+            id: "batt_pc", role: "battery", kind: "text", group: "batt",
             x: 282, y: 280, w: 100, align: "start", decimals: 0, size: 12,
             label: "BATTERY", placeholder: "",
         },
@@ -2262,19 +2293,35 @@ const FOOT = 104;
 // What the fader spans. The entity's own staging still wins on a write.
 const DB_MIN = -80;
 const DB_MAX = 10;
-function build(values) {
+function build(values, ctx) {
     const count = Math.max(1, Math.min(12, Math.round(values.zones ?? 4)));
-    const eq = Math.round(values.eq ?? 0) === 1;
+    const wanted = Math.round(values.eq ?? 0) === 1;
+    const bound = ctx?.bound ?? (() => true);
+    // A channel with nothing bound is not a quiet channel, it is a channel
+    // that does not exist — drawing it leaves an empty column that reads
+    // as a fault. Keep only the channels that have something, and close up.
+    const roles = (n) => [
+        `zone${n}_volume`, `zone${n}_mute`, `zone${n}_balance`,
+        `zone${n}_source`, `zone${n}_eq_low`, `zone${n}_eq_mid`,
+        `zone${n}_eq_high`,
+    ];
+    const all = Array.from({ length: count }, (_, i) => i + 1);
+    const live = ctx?.filtering ? all.filter((n) => roles(n).some(bound)) : all;
+    const channels = live.length ? live : [all[0]];
+    // Likewise a whole EQ section nobody has wired is height for nothing.
+    const eq = wanted &&
+        (!ctx?.filtering ||
+            channels.some((n) => ["low", "mid", "high"].some((b) => bound(`zone${n}_eq_${b}`))));
     const bodyTop = TOP + ROW_SOURCE + 34;
     const eqTop = bodyTop;
     const panTop = eqTop + (eq ? EQ_H : 0);
     const faderTop = panTop + PAN_H;
     const height = faderTop + THROW + FOOT;
-    const width = LEFT * 2 + count * STRIP_W + (count - 1) * GUTTER;
+    const shown = channels.length;
+    const width = LEFT * 2 + shown * STRIP_W + (shown - 1) * GUTTER;
     const regions = [];
     const strips = [];
-    for (let index = 0; index < count; index++) {
-        const n = index + 1;
+    for (const [index, n] of channels.entries()) {
         const x = LEFT + index * (STRIP_W + GUTTER);
         // Regions carry a group so a control and the labels around it live
         // or die together — a lone "PAN" over empty space is worse than no

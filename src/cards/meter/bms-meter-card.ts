@@ -310,6 +310,13 @@ class BmsMeterCard extends LitElement {
     .button {
       cursor: pointer;
     }
+    /* A footnote. It has to be findable, not announced. */
+    .hint.muted {
+      opacity: 0.55;
+      font-size: 11px;
+      padding: 6px 4px 0;
+      text-align: right;
+    }
     .hint {
       padding: 10px 4px 2px;
       color: var(--secondary-text-color);

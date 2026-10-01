@@ -98,7 +98,18 @@ export function prepare(
   const groupAlive = (group: string) => alive.has(group);
 
   const regions = trimmed.regions.filter((r) => keep(r, bound, groupAlive));
-  const hidden = trimmed.regions.length - regions.length;
+
+  // Counted by control, not by region: a slider, its label and its
+  // read-out are one thing to a reader, and reporting nine of them as
+  // nine hidden controls turns a useful note into noise.
+  const dropped = new Set<string>();
+  let loose = 0;
+  for (const region of trimmed.regions) {
+    if (keep(region, bound, groupAlive)) continue;
+    if (region.group) dropped.add(region.group);
+    else loose += 1;
+  }
+  const hidden = dropped.size + loose;
 
   return {
     faceplate: { ...trimmed, regions },
