@@ -85,16 +85,26 @@ class BmsMeterCard extends LitElement {
     );
 
     const unbound = roles.filter((role) => !bindings[role]);
+    const bound = roles.length - unbound.length;
 
+    // Nothing bound and hiding on means there is nothing to draw at
+    // all. With hiding off the user has asked for the full panel, dark
+    // controls included, so it is still drawn.
+    const blank = bound === 0 && this._config.hide_unbound !== false;
     const name = cardTitle(this.hass, this._config);
 
     return html`
       <ha-card>
         ${name ? html`<div class="title">${name}</div>` : nothing}
-        ${hidden
+        ${hidden && bound > 0
           ? html`<div class="hint muted">${hiddenNote(hidden)}</div>`
           : nothing}
-        <div class="frame">
+        ${blank
+          ? html`<div class="hint">
+              Nothing bound. Set a device, or map roles such as
+              <code>volts_l1</code> and <code>energy_total</code>.
+            </div>`
+          : html`<div class="frame">
           ${renderFaceplate({
             hass: this.hass,
             faceplate,
@@ -102,7 +112,7 @@ class BmsMeterCard extends LitElement {
             page: this._page,
             onAction: (region) => this._onAction(region),
           })}
-        </div>
+        </div>`}
         ${unbound.length === roles.length
           ? html`<div class="hint">
               No entities bound. Set them in the card editor, or point the card
@@ -137,6 +147,11 @@ class BmsMeterCard extends LitElement {
       width: 100%;
       height: auto;
       display: block;
+      /* Scale down to the column, never up past the drawing's own size:
+         a one-channel console stretched across a wide card reads as a
+         giant empty frame rather than a small instrument. */
+      max-width: var(--faceplate-width, none);
+      margin: 0 auto;
     }
     /* LCD text. Deliberately a fixed palette: an LCD does not follow the
        dashboard theme, and making it do so stops it reading as hardware. */

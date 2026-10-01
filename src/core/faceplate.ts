@@ -42,6 +42,7 @@ export function renderFaceplate(ctx: RenderContext): TemplateResult {
       preserveAspectRatio="xMidYMid meet"
       role="img"
       aria-label=${ctx.faceplate.name}
+      style=${`--faceplate-width:${width}px`}
     >
       ${chassis(ctx.faceplate)}
       ${regions.map((region) => renderRegion(ctx, region))}

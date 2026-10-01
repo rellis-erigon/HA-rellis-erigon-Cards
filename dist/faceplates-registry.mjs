@@ -2374,7 +2374,7 @@ const ROW_SOURCE = 12;
 const EQ_H = 96;
 const PAN_H = 44;
 const THROW = 210;
-const FOOT = 104;
+const FOOT = 118;
 // What the fader spans. The entity's own staging still wins on a write.
 const DB_MIN = -80;
 const DB_MAX = 10;
@@ -2496,19 +2496,19 @@ function build(values, ctx) {
         });
         regions.push({
             id: `db${n}`, role: `zone${n}_volume`, kind: "text", group: `fader${n}`,
-            x: x + 6, y: faderTop + THROW + 20, w: STRIP_W - 12, align: "middle",
+            x: x + 6, y: faderTop + THROW + 8, w: STRIP_W - 12, align: "middle",
             unit: "dB", decimals: 1, size: 14,
         });
         // -- Mute and name -------------------------------------------------------
         regions.push({
             id: `mlamp${n}`, role: `zone${n}_mute`, kind: "lamp", group: `mute${n}`,
-            x: x + 10, y: faderTop + THROW + 32, w: 12,
+            x: x + 10, y: faderTop + THROW + 42, w: 12,
             on: "#ef4444", off: "#2a1717",
         });
         regions.push({
             id: `mute${n}`, role: "", kind: "button", text: "MUTE", group: `mute${n}`,
             action: "mute_toggle", target: `zone${n}_mute`,
-            x: x + 28, y: faderTop + THROW + 29, w: STRIP_W - 38, h: 20,
+            x: x + 28, y: faderTop + THROW + 39, w: STRIP_W - 38, h: 20,
         });
         regions.push({
             id: `name${n}`, role: "", kind: "text", text: `ZONE ${n}`,

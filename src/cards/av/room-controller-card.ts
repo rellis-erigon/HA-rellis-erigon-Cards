@@ -80,12 +80,18 @@ class RoomControllerCard extends LitElement {
     const faceplate = drawn;
     const bound = roles.filter((role) => bindings[role]).length;
 
+    // Nothing bound and hiding on means there is nothing to draw at
+    // all. With hiding off the user has asked for the full panel, dark
+    // controls included, so it is still drawn.
+    const blank = bound === 0 && this._config.hide_unbound !== false;
     const name = cardTitle(this.hass, this._config);
 
     return html`
       <ha-card>
         ${name ? html`<div class="title">${name}</div>` : nothing}
-        <div class="frame">
+        ${blank
+          ? nothing
+          : html`<div class="frame">
           ${renderFaceplate({
             hass: this.hass,
             faceplate,
@@ -93,9 +99,9 @@ class RoomControllerCard extends LitElement {
             page: "",
             onAction: (region, value) => void this._onAction(region, value),
           })}
-        </div>
+        </div>`}
         ${this._error ? html`<div class="hint">${this._error}</div>` : nothing}
-        ${hidden
+        ${hidden && bound > 0
           ? html`<div class="hint muted">${hiddenNote(hidden)}</div>`
           : nothing}
         ${bound === 0
@@ -130,6 +136,11 @@ class RoomControllerCard extends LitElement {
       width: 100%;
       height: auto;
       display: block;
+      /* Scale down to the column, never up past the drawing's own size:
+         a one-channel console stretched across a wide card reads as a
+         giant empty frame rather than a small instrument. */
+      max-width: var(--faceplate-width, none);
+      margin: 0 auto;
     }
     .display-negative .lcd-value {
       fill: #7ce0d2;

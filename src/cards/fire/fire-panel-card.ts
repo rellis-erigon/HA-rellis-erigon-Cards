@@ -79,6 +79,10 @@ class FirePanelCard extends LitElement {
     // the normal case, not an edge one. Say it on the face of the card.
     const unmonitored = CRITICAL.filter((role) => !bindings[role]);
 
+    // Nothing bound and hiding on means there is nothing to draw at
+    // all. With hiding off the user has asked for the full panel, dark
+    // controls included, so it is still drawn.
+    const blank = bound === 0 && this._config.hide_unbound !== false;
     const name = cardTitle(this.hass, this._config);
 
     return html`
@@ -91,7 +95,9 @@ class FirePanelCard extends LitElement {
               ${unmonitored.map((r) => r.replace(/_/g, " ").toUpperCase()).join(", ")}
             </div>`
           : nothing}
-        <div class="frame">
+        ${blank
+          ? nothing
+          : html`<div class="frame">
           ${renderFaceplate({
             hass: this.hass,
             faceplate,
@@ -100,8 +106,8 @@ class FirePanelCard extends LitElement {
             // Never actionable. See the note at the top of this file.
             onAction: () => undefined,
           })}
-        </div>
-        ${hidden
+        </div>`}
+        ${hidden && bound > 0
           ? html`<div class="hint muted">${hiddenNote(hidden)}</div>`
           : nothing}
         ${bound === 0
@@ -136,6 +142,11 @@ class FirePanelCard extends LitElement {
       width: 100%;
       height: auto;
       display: block;
+      /* Scale down to the column, never up past the drawing's own size:
+         a one-channel console stretched across a wide card reads as a
+         giant empty frame rather than a small instrument. */
+      max-width: var(--faceplate-width, none);
+      margin: 0 auto;
     }
     /* Panel HMI: light on a dark screen. */
     .display-negative .lcd-value {

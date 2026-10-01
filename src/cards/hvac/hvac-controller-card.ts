@@ -140,7 +140,7 @@ class HvacControllerCard extends LitElement {
 
   override render(): TemplateResult | typeof nothing {
     if (!this._config || !this.hass) return nothing;
-    const { faceplate, bindings, hidden } = prepare(
+    const { faceplate, bindings, roles, hidden } = prepare(
       this.hass,
       // A climate entity supplies every role from its attributes, so
       // nothing is "unbound" and there is nothing to hide.
@@ -151,6 +151,13 @@ class HvacControllerCard extends LitElement {
       this._config.device ? deviceEntityIds(this.hass, this._config.device) : []
     );
 
+    const bound = this._config.climate
+      ? roles.length
+      : roles.filter((role) => bindings[role]).length;
+    // Nothing bound and hiding on means there is nothing to draw at
+    // all. With hiding off the user has asked for the full panel, dark
+    // controls included, so it is still drawn.
+    const blank = bound === 0 && this._config.hide_unbound !== false;
     const name = cardTitle(this.hass, this._config);
 
     return html`
@@ -162,10 +169,12 @@ class HvacControllerCard extends LitElement {
               entities per role in YAML.
             </div>`
           : nothing}
-        ${hidden
+        ${hidden && bound > 0
           ? html`<div class="hint muted">${hiddenNote(hidden)}</div>`
           : nothing}
-        <div class="frame">
+        ${blank
+          ? nothing
+          : html`<div class="frame">
           ${renderFaceplate({
             hass: this.hass,
             climate: this._config.climate,
@@ -174,7 +183,7 @@ class HvacControllerCard extends LitElement {
             page: "",
             onAction: (region) => void this._onAction(region),
           })}
-        </div>
+        </div>`}
       </ha-card>
     `;
   }
