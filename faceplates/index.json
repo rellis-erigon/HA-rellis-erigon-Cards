@@ -203,6 +203,22 @@
       ]
     },
     {
+      "id": "fcu-unit",
+      "name": "Fan Coil Unit",
+      "card": "hvac-controller-card",
+      "description": "Compact status tile for a BMS fan coil: room against setpoint, mode, fan and alarm. Built to tile, because sites have hundreds.",
+      "emulates": "Generic BMS fan coil unit",
+      "pages": [],
+      "roles": [
+        "fan_speed",
+        "fault",
+        "hvac_mode",
+        "room_temp",
+        "run",
+        "setpoint"
+      ]
+    },
+    {
       "id": "generic-3phase",
       "name": "Generic 3-phase meter",
       "card": "bms-meter-card",

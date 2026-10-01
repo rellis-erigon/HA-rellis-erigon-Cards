@@ -746,13 +746,40 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
     <line x1="24" y1=${238} x2=${o-24} y2=${238}
           stroke=${i.ret} stroke-width="7" stroke-linecap="round" />
     ${a}
-  `,regions:[...r,...s]}}},Bt=460;const Ft={id:"generic-fip",name:"Fire Indicator Panel (schematic)",card:"fire-panel-card",render:"svg",display:"negative",size:[Bt,400],regions:[],description:"Zone and status mimic of a fire panel as the BMS sees it. Schematic on purpose — it must never be mistaken for the panel itself.",emulates:"Generic fire indicator panel (not a specific make)",options:[{key:"zones",label:"Zones",type:"number",min:0,max:24,default:8,help:"Roles are zone1_alarm through zoneN_alarm; two columns above 12."}],build:function(e){const t=Math.max(0,Math.min(24,Math.round(e.zones??8))),i=t>12?2:1,o=Math.ceil(t/i)||1,r=132+30*o+28,a=[],s=[];for(let e=0;e<t;e++){const t=e+1,r=22+Math.floor(e/o)*(416/i),n=132+30*(e%o),l=416/i-12;s.push(W`
+  `,regions:[...r,...s]}}},Bt=360,Ft=170,Wt=W`
+  <defs>
+    <linearGradient id="fcu-case" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a3139" />
+      <stop offset="100%" stop-color="#1b2027" />
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width=${Bt} height=${Ft} rx="8" fill="url(#fcu-case)" />
+  <rect x="0" y="0" width=${Bt} height="24" rx="8" fill="#232a32" />
+  <rect x="0" y="16" width=${Bt} height="8" fill="#232a32" />
+  <text x="12" y="17" fill="#8b93a1" font-size="10" letter-spacing="1.6"
+        font-family="inherit">FAN COIL UNIT</text>
+
+  <!-- A coil and a fan, so the tile reads as plant and not a thermostat -->
+  <g transform="translate(286, 44)">
+    <rect x="0" y="0" width="56" height="42" rx="4"
+          fill="#141921" stroke="#333b45" />
+    ${[0,1,2,3].map(e=>W`<path d="M ${8+12*e} 6 q 6 7 0 14 q -6 7 0 14"
+        fill="none" stroke="#4b7fae" stroke-width="2" />`)}
+    <circle cx="28" cy="58" r="13" fill="#141921" stroke="#333b45" />
+    ${[0,1,2].map(e=>{const t=e/3*Math.PI*2;return W`<line x1="28" y1="58"
+        x2=${28+10*Math.cos(t)} y2=${58+10*Math.sin(t)}
+        stroke="#6f7886" stroke-width="2.5" stroke-linecap="round" />`})}
+  </g>
+
+  <line x1="12" y1=${126} x2=${348} y2=${126} stroke="#2b323b" />
+`,jt=460;const Vt={id:"generic-fip",name:"Fire Indicator Panel (schematic)",card:"fire-panel-card",render:"svg",display:"negative",size:[jt,400],regions:[],description:"Zone and status mimic of a fire panel as the BMS sees it. Schematic on purpose — it must never be mistaken for the panel itself.",emulates:"Generic fire indicator panel (not a specific make)",options:[{key:"zones",label:"Zones",type:"number",min:0,max:24,default:8,help:"Roles are zone1_alarm through zoneN_alarm; two columns above 12."}],build:function(e){const t=Math.max(0,Math.min(24,Math.round(e.zones??8))),i=t>12?2:1,o=Math.ceil(t/i)||1,r=132+30*o+28,a=[],s=[];for(let e=0;e<t;e++){const t=e+1,r=22+Math.floor(e/o)*(416/i),n=132+30*(e%o),l=416/i-12;s.push(W`
       <rect x=${r} y=${n} width=${l} height=${24} rx="4"
             fill="#14181d" stroke="#232930" />
       <text x=${r+34} y=${n+17} fill="#8b93a1" font-size="12"
             font-family="inherit">ZONE ${t}</text>
     `),a.push({id:`z${t}`,role:`zone${t}_alarm`,kind:"lamp",x:r+10,y:n+5,w:13,on:"#ef4444",off:"#2a1717"})}const n=W`
-    <rect x="0" y="0" width=${Bt} height=${r} rx="10" fill="#0e1013" />
+    <rect x="0" y="0" width=${jt} height=${r} rx="10" fill="#0e1013" />
 
     <!-- Status row -->
     <rect x="16" y="46" width=${428} height="68" rx="8"
@@ -760,41 +787,41 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
     <text x="30" y="70" fill="#8b93a1" font-size="11" letter-spacing="1.5"
           font-family="inherit">PANEL STATUS</text>
     ${s}
-  `;return{size:[Bt,r],artNode:n,regions:[{id:"alarm",role:"fire_alarm",kind:"lamp",label:"FIRE",x:30,y:82,w:18,on:"#ef4444",off:"#2a1717"},{id:"fault",role:"fault",kind:"lamp",label:"FAULT",x:118,y:82,w:18,on:"#f59e0b",off:"#2a2317"},{id:"isolate",role:"isolate",kind:"lamp",label:"ISOLATED",x:216,y:82,w:18,on:"#eab308",off:"#2a2617"},{id:"brigade",role:"brigade_signal",kind:"lamp",label:"BRIGADE",x:322,y:82,w:18,on:"#ef4444",off:"#2a1717"},{id:"power",role:"power",kind:"lamp",label:"POWER",x:412,y:82,w:18,on:"#3ddc84",off:"#16281d"},...a]}}},Wt=500;const jt={id:"qsys-zone-rack",name:"Q-SYS Zone Rack",card:"audio-zone-card",render:"svg",display:"negative",size:[Wt,270],regions:[],description:"One strip per audio zone: level bar in dB, mute with an indicator, and trim keys. Widens to the number of zones you set.",emulates:"Q-SYS zone outputs",labelPrefix:"zone",options:[{key:"zones",label:"Zones",type:"number",min:1,max:16,default:4,help:"One strip per zone; roles are zone1_… through zoneN_…"}],build:function(e){const t=Math.max(1,Math.min(16,Math.round(e.zones??4))),i=34+56*t+12,o=[],r=[];for(let e=0;e<t;e++){const t=e+1,i=34+56*e;r.push(W`
+  `;return{size:[jt,r],artNode:n,regions:[{id:"alarm",role:"fire_alarm",kind:"lamp",label:"FIRE",x:30,y:82,w:18,on:"#ef4444",off:"#2a1717"},{id:"fault",role:"fault",kind:"lamp",label:"FAULT",x:118,y:82,w:18,on:"#f59e0b",off:"#2a2317"},{id:"isolate",role:"isolate",kind:"lamp",label:"ISOLATED",x:216,y:82,w:18,on:"#eab308",off:"#2a2617"},{id:"brigade",role:"brigade_signal",kind:"lamp",label:"BRIGADE",x:322,y:82,w:18,on:"#ef4444",off:"#2a1717"},{id:"power",role:"power",kind:"lamp",label:"POWER",x:412,y:82,w:18,on:"#3ddc84",off:"#16281d"},...a]}}},qt=500;const Kt={id:"qsys-zone-rack",name:"Q-SYS Zone Rack",card:"audio-zone-card",render:"svg",display:"negative",size:[qt,270],regions:[],description:"One strip per audio zone: level bar in dB, mute with an indicator, and trim keys. Widens to the number of zones you set.",emulates:"Q-SYS zone outputs",labelPrefix:"zone",options:[{key:"zones",label:"Zones",type:"number",min:1,max:16,default:4,help:"One strip per zone; roles are zone1_… through zoneN_…"}],build:function(e){const t=Math.max(1,Math.min(16,Math.round(e.zones??4))),i=34+56*t+12,o=[],r=[];for(let e=0;e<t;e++){const t=e+1,i=34+56*e;r.push(W`
       <rect class="strip" x="8" y=${i} width=${484} height=${48}
             rx="5" fill="#15171b" stroke="#272b32" />
       <line x1="84" y1=${i+6} x2="84" y2=${i+56-14}
             stroke="#272b32" stroke-width="1" />
     `),o.push({id:`name${t}`,role:"",kind:"text",text:`ZONE ${t}`,x:14,y:i+30,w:64,align:"start",size:13}),o.push({id:`bar${t}`,role:`zone${t}_volume`,kind:"bar",x:96,y:i+12,w:184,h:10,min:-80,max:10}),o.push({id:`db${t}`,role:`zone${t}_volume`,kind:"text",x:96,y:i+40,w:184,align:"start",unit:"dB",decimals:1,size:14}),o.push({id:`mlamp${t}`,role:`zone${t}_mute`,kind:"lamp",x:292,y:i+16,w:12,on:"#ef4444",off:"#2a1717"}),o.push({id:`mute${t}`,role:"",kind:"button",text:"MUTE",action:"mute_toggle",target:`zone${t}_mute`,x:314,y:i+12,w:58,h:24}),o.push({id:`down${t}`,role:"",kind:"button",text:"−",action:"level_down",target:`zone${t}_volume`,x:382,y:i+12,w:46,h:24}),o.push({id:`up${t}`,role:"",kind:"button",text:"+",action:"level_up",target:`zone${t}_volume`,x:436,y:i+12,w:46,h:24})}const a=W`
-    <rect x="0" y="0" width=${Wt} height=${i} rx="8" fill="#0e1013" />
-    <rect x="0" y="0" width=${Wt} height="26" rx="8" fill="#171a1f" />
-    <rect x="0" y="18" width=${Wt} height="8" fill="#171a1f" />
+    <rect x="0" y="0" width=${qt} height=${i} rx="8" fill="#0e1013" />
+    <rect x="0" y="0" width=${qt} height="26" rx="8" fill="#171a1f" />
+    <rect x="0" y="18" width=${qt} height="8" fill="#171a1f" />
     <text x="14" y="18" fill="#8b93a1" font-size="12"
           font-family="inherit" letter-spacing="1.5">ZONE OUTPUTS</text>
     ${r}
-  `;return{size:[Wt,i],artNode:a,regions:o}}},Vt=104,qt=210;const Kt={id:"zone-mixer",name:"Zone Mixer (console)",card:"audio-zone-card",render:"svg",display:"negative",size:[462,600],regions:[],labelPrefix:"zone",description:"Channel strips side by side with vertical faders: source, optional EQ, pan, fader, mute and a scribble strip. Click a fader to move it.",emulates:"Audio mixing console channel strip",options:[{key:"zones",label:"Channels",type:"number",min:1,max:12,default:4,help:"One strip per zone; roles are zone1_… through zoneN_…"},{key:"eq",label:"Three-band EQ (0 off, 1 on)",type:"number",min:0,max:1,default:0,help:"Adds high/mid/low per strip, above the pan."}],build:function(e,t){const i=Math.max(1,Math.min(12,Math.round(e.zones??4))),o=1===Math.round(e.eq??0),r=t?.bound??(()=>!0),a=Array.from({length:i},(e,t)=>t+1),s=t?.filtering?a.filter(e=>(e=>[`zone${e}_volume`,`zone${e}_mute`,`zone${e}_balance`,`zone${e}_source`,`zone${e}_eq_low`,`zone${e}_eq_mid`,`zone${e}_eq_high`])(e).some(r)):a,n=s.length?s:[a[0]],l=o&&(!t?.filtering||n.some(e=>["low","mid","high"].some(t=>r(`zone${e}_eq_${t}`)))),d=82+(l?96:0),c=d+44,h=c+qt+104,p=n.length,f=28+p*Vt+6*(p-1),u=[],x=[];for(const[e,t]of n.entries()){const i=14+110*e,o=i+52;x.push(W`
-      <rect x=${i} y=${36} width=${Vt} height=${h-36-12}
+  `;return{size:[qt,i],artNode:a,regions:o}}},Zt=104,Yt=210;const Qt={id:"zone-mixer",name:"Zone Mixer (console)",card:"audio-zone-card",render:"svg",display:"negative",size:[462,600],regions:[],labelPrefix:"zone",description:"Channel strips side by side with vertical faders: source, optional EQ, pan, fader, mute and a scribble strip. Click a fader to move it.",emulates:"Audio mixing console channel strip",options:[{key:"zones",label:"Channels",type:"number",min:1,max:12,default:4,help:"One strip per zone; roles are zone1_… through zoneN_…"},{key:"eq",label:"Three-band EQ (0 off, 1 on)",type:"number",min:0,max:1,default:0,help:"Adds high/mid/low per strip, above the pan."}],build:function(e,t){const i=Math.max(1,Math.min(12,Math.round(e.zones??4))),o=1===Math.round(e.eq??0),r=t?.bound??(()=>!0),a=Array.from({length:i},(e,t)=>t+1),s=t?.filtering?a.filter(e=>(e=>[`zone${e}_volume`,`zone${e}_mute`,`zone${e}_balance`,`zone${e}_source`,`zone${e}_eq_low`,`zone${e}_eq_mid`,`zone${e}_eq_high`])(e).some(r)):a,n=s.length?s:[a[0]],l=o&&(!t?.filtering||n.some(e=>["low","mid","high"].some(t=>r(`zone${e}_eq_${t}`)))),d=82+(l?96:0),c=d+44,h=c+Yt+104,p=n.length,f=28+p*Zt+6*(p-1),u=[],x=[];for(const[e,t]of n.entries()){const i=14+110*e,o=i+52;x.push(W`
+      <rect x=${i} y=${36} width=${Zt} height=${h-36-12}
             rx="6" fill="#15171b" stroke="#272b32" />
-      ${l?W`<line x1=${i+8} y1=${d-6} x2=${i+Vt-8}
+      ${l?W`<line x1=${i+8} y1=${d-6} x2=${i+Zt-8}
                 y2=${d-6} stroke="#22262c" />`:""}
-      <line x1=${i+8} y1=${c-8} x2=${i+Vt-8}
+      <line x1=${i+8} y1=${c-8} x2=${i+Zt-8}
             y2=${c-8} stroke="#22262c" />
       <!-- Scribble strip. Backlit rather than paper: the strip sits at
            the foot of a dark console and the card draws its text light,
            so a cream plate would be light-on-light. -->
       <rect x=${i+6} y=${h-46} width=${92} height="26"
             rx="3" fill="#1d2127" stroke="#343a44" />
-    `),u.push({id:`src${t}`,role:`zone${t}_source`,kind:"text",group:`src${t}`,x:i+6,y:56,w:92,align:"middle",size:12,placeholder:""}),u.push({id:`srcbtn${t}`,role:"",kind:"button",text:"SRC",group:`src${t}`,action:"source_cycle",target:`zone${t}_source`,x:o-26,y:64,w:52,h:18}),l&&["high","mid","low"].forEach((e,o)=>{const r=82+30*o;u.push({id:`${e}lbl${t}`,role:"",kind:"text",group:`eq${e}${t}`,text:e.toUpperCase(),x:i+8,y:r+12,w:32,align:"start",size:9}),u.push({id:`${e}${t}`,role:`zone${t}_eq_${e}`,kind:"bar",group:`eq${e}${t}`,action:"set_level",target:`zone${t}_eq_${e}`,x:i+42,y:r+4,w:54,h:8,min:-18,max:18}),u.push({id:`${e}v${t}`,role:`zone${t}_eq_${e}`,kind:"text",group:`eq${e}${t}`,x:i+42,y:r+24,w:54,align:"end",unit:"",decimals:1,size:9,placeholder:""})}),u.push({id:`panl${t}`,role:"",kind:"text",text:"L",group:`pan${t}`,x:i+8,y:d+26,w:12,align:"start",size:9}),u.push({id:`panr${t}`,role:"",kind:"text",text:"R",group:`pan${t}`,x:i+Vt-18,y:d+26,w:12,align:"start",size:9}),u.push({id:`pan${t}`,role:`zone${t}_balance`,kind:"bar",group:`pan${t}`,action:"set_level",target:`zone${t}_balance`,x:i+20,y:d+16,w:64,h:8,min:-100,max:100}),u.push({id:`panlbl${t}`,role:"",kind:"text",text:"PAN",group:`pan${t}`,x:i+8,y:d+12,w:40,align:"start",size:9}),u.push({id:`fad${t}`,role:`zone${t}_volume`,kind:"fader",group:`fader${t}`,action:"set_level",target:`zone${t}_volume`,x:o-26,y:c,w:52,h:qt,min:-80,max:10,ticks:7}),u.push({id:`down${t}`,role:"",kind:"button",text:"−",group:`fader${t}`,action:"level_down",target:`zone${t}_volume`,x:i+8,y:c+105-28,w:22,h:22}),u.push({id:`up${t}`,role:"",kind:"button",text:"+",group:`fader${t}`,action:"level_up",target:`zone${t}_volume`,x:i+8,y:c+105+6,w:22,h:22}),u.push({id:`db${t}`,role:`zone${t}_volume`,kind:"text",group:`fader${t}`,x:i+6,y:c+qt+20,w:92,align:"middle",unit:"dB",decimals:1,size:14}),u.push({id:`mlamp${t}`,role:`zone${t}_mute`,kind:"lamp",group:`mute${t}`,x:i+10,y:c+qt+32,w:12,on:"#ef4444",off:"#2a1717"}),u.push({id:`mute${t}`,role:"",kind:"button",text:"MUTE",group:`mute${t}`,action:"mute_toggle",target:`zone${t}_mute`,x:i+28,y:c+qt+29,w:66,h:20}),u.push({id:`name${t}`,role:"",kind:"text",text:`ZONE ${t}`,x:i+8,y:h-28,w:88,align:"middle",size:11,unit:""})}return{size:[f,h],artNode:W`
+    `),u.push({id:`src${t}`,role:`zone${t}_source`,kind:"text",group:`src${t}`,x:i+6,y:56,w:92,align:"middle",size:12,placeholder:""}),u.push({id:`srcbtn${t}`,role:"",kind:"button",text:"SRC",group:`src${t}`,action:"source_cycle",target:`zone${t}_source`,x:o-26,y:64,w:52,h:18}),l&&["high","mid","low"].forEach((e,o)=>{const r=82+30*o;u.push({id:`${e}lbl${t}`,role:"",kind:"text",group:`eq${e}${t}`,text:e.toUpperCase(),x:i+8,y:r+12,w:32,align:"start",size:9}),u.push({id:`${e}${t}`,role:`zone${t}_eq_${e}`,kind:"bar",group:`eq${e}${t}`,action:"set_level",target:`zone${t}_eq_${e}`,x:i+42,y:r+4,w:54,h:8,min:-18,max:18}),u.push({id:`${e}v${t}`,role:`zone${t}_eq_${e}`,kind:"text",group:`eq${e}${t}`,x:i+42,y:r+24,w:54,align:"end",unit:"",decimals:1,size:9,placeholder:""})}),u.push({id:`panl${t}`,role:"",kind:"text",text:"L",group:`pan${t}`,x:i+8,y:d+26,w:12,align:"start",size:9}),u.push({id:`panr${t}`,role:"",kind:"text",text:"R",group:`pan${t}`,x:i+Zt-18,y:d+26,w:12,align:"start",size:9}),u.push({id:`pan${t}`,role:`zone${t}_balance`,kind:"bar",group:`pan${t}`,action:"set_level",target:`zone${t}_balance`,x:i+20,y:d+16,w:64,h:8,min:-100,max:100}),u.push({id:`panlbl${t}`,role:"",kind:"text",text:"PAN",group:`pan${t}`,x:i+8,y:d+12,w:40,align:"start",size:9}),u.push({id:`fad${t}`,role:`zone${t}_volume`,kind:"fader",group:`fader${t}`,action:"set_level",target:`zone${t}_volume`,x:o-26,y:c,w:52,h:Yt,min:-80,max:10,ticks:7}),u.push({id:`down${t}`,role:"",kind:"button",text:"−",group:`fader${t}`,action:"level_down",target:`zone${t}_volume`,x:i+8,y:c+105-28,w:22,h:22}),u.push({id:`up${t}`,role:"",kind:"button",text:"+",group:`fader${t}`,action:"level_up",target:`zone${t}_volume`,x:i+8,y:c+105+6,w:22,h:22}),u.push({id:`db${t}`,role:`zone${t}_volume`,kind:"text",group:`fader${t}`,x:i+6,y:c+Yt+20,w:92,align:"middle",unit:"dB",decimals:1,size:14}),u.push({id:`mlamp${t}`,role:`zone${t}_mute`,kind:"lamp",group:`mute${t}`,x:i+10,y:c+Yt+32,w:12,on:"#ef4444",off:"#2a1717"}),u.push({id:`mute${t}`,role:"",kind:"button",text:"MUTE",group:`mute${t}`,action:"mute_toggle",target:`zone${t}_mute`,x:i+28,y:c+Yt+29,w:66,h:20}),u.push({id:`name${t}`,role:"",kind:"text",text:`ZONE ${t}`,x:i+8,y:h-28,w:88,align:"middle",size:11,unit:""})}return{size:[f,h],artNode:W`
     <rect x="0" y="0" width=${f} height=${h} rx="8" fill="#0e1013" />
     <rect x="0" y="0" width=${f} height="26" rx="8" fill="#171a1f" />
     <rect x="0" y="18" width=${f} height="8" fill="#171a1f" />
     <text x="14" y="18" fill="#8b93a1" font-size="12" letter-spacing="1.5"
           font-family="inherit">ZONE MIXER</text>
     ${x}
-  `,regions:u}}},Zt=420,Yt=[Se,be,Me,_e,Le,Ze,ct,Te,Je,ot,jt,{id:"av-room-controller",name:"AV Room Controller",card:"room-controller-card",render:"svg",display:"negative",size:[Zt,300],artNode:W`
-  <rect x="0" y="0" width=${Zt} height=${300} rx="10" fill="#101216" />
-  <rect x="0" y="0" width=${Zt} height="34" rx="10" fill="#1a1e24" />
-  <rect x="0" y="24" width=${Zt} height="10" fill="#1a1e24" />
+  `,regions:u}}},Xt=420,Jt=[Se,be,Me,_e,Le,Ze,ct,Te,Je,ot,Kt,{id:"av-room-controller",name:"AV Room Controller",card:"room-controller-card",render:"svg",display:"negative",size:[Xt,300],artNode:W`
+  <rect x="0" y="0" width=${Xt} height=${300} rx="10" fill="#101216" />
+  <rect x="0" y="0" width=${Xt} height="34" rx="10" fill="#1a1e24" />
+  <rect x="0" y="24" width=${Xt} height="10" fill="#1a1e24" />
   <text x="16" y="23" fill="#8b93a1" font-size="12" letter-spacing="1.5"
         font-family="inherit">ROOM CONTROL</text>
 
@@ -811,7 +838,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
   <!-- Status row -->
   <rect x="16" y="196" width=${388} height="46" rx="6"
         fill="#14171c" stroke="#252a31" />
-`,regions:[{id:"source",role:"source",kind:"text",x:32,y:76,w:356,align:"start",size:20,placeholder:""},{id:"source_label",role:"",kind:"text",text:"SOURCE",x:32,y:100,w:120,align:"start",size:11},{id:"display_lamp",role:"display_power",kind:"lamp",x:374,y:58,w:14,on:"#3ddc84",off:"#16281d"},{id:"power",role:"",kind:"button",text:"DISPLAY",action:"power_toggle",target:"display_power",x:288,y:86,w:100,h:22},{id:"vol_bar",role:"volume",kind:"bar",x:28,y:154,w:210,h:12,min:0,max:100},{id:"vol_text",role:"volume",kind:"text",x:250,y:165,w:60,align:"start",decimals:0,size:18},{id:"vol_down",role:"",kind:"button",text:"−",action:"level_down",target:"volume",x:316,y:148,w:40,h:24},{id:"vol_up",role:"",kind:"button",text:"+",action:"level_up",target:"volume",x:360,y:148,w:40,h:24},{id:"mute_lamp",role:"mute",kind:"lamp",x:30,y:210,w:12,on:"#ef4444",off:"#2a1717"},{id:"mute",role:"",kind:"button",text:"MUTE",action:"mute_toggle",target:"mute",x:52,y:206,w:64,h:24},{id:"mic_lamp",role:"mic_live",kind:"lamp",label:"MIC",x:150,y:210,w:12,on:"#f59e0b",off:"#2a2317"},{id:"fault_lamp",role:"fault",kind:"lamp",label:"FAULT",x:220,y:210,w:12,on:"#ef4444",off:"#2a1717"},{id:"online_lamp",role:"online",kind:"lamp",label:"ONLINE",x:300,y:210,w:12,on:"#3ddc84",off:"#16281d"}],description:"A room at a glance: source, display power, volume and mute, with mic, fault and online indicators. Bind whichever joins carry them."},ft,xt,$t,wt,kt,Pt,Lt,It,Rt,Ut,Ht,Ft,Kt];function Qt(e){return Yt.filter(t=>t.card===e)}function Xt(e,t){const i=Qt(e);return i.find(e=>e.id===t)??i[0]}function Jt(e,t={},i){if(!e.build)return e;const o={};for(const i of e.options??[]){const e=t[i.key];o[i.key]="number"==typeof e&&Number.isFinite(e)?Math.max(i.min,Math.min(i.max,e)):i.default}return{...e,...e.build(o,i)}}const ei="opt__",ti="ent__",ii="lbl__";function oi(e){const t=e.replace(/_/g," ").trim();return t.charAt(0).toUpperCase()+t.slice(1)}function ri(e,t={}){class i extends le{constructor(){super(...arguments),this._label=e=>{const i=e.name;if("title"===i)return"Title";if("faceplate"===i)return"Faceplate";if("device"===i)return"Device (fills every point below)";if("hide_unbound"===i)return"Hide controls with nothing bound";if(i.startsWith(ei)){const e=i.slice(5),t=(this._faceplate().options??[]).find(t=>t.key===e);return t?.label??oi(e)}if(i.startsWith(ii))return`${oi(i.slice(5))} name`;if(i.startsWith(ti))return oi(i.slice(5));const o=(t.numbers??[]).find(e=>e.key===i);return o?.label??oi(i)}}setConfig(e){this._config=e}_faceplate(){return Jt(Xt(e,this._config?.faceplate),this._config?.options??{})}_labelKeys(){const e=this._faceplate();return e.labelPrefix?e.regions.map(e=>/^name(\d+)$/.exec(e.id)?.[1]).filter(e=>Boolean(e)).map(t=>`${e.labelPrefix}${t}`):[]}_roles(){const e=[...new Set(this._faceplate().regions.map(e=>e.role))].filter(Boolean);return t.expandRoles?t.expandRoles(e):e}_emit(e){this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0}))}_data(){const i=this._config??{},o={title:i.title??i.name??"",hide_unbound:!1!==i.hide_unbound,faceplate:Xt(e,i.faceplate).id,device:i.device??""};for(const e of this._faceplate().options??[])o[ei+e.key]=i.options?.[e.key]??e.default;for(const e of t.numbers??[])o[e.key]=i[e.key];for(const e of this._labelKeys())o[ii+e]=i.labels?.[e]??"";for(const e of this._roles())o[ti+e]=i.entities?.[e]??"";return o}_fromData(i){const o={...this._config,type:this._config?.type??`custom:${e}`,faceplate:String(i.faceplate??"")},r=String(i.title??"").trim();r?o.title=r:delete o.title,r&&delete o.name,!1===i.hide_unbound?o.hide_unbound=!1:delete o.hide_unbound;const a=String(i.device??"").trim();a?o.device=a:delete o.device;const s={};for(const e of this._faceplate().options??[]){const t=Number(i[ei+e.key]);Number.isFinite(t)&&(s[e.key]=t)}Object.keys(s).length?o.options=s:delete o.options;for(const e of t.numbers??[]){const t=Number(i[e.key]);Number.isFinite(t)?o[e.key]=t:delete o[e.key]}const n={};for(const e of this._labelKeys()){const t=String(i[ii+e]??"").trim();t&&(n[e]=t)}Object.keys(n).length?o.labels=n:delete o.labels;const l={};for(const e of this._roles()){const t=String(i[ti+e]??"").trim();t&&(l[e]=t)}return Object.keys(l).length?o.entities=l:delete o.entities,o}_schema(){const i=this._faceplate(),o=Qt(e).map(e=>({value:e.id,label:e.emulates?`${e.name} — ${e.emulates}`:e.name})),r=[{name:"title",selector:{text:{}}},{name:"faceplate",selector:{select:{mode:"dropdown",options:o}}},{name:"device",selector:{device:{}}},{name:"hide_unbound",selector:{boolean:{}}}];for(const e of i.options??[])r.push({name:ei+e.key,selector:{number:{min:e.min,max:e.max,mode:"box"}}});for(const e of t.numbers??[])r.push({name:e.key,selector:{number:{min:e.min,max:e.max,step:e.step??1,mode:"box"}}});for(const e of this._labelKeys())r.push({name:ii+e,selector:{text:{}}});for(const e of this._roles())r.push({name:ti+e,selector:{entity:{}}});return r}render(){if(!this._config)return V;const e=this._faceplate(),t=this._roles(),i=t.filter(e=>this._config?.entities?.[e]).length,o=F`
+`,regions:[{id:"source",role:"source",kind:"text",x:32,y:76,w:356,align:"start",size:20,placeholder:""},{id:"source_label",role:"",kind:"text",text:"SOURCE",x:32,y:100,w:120,align:"start",size:11},{id:"display_lamp",role:"display_power",kind:"lamp",x:374,y:58,w:14,on:"#3ddc84",off:"#16281d"},{id:"power",role:"",kind:"button",text:"DISPLAY",action:"power_toggle",target:"display_power",x:288,y:86,w:100,h:22},{id:"vol_bar",role:"volume",kind:"bar",x:28,y:154,w:210,h:12,min:0,max:100},{id:"vol_text",role:"volume",kind:"text",x:250,y:165,w:60,align:"start",decimals:0,size:18},{id:"vol_down",role:"",kind:"button",text:"−",action:"level_down",target:"volume",x:316,y:148,w:40,h:24},{id:"vol_up",role:"",kind:"button",text:"+",action:"level_up",target:"volume",x:360,y:148,w:40,h:24},{id:"mute_lamp",role:"mute",kind:"lamp",x:30,y:210,w:12,on:"#ef4444",off:"#2a1717"},{id:"mute",role:"",kind:"button",text:"MUTE",action:"mute_toggle",target:"mute",x:52,y:206,w:64,h:24},{id:"mic_lamp",role:"mic_live",kind:"lamp",label:"MIC",x:150,y:210,w:12,on:"#f59e0b",off:"#2a2317"},{id:"fault_lamp",role:"fault",kind:"lamp",label:"FAULT",x:220,y:210,w:12,on:"#ef4444",off:"#2a1717"},{id:"online_lamp",role:"online",kind:"lamp",label:"ONLINE",x:300,y:210,w:12,on:"#3ddc84",off:"#16281d"}],description:"A room at a glance: source, display power, volume and mute, with mic, fault and online indicators. Bind whichever joins carry them."},ft,xt,$t,wt,kt,Pt,Lt,It,Rt,Ut,Ht,Vt,Qt,{id:"fcu-unit",name:"Fan Coil Unit",card:"hvac-controller-card",render:"svg",display:"negative",size:[Bt,Ft],artNode:Wt,regions:[{id:"room_lbl",role:"",kind:"text",text:"ROOM",group:"room",x:14,y:36,w:70,align:"start",size:10},{id:"room",role:"room_temp",kind:"text",group:"room",x:14,y:42,w:120,align:"start",unit:"",decimals:1,size:44},{id:"room_unit",role:"",kind:"text",text:"°C",group:"room",x:136,y:58,w:30,align:"start",size:16},{id:"set_lbl",role:"",kind:"text",text:"SET",group:"set",x:182,y:36,w:60,align:"start",size:10},{id:"set",role:"setpoint",kind:"text",group:"set",x:182,y:44,w:70,align:"start",unit:"",decimals:1,size:24},{id:"set_unit",role:"",kind:"text",text:"°C",group:"set",x:250,y:56,w:26,align:"start",size:12},{id:"mode",role:"hvac_mode",kind:"text",group:"mode",x:14,y:96,w:150,align:"start",size:15,placeholder:""},{id:"fan_lbl",role:"",kind:"text",text:"FAN",group:"fan",x:182,y:90,w:50,align:"start",size:10},{id:"fan",role:"fan_speed",kind:"text",group:"fan",x:182,y:96,w:90,align:"start",size:15,placeholder:""},{id:"run",role:"run",kind:"lamp",label:"RUN",group:"run",x:16,y:136,w:13,on:"#3ddc84",off:"#16281d"},{id:"fault",role:"fault",kind:"lamp",label:"ALARM",group:"fault",x:92,y:136,w:13,on:"#ef4444",off:"#2a1717"}],description:"Compact status tile for a BMS fan coil: room against setpoint, mode, fan and alarm. Built to tile, because sites have hundreds.",emulates:"Generic BMS fan coil unit"}];function ei(e){return Jt.filter(t=>t.card===e)}function ti(e,t){const i=ei(e);return i.find(e=>e.id===t)??i[0]}function ii(e,t={},i){if(!e.build)return e;const o={};for(const i of e.options??[]){const e=t[i.key];o[i.key]="number"==typeof e&&Number.isFinite(e)?Math.max(i.min,Math.min(i.max,e)):i.default}return{...e,...e.build(o,i)}}const oi="opt__",ri="ent__",ai="lbl__";function si(e){const t=e.replace(/_/g," ").trim();return t.charAt(0).toUpperCase()+t.slice(1)}function ni(e,t={}){class i extends le{constructor(){super(...arguments),this._label=e=>{const i=e.name;if("title"===i)return"Title";if("faceplate"===i)return"Faceplate";if("device"===i)return"Device (fills every point below)";if("hide_unbound"===i)return"Hide controls with nothing bound";if(i.startsWith(oi)){const e=i.slice(5),t=(this._faceplate().options??[]).find(t=>t.key===e);return t?.label??si(e)}if(i.startsWith(ai))return`${si(i.slice(5))} name`;if(i.startsWith(ri))return si(i.slice(5));const o=(t.numbers??[]).find(e=>e.key===i);return o?.label??si(i)}}setConfig(e){this._config=e}_faceplate(){return ii(ti(e,this._config?.faceplate),this._config?.options??{})}_labelKeys(){const e=this._faceplate();return e.labelPrefix?e.regions.map(e=>/^name(\d+)$/.exec(e.id)?.[1]).filter(e=>Boolean(e)).map(t=>`${e.labelPrefix}${t}`):[]}_roles(){const e=[...new Set(this._faceplate().regions.map(e=>e.role))].filter(Boolean);return t.expandRoles?t.expandRoles(e):e}_emit(e){this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:e},bubbles:!0,composed:!0}))}_data(){const i=this._config??{},o={title:i.title??i.name??"",hide_unbound:!1!==i.hide_unbound,faceplate:ti(e,i.faceplate).id,device:i.device??""};for(const e of this._faceplate().options??[])o[oi+e.key]=i.options?.[e.key]??e.default;for(const e of t.numbers??[])o[e.key]=i[e.key];for(const e of this._labelKeys())o[ai+e]=i.labels?.[e]??"";for(const e of this._roles())o[ri+e]=i.entities?.[e]??"";return o}_fromData(i){const o={...this._config,type:this._config?.type??`custom:${e}`,faceplate:String(i.faceplate??"")},r=String(i.title??"").trim();r?o.title=r:delete o.title,r&&delete o.name,!1===i.hide_unbound?o.hide_unbound=!1:delete o.hide_unbound;const a=String(i.device??"").trim();a?o.device=a:delete o.device;const s={};for(const e of this._faceplate().options??[]){const t=Number(i[oi+e.key]);Number.isFinite(t)&&(s[e.key]=t)}Object.keys(s).length?o.options=s:delete o.options;for(const e of t.numbers??[]){const t=Number(i[e.key]);Number.isFinite(t)?o[e.key]=t:delete o[e.key]}const n={};for(const e of this._labelKeys()){const t=String(i[ai+e]??"").trim();t&&(n[e]=t)}Object.keys(n).length?o.labels=n:delete o.labels;const l={};for(const e of this._roles()){const t=String(i[ri+e]??"").trim();t&&(l[e]=t)}return Object.keys(l).length?o.entities=l:delete o.entities,o}_schema(){const i=this._faceplate(),o=ei(e).map(e=>({value:e.id,label:e.emulates?`${e.name} — ${e.emulates}`:e.name})),r=[{name:"title",selector:{text:{}}},{name:"faceplate",selector:{select:{mode:"dropdown",options:o}}},{name:"device",selector:{device:{}}},{name:"hide_unbound",selector:{boolean:{}}}];for(const e of i.options??[])r.push({name:oi+e.key,selector:{number:{min:e.min,max:e.max,mode:"box"}}});for(const e of t.numbers??[])r.push({name:e.key,selector:{number:{min:e.min,max:e.max,step:e.step??1,mode:"box"}}});for(const e of this._labelKeys())r.push({name:ai+e,selector:{text:{}}});for(const e of this._roles())r.push({name:ri+e,selector:{entity:{}}});return r}render(){if(!this._config)return V;const e=this._faceplate(),t=this._roles(),i=t.filter(e=>this._config?.entities?.[e]).length,o=F`
         <p class="note">${e.description??""}</p>
         <p class="note">
           ${i} of ${t.length} points set.
@@ -835,7 +862,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
           <label>
             Faceplate
             <select @change=${r("faceplate")}>
-              ${Qt(e).map(e=>F`<option value=${e.id}
+              ${ei(e).map(e=>F`<option value=${e.id}
                   ?selected=${e.id===i.faceplate}>${e.name}</option>`)}
             </select>
           </label>
@@ -853,8 +880,8 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
               <label>
                 ${e.label}
                 <input type="number" min=${e.min} max=${e.max}
-                  .value=${String(i[ei+e.key]??e.default)}
-                  @change=${r(ei+e.key)} />
+                  .value=${String(i[oi+e.key]??e.default)}
+                  @change=${r(oi+e.key)} />
                 ${e.help?F`<span class="note">${e.help}</span>`:V}
               </label>
             `)}
@@ -869,10 +896,10 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
             `)}
           ${this._labelKeys().map(e=>F`
               <label>
-                ${oi(e)} name
-                <input .value=${String(i[ii+e]??"")}
+                ${si(e)} name
+                <input .value=${String(i[ai+e]??"")}
                   placeholder="shown on the strip"
-                  @change=${r(ii+e)} />
+                  @change=${r(ai+e)} />
               </label>
             `)}
           <datalist id="fp-entities">
@@ -880,10 +907,10 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
           </datalist>
           ${this._roles().map(e=>F`
               <label>
-                ${oi(e)}
+                ${si(e)}
                 <input list="fp-entities" placeholder="entity id"
-                  .value=${String(i[ti+e]??"")}
-                  @change=${r(ti+e)} />
+                  .value=${String(i[ri+e]??"")}
+                  @change=${r(ri+e)} />
               </label>
             `)}
         </div>
@@ -920,7 +947,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
         font-size: 12px;
         color: var(--secondary-text-color);
       }
-    `,customElements.define(`${e}-editor`,i)}const ai={energy_total:/metertotal$|_energy_total$|_kwh_total$/,power_total:/3phase_active_power$|_active_power$|_power_total$/,power_l1:/active_power_p1$/,power_l2:/active_power_p2$/,power_l3:/active_power_p3$/,volts_l1:/phase_1_v$|_l1_n$|_voltage_l1$/,volts_l2:/phase_2_v$|_l2_n$|_voltage_l2$/,volts_l3:/phase_3_v$|_l3_n$|_voltage_l3$/,current_l1:/phase_1_a$|_current_l1$/,current_l2:/phase_2_a$|_current_l2$/,current_l3:/phase_3_a$|_current_l3$/,power_factor:/power_factor$/,frequency:/frequency$/,volume_total:/_cubicmetre$|_volume_total$|_water_total$|watermeter_total$/,bypass_total:/_bypass_total$|_bypass_cubicmetre$/,flow_rate:/_flow_rate$|_flowrate$|_l_min$|_l_s$|_m3_h$/,battery:/_battery$|_battery_level$|_batt$/,alarm:/_alarm$|_common_fault$/,reverse_flow:/_reverse_flow$|_reverse$/},si=new Set(["unavailable","unknown","none",""]),ni={volts_avg:["volts_l1","volts_l2","volts_l3"],current_avg:["current_l1","current_l2","current_l3"]};function li(e,t){const i=e.entities??{};let o=t;const r=e.devices??{};if(!r[t]){const e=t.trim().toLowerCase(),i=Object.entries(r).find(([i,o])=>(o.name_by_user??"").trim().toLowerCase()===e||(o.name??"").trim().toLowerCase()===e||i===t);i&&(o=i[0])}const a=Object.values(i).filter(e=>e.device_id===o).map(e=>e.entity_id).filter(t=>void 0!==e.states[t]).sort();return a.length?a:Object.keys(e.states).filter(e=>e.includes(t)).sort()}function di(e,t){if(!t)return{dark:!0,stale:!1};const i=e.states[t];if(!i)return{entityId:t,dark:!0,stale:!1};const o=String(i.state);if(si.has(o.toLowerCase()))return{entityId:t,state:o,dark:!0,stale:!0};const r=Number(o);return{entityId:t,state:o,value:Number.isFinite(r)?r:void 0,unit:i.attributes.unit_of_measurement,dark:!1,stale:!1}}function ci(e,t,i){const o=e.states[t];if(!o)return{entityId:t,dark:!0,stale:!1};if(si.has(String(o.state).toLowerCase()))return{entityId:t,state:o.state,dark:!0,stale:!0};const r=o.attributes,a=(e,i)=>{if(null==e)return{entityId:t,dark:!0,stale:!1};const o=Number(e);return{entityId:t,state:String(e),value:Number.isFinite(o)?o:void 0,unit:i,dark:!1,stale:!1}};switch(i){case"hvac_mode":return a(o.state);case"hvac_action":return a(r.hvac_action??o.state);case"setpoint":return a(r.temperature,"°C");case"room_temp":return a(r.current_temperature,"°C");case"fan_speed":return a(r.fan_mode);case"swing":return a(r.swing_mode);case"power":return a("off"===o.state?"off":"on");case"humidity":return a(r.current_humidity,"%");default:return{entityId:t,dark:!0,stale:!1}}}async function hi(e,t,i,o,r=1,a){const s=i.target?t?.[i.target]:void 0;if(!s)return void o(`Nothing is bound to ${i.target??"this control"}.`);const n=e.states[s];if(!n)return void o(`${s} does not exist.`);if("source_cycle"===i.action){const t=s.split(".")[0];return"select"!==t&&"input_select"!==t?void o(`${s} is a ${t}; it has no source list to step.`):void await e.callService(t,"select_next",{entity_id:s,cycle:!0})}if("mute_toggle"===i.action||"power_toggle"===i.action){const t=s.split(".")[0];return"sensor"===t||"binary_sensor"===t?void o(`${s} is read-only — it reports state but cannot be set.`):void await e.callService("homeassistant","toggle",{entity_id:s})}const l=Number(n.state);if(!Number.isFinite(l))return void o(`${s} has no numeric level to change.`);const d=Number(n.attributes.min??-1/0),c=Number(n.attributes.max??1/0);let h;if("set_level"===i.action){if(void 0===a||!Number.isFinite(a))return;h=Math.min(c,Math.max(d,a));const e=Number(n.attributes.step);Number.isFinite(e)&&e>0&&(h=Math.round(h/e)*e),h=Math.round(100*h)/100}else{const e=Number(r)||1,t="level_up"===i.action?e:-e;if(h=Math.min(c,Math.max(d,l+t)),h===l)return void o(`${s} is already at its ${t>0?"maximum":"minimum"}.`)}if(h===l)return;const p=s.split(".")[0];"number"===p||"input_number"===p?await e.callService(p,"set_value",{entity_id:s,value:h}):o(`${s} is a ${p}; its level cannot be set from here.`)}function pi(e,t){if(!t)return;const i=(t.title??t.name??"").trim();return i||(e&&t.device?function(e,t){const i=e.devices??{},o=i[t]??Object.values(i).find(e=>{const i=t.trim().toLowerCase();return(e.name_by_user??"").trim().toLowerCase()===i||(e.name??"").trim().toLowerCase()===i});return(o?.name_by_user||o?.name)??void 0}(e,t.device):void 0)}const fi=new Set(["mute_toggle","power_toggle","level_up","level_down","set_level","source_cycle"]);function ui(e,t,i){return e.group?i(e.group):e.role?t(e.role):!(e.target&&e.action&&fi.has(e.action))||t(e.target)}function xi(e,t,i,o,r=e=>e){const a=t.options??{},s=Jt(i,a,{bound:()=>!0,filtering:!1}),n=r([...new Set(s.regions.map(e=>e.role))].filter(Boolean)),l=function(e,t,i={},o=[]){const r={};for(const a of t){if(i[a]){r[a]=i[a];continue}const t=o.length?o:Object.keys(e.states),s=ai[a];if(!s)continue;const n=t.find(e=>s.test(e));n&&(r[a]=n)}return r}(e,n,t.entities??{},o),d=e=>{if(l[e])return!0;const t=ni[e];return Boolean(t?.length&&t.every(e=>l[e]))};if(!1===t.hide_unbound)return{faceplate:s,bindings:l,roles:n,hidden:0};const c=Jt(i,a,{bound:d,filtering:!0}),h=new Set;for(const e of c.regions)e.group&&e.role&&d(e.role)&&h.add(e.group);const p=e=>h.has(e),f=c.regions.filter(e=>ui(e,d,p)),u=new Set;let x=0;for(const e of c.regions)ui(e,d,p)||(e.group?u.add(e.group):x+=1);const m=u.size+x;return{faceplate:{...c,regions:f},bindings:l,roles:n,hidden:m}}function mi(e){return 1===e?"1 control hidden — nothing bound to it.":`${e} controls hidden — nothing bound to them.`}function gi(e){const[t,i]=e.faceplate.size,o=(r=e.faceplate,a=e.page,r.regions.filter(e=>!e.page||e.page===a));var r,a;return F`
+    `,customElements.define(`${e}-editor`,i)}const li={energy_total:/metertotal$|_energy_total$|_kwh_total$/,power_total:/3phase_active_power$|_active_power$|_power_total$/,power_l1:/active_power_p1$/,power_l2:/active_power_p2$/,power_l3:/active_power_p3$/,volts_l1:/phase_1_v$|_l1_n$|_voltage_l1$/,volts_l2:/phase_2_v$|_l2_n$|_voltage_l2$/,volts_l3:/phase_3_v$|_l3_n$|_voltage_l3$/,current_l1:/phase_1_a$|_current_l1$/,current_l2:/phase_2_a$|_current_l2$/,current_l3:/phase_3_a$|_current_l3$/,power_factor:/power_factor$/,frequency:/frequency$/,volume_total:/_cubicmetre$|_volume_total$|_water_total$|watermeter_total$/,bypass_total:/_bypass_total$|_bypass_cubicmetre$/,flow_rate:/_flow_rate$|_flowrate$|_l_min$|_l_s$|_m3_h$/,battery:/_battery$|_battery_level$|_batt$/,alarm:/_alarm$|_common_fault$/,reverse_flow:/_reverse_flow$|_reverse$/},di=new Set(["unavailable","unknown","none",""]),ci={volts_avg:["volts_l1","volts_l2","volts_l3"],current_avg:["current_l1","current_l2","current_l3"]};function hi(e,t){const i=e.entities??{};let o=t;const r=e.devices??{};if(!r[t]){const e=t.trim().toLowerCase(),i=Object.entries(r).find(([i,o])=>(o.name_by_user??"").trim().toLowerCase()===e||(o.name??"").trim().toLowerCase()===e||i===t);i&&(o=i[0])}const a=Object.values(i).filter(e=>e.device_id===o).map(e=>e.entity_id).filter(t=>void 0!==e.states[t]).sort();return a.length?a:Object.keys(e.states).filter(e=>e.includes(t)).sort()}function pi(e,t){if(!t)return{dark:!0,stale:!1};const i=e.states[t];if(!i)return{entityId:t,dark:!0,stale:!1};const o=String(i.state);if(di.has(o.toLowerCase()))return{entityId:t,state:o,dark:!0,stale:!0};const r=Number(o);return{entityId:t,state:o,value:Number.isFinite(r)?r:void 0,unit:i.attributes.unit_of_measurement,dark:!1,stale:!1}}function fi(e,t,i){const o=e.states[t];if(!o)return{entityId:t,dark:!0,stale:!1};if(di.has(String(o.state).toLowerCase()))return{entityId:t,state:o.state,dark:!0,stale:!0};const r=o.attributes,a=(e,i)=>{if(null==e)return{entityId:t,dark:!0,stale:!1};const o=Number(e);return{entityId:t,state:String(e),value:Number.isFinite(o)?o:void 0,unit:i,dark:!1,stale:!1}};switch(i){case"hvac_mode":return a(o.state);case"hvac_action":return a(r.hvac_action??o.state);case"setpoint":return a(r.temperature,"°C");case"room_temp":return a(r.current_temperature,"°C");case"fan_speed":return a(r.fan_mode);case"swing":return a(r.swing_mode);case"power":return a("off"===o.state?"off":"on");case"humidity":return a(r.current_humidity,"%");default:return{entityId:t,dark:!0,stale:!1}}}async function ui(e,t,i,o,r=1,a){const s=i.target?t?.[i.target]:void 0;if(!s)return void o(`Nothing is bound to ${i.target??"this control"}.`);const n=e.states[s];if(!n)return void o(`${s} does not exist.`);if("source_cycle"===i.action){const t=s.split(".")[0];return"select"!==t&&"input_select"!==t?void o(`${s} is a ${t}; it has no source list to step.`):void await e.callService(t,"select_next",{entity_id:s,cycle:!0})}if("mute_toggle"===i.action||"power_toggle"===i.action){const t=s.split(".")[0];return"sensor"===t||"binary_sensor"===t?void o(`${s} is read-only — it reports state but cannot be set.`):void await e.callService("homeassistant","toggle",{entity_id:s})}const l=Number(n.state);if(!Number.isFinite(l))return void o(`${s} has no numeric level to change.`);const d=Number(n.attributes.min??-1/0),c=Number(n.attributes.max??1/0);let h;if("set_level"===i.action){if(void 0===a||!Number.isFinite(a))return;h=Math.min(c,Math.max(d,a));const e=Number(n.attributes.step);Number.isFinite(e)&&e>0&&(h=Math.round(h/e)*e),h=Math.round(100*h)/100}else{const e=Number(r)||1,t="level_up"===i.action?e:-e;if(h=Math.min(c,Math.max(d,l+t)),h===l)return void o(`${s} is already at its ${t>0?"maximum":"minimum"}.`)}if(h===l)return;const p=s.split(".")[0];"number"===p||"input_number"===p?await e.callService(p,"set_value",{entity_id:s,value:h}):o(`${s} is a ${p}; its level cannot be set from here.`)}function xi(e,t){if(!t)return;const i=(t.title??t.name??"").trim();return i||(e&&t.device?function(e,t){const i=e.devices??{},o=i[t]??Object.values(i).find(e=>{const i=t.trim().toLowerCase();return(e.name_by_user??"").trim().toLowerCase()===i||(e.name??"").trim().toLowerCase()===i});return(o?.name_by_user||o?.name)??void 0}(e,t.device):void 0)}const mi=new Set(["mute_toggle","power_toggle","level_up","level_down","set_level","source_cycle"]);function gi(e,t,i){return e.group?i(e.group):e.role?t(e.role):!(e.target&&e.action&&mi.has(e.action))||t(e.target)}function yi(e,t,i,o,r=e=>e){const a=t.options??{},s=ii(i,a,{bound:()=>!0,filtering:!1}),n=r([...new Set(s.regions.map(e=>e.role))].filter(Boolean)),l=function(e,t,i={},o=[]){const r={};for(const a of t){if(i[a]){r[a]=i[a];continue}const t=o.length?o:Object.keys(e.states),s=li[a];if(!s)continue;const n=t.find(e=>s.test(e));n&&(r[a]=n)}return r}(e,n,t.entities??{},o),d=e=>{if(l[e])return!0;const t=ci[e];return Boolean(t?.length&&t.every(e=>l[e]))};if(!1===t.hide_unbound)return{faceplate:s,bindings:l,roles:n,hidden:0};const c=ii(i,a,{bound:d,filtering:!0}),h=new Set;for(const e of c.regions)e.group&&e.role&&d(e.role)&&h.add(e.group);const p=e=>h.has(e),f=c.regions.filter(e=>gi(e,d,p)),u=new Set;let x=0;for(const e of c.regions)gi(e,d,p)||(e.group?u.add(e.group):x+=1);const m=u.size+x;return{faceplate:{...c,regions:f},bindings:l,roles:n,hidden:m}}function $i(e){return 1===e?"1 control hidden — nothing bound to it.":`${e} controls hidden — nothing bound to them.`}function wi(e){const[t,i]=e.faceplate.size,o=(r=e.faceplate,a=e.page,r.regions.filter(e=>!e.page||e.page===a));var r,a;return F`
     <svg
       class="faceplate display-${e.faceplate.display??"positive"}"
       viewBox="0 0 ${t} ${i}"
@@ -929,7 +956,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       aria-label=${e.faceplate.name}
     >
       ${function(e){if("image"===e.render&&e.art){const[t,i]=e.size;return W`<image href=${e.art} x="0" y="0" width=${t} height=${i} />`}return W`${e.artNode??""}`}(e.faceplate)}
-      ${o.map(t=>function(e,t){const i=e.climate&&!e.bindings[t.role]?ci(e.hass,e.climate,t.role):function(e,t,i){if(t[i])return di(e,t[i]);if("clock"===i){const e=new Date;return{state:`${String(e.getHours()).padStart(2,"0")}:${String(e.getMinutes()).padStart(2,"0")}`,dark:!1,stale:!1}}const o=ni[i];if(!o)return{dark:!0,stale:!1};const r=o.map(i=>di(e,t[i]));if(r.some(e=>e.dark||void 0===e.value))return{dark:!0,stale:r.some(e=>e.stale)};const a=r.reduce((e,t)=>e+(t.value??0),0);return{value:a/r.length,state:String(a/r.length),unit:r[0].unit,dark:!1,stale:!1}}(e.hass,e.bindings,t.role);switch(t.kind){case"text":return function(e,t){const i=e.role?"unit"===e.show?(t.unit??e.text??"").toUpperCase():t.dark&&void 0!==e.placeholder?e.placeholder:function(e,t=1,i){if(e.dark)return"--";if(void 0===e.value)return e.state??"--";const o=e.value.toFixed(t),r=i??e.unit??"";return r?`${o} ${r}`:o}(t,e.decimals??1,e.unit):e.text??"";if(!e.role&&!e.text)return W``;const o=e.align??"start",r=e.x+("end"===o?e.w??0:"middle"===o?(e.w??0)/2:0);return W`
+      ${o.map(t=>function(e,t){const i=e.climate&&!e.bindings[t.role]?fi(e.hass,e.climate,t.role):function(e,t,i){if(t[i])return pi(e,t[i]);if("clock"===i){const e=new Date;return{state:`${String(e.getHours()).padStart(2,"0")}:${String(e.getMinutes()).padStart(2,"0")}`,dark:!1,stale:!1}}const o=ci[i];if(!o)return{dark:!0,stale:!1};const r=o.map(i=>pi(e,t[i]));if(r.some(e=>e.dark||void 0===e.value))return{dark:!0,stale:r.some(e=>e.stale)};const a=r.reduce((e,t)=>e+(t.value??0),0);return{value:a/r.length,state:String(a/r.length),unit:r[0].unit,dark:!1,stale:!1}}(e.hass,e.bindings,t.role);switch(t.kind){case"text":return function(e,t){const i=e.role?"unit"===e.show?(t.unit??e.text??"").toUpperCase():t.dark&&void 0!==e.placeholder?e.placeholder:function(e,t=1,i){if(e.dark)return"--";if(void 0===e.value)return e.state??"--";const o=e.value.toFixed(t),r=i??e.unit??"";return r?`${o} ${r}`:o}(t,e.decimals??1,e.unit):e.text??"";if(!e.role&&!e.text)return W``;const o=e.align??"start",r=e.x+("end"===o?e.w??0:"middle"===o?(e.w??0)/2:0);return W`
     ${e.label?W`<text class="lcd-label" x=${e.x} y=${e.y-10}>${e.label}</text>`:""}
     <text
       class="lcd-value ${e.role?"":"chrome"} ${e.role&&t.dark?"dark":""} ${t.stale?"stale":""}"
@@ -1040,19 +1067,19 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
     </g>
   `}(e,t)}}(e,t))}
     </svg>
-  `}const yi="bms-meter-card";class $i extends le{constructor(){super(),this._page=""}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e;const t=Xt(yi,e.faceplate);this._page=e.page??t.pages?.[0]??""}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${yi}-editor`)}static getStubConfig(){return{type:`custom:${yi}`,faceplate:"schneider-pm2200"}}_onAction(e){const t=Xt(yi,this._config?.faceplate).pages??[];if(!t.length)return;if("page"===e.action&&e.target)return void(this._page=e.target);const i=t.indexOf(this._page),o="prev_page"===e.action?-1:1;this._page=t[(i+o+t.length)%t.length]}render(){if(!this._config||!this.hass)return V;const{faceplate:e,bindings:t,roles:i,hidden:o}=xi(this.hass,this._config,Xt(yi,this._config.faceplate),this._config.device?li(this.hass,this._config.device):[],e=>[...new Set(e.flatMap(e=>ni[e]??[e]))]),r=i.filter(e=>!t[e]),a=pi(this.hass,this._config);return F`
+  `}const bi="bms-meter-card";class ki extends le{constructor(){super(),this._page=""}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e;const t=ti(bi,e.faceplate);this._page=e.page??t.pages?.[0]??""}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${bi}-editor`)}static getStubConfig(){return{type:`custom:${bi}`,faceplate:"schneider-pm2200"}}_onAction(e){const t=ti(bi,this._config?.faceplate).pages??[];if(!t.length)return;if("page"===e.action&&e.target)return void(this._page=e.target);const i=t.indexOf(this._page),o="prev_page"===e.action?-1:1;this._page=t[(i+o+t.length)%t.length]}render(){if(!this._config||!this.hass)return V;const{faceplate:e,bindings:t,roles:i,hidden:o}=yi(this.hass,this._config,ti(bi,this._config.faceplate),this._config.device?hi(this.hass,this._config.device):[],e=>[...new Set(e.flatMap(e=>ci[e]??[e]))]),r=i.filter(e=>!t[e]),a=xi(this.hass,this._config);return F`
       <ha-card>
         ${a?F`<div class="title">${a}</div>`:V}
-        ${o?F`<div class="hint muted">${mi(o)}</div>`:V}
+        ${o?F`<div class="hint muted">${$i(o)}</div>`:V}
         <div class="frame">
-          ${gi({hass:this.hass,faceplate:e,bindings:t,page:this._page,onAction:e=>this._onAction(e)})}
+          ${wi({hass:this.hass,faceplate:e,bindings:t,page:this._page,onAction:e=>this._onAction(e)})}
         </div>
         ${r.length===i.length?F`<div class="hint">
               No entities bound. Set them in the card editor, or point the card
               at a device.
             </div>`:V}
       </ha-card>
-    `}}$i.properties={hass:{attribute:!1},_config:{state:!0},_page:{state:!0}},$i.styles=a`
+    `}}ki.properties={hass:{attribute:!1},_config:{state:!0},_page:{state:!0}},ki.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -1261,19 +1288,19 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(yi,$i),ri(yi,{expandRoles:e=>[...new Set(e.flatMap(e=>ni[e]??[e]))]}),window.customCards??=[],window.customCards.push({type:yi,name:"BMS Meter Card",description:"A power meter that looks like a power meter.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-Cards"});const wi="hvac-controller-card",bi=["off","cool","heat","dry","fan_only","auto"];class ki extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${wi}-editor`)}static getStubConfig(){return{type:`custom:${wi}`,faceplate:"daikin-brc1e63"}}_setpoint(){if(!this.hass||!this._config)return;if(this._config.climate)return ci(this.hass,this._config.climate,"setpoint").value;const e=this._config.entities?.setpoint;return e?Number(this.hass.states[e]?.state):void 0}async _onAction(e){if(!this.hass||!this._config)return;const t=this._config.climate;if(!t)return void this._notify("This controller is read-only — no climate entity is set.");const i=this._setpoint();switch(e.action){case"temp_up":case"temp_down":{if(void 0===i)return;const o="temp_up"===e.action?.5:-.5;return void await this.hass.callService("climate","set_temperature",{entity_id:t,temperature:Math.round(2*(i+o))/2})}case"power_toggle":{const e="off"!==this.hass.states[t]?.state;return void await this.hass.callService("climate",e?"turn_off":"turn_on",{entity_id:t})}case"fan_cycle":{const e=this.hass.states[t]?.attributes.fan_modes??[];if(!e.length)return;const i=this.hass.states[t]?.attributes.fan_mode,o=e[(e.indexOf(i)+1)%e.length];return void await this.hass.callService("climate","set_fan_mode",{entity_id:t,fan_mode:o})}case"mode_cycle":{const e=this.hass.states[t]?.attributes.hvac_modes??bi,i=this.hass.states[t]?.state??e[0],o=e[(e.indexOf(i)+1)%e.length];return void await this.hass.callService("climate","set_hvac_mode",{entity_id:t,hvac_mode:o})}default:return}}_notify(e){this.dispatchEvent(new CustomEvent("hass-notification",{detail:{message:e},bubbles:!0,composed:!0}))}render(){if(!this._config||!this.hass)return V;const{faceplate:e,bindings:t,hidden:i}=xi(this.hass,this._config.climate?{...this._config,hide_unbound:!1}:this._config,Xt(wi,this._config.faceplate),this._config.device?li(this.hass,this._config.device):[]),o=pi(this.hass,this._config);return F`
+  `,customElements.define(bi,ki),ni(bi,{expandRoles:e=>[...new Set(e.flatMap(e=>ci[e]??[e]))]}),window.customCards??=[],window.customCards.push({type:bi,name:"BMS Meter Card",description:"A power meter that looks like a power meter.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-Cards"});const _i="hvac-controller-card",vi=["off","cool","heat","dry","fan_only","auto"];class zi extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${_i}-editor`)}static getStubConfig(){return{type:`custom:${_i}`,faceplate:"daikin-brc1e63"}}_setpoint(){if(!this.hass||!this._config)return;if(this._config.climate)return fi(this.hass,this._config.climate,"setpoint").value;const e=this._config.entities?.setpoint;return e?Number(this.hass.states[e]?.state):void 0}async _onAction(e){if(!this.hass||!this._config)return;const t=this._config.climate;if(!t)return void this._notify("This controller is read-only — no climate entity is set.");const i=this._setpoint();switch(e.action){case"temp_up":case"temp_down":{if(void 0===i)return;const o="temp_up"===e.action?.5:-.5;return void await this.hass.callService("climate","set_temperature",{entity_id:t,temperature:Math.round(2*(i+o))/2})}case"power_toggle":{const e="off"!==this.hass.states[t]?.state;return void await this.hass.callService("climate",e?"turn_off":"turn_on",{entity_id:t})}case"fan_cycle":{const e=this.hass.states[t]?.attributes.fan_modes??[];if(!e.length)return;const i=this.hass.states[t]?.attributes.fan_mode,o=e[(e.indexOf(i)+1)%e.length];return void await this.hass.callService("climate","set_fan_mode",{entity_id:t,fan_mode:o})}case"mode_cycle":{const e=this.hass.states[t]?.attributes.hvac_modes??vi,i=this.hass.states[t]?.state??e[0],o=e[(e.indexOf(i)+1)%e.length];return void await this.hass.callService("climate","set_hvac_mode",{entity_id:t,hvac_mode:o})}default:return}}_notify(e){this.dispatchEvent(new CustomEvent("hass-notification",{detail:{message:e},bubbles:!0,composed:!0}))}render(){if(!this._config||!this.hass)return V;const{faceplate:e,bindings:t,hidden:i}=yi(this.hass,this._config.climate?{...this._config,hide_unbound:!1}:this._config,ti(_i,this._config.faceplate),this._config.device?hi(this.hass,this._config.device):[]),o=xi(this.hass,this._config);return F`
       <ha-card>
         ${o?F`<div class="title">${o}</div>`:V}
         ${this._config.climate||this._config.entities?V:F`<div class="hint">
               Nothing bound yet. Choose a climate entity in the editor, or map
               entities per role in YAML.
             </div>`}
-        ${i?F`<div class="hint muted">${mi(i)}</div>`:V}
+        ${i?F`<div class="hint muted">${$i(i)}</div>`:V}
         <div class="frame">
-          ${gi({hass:this.hass,climate:this._config.climate,faceplate:e,bindings:t,page:"",onAction:e=>{this._onAction(e)}})}
+          ${wi({hass:this.hass,climate:this._config.climate,faceplate:e,bindings:t,page:"",onAction:e=>{this._onAction(e)}})}
         </div>
       </ha-card>
-    `}}ki.properties={hass:{attribute:!1},_config:{state:!0}},ki.styles=a`
+    `}}zi.properties={hass:{attribute:!1},_config:{state:!0}},zi.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -1407,20 +1434,20 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(wi,ki),ri(wi),window.customCards??=[],window.customCards.push({type:wi,name:"HVAC Controller Card",description:"A wall controller that looks and behaves like the real one.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-Cards"});const _i="pump-system-card";class vi extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${_i}-editor`)}static getStubConfig(){return{type:`custom:${_i}`,faceplate:"vertical-pumpset",options:{pumps:3}}}render(){if(!this._config||!this.hass)return V;const{faceplate:e,bindings:t,roles:i,hidden:o}=xi(this.hass,this._config,Xt(_i,this._config.faceplate),this._config.device?li(this.hass,this._config.device):[]),r=e,a=i.filter(e=>t[e]).length,s=pi(this.hass,this._config);return F`
+  `,customElements.define(_i,zi),ni(_i),window.customCards??=[],window.customCards.push({type:_i,name:"HVAC Controller Card",description:"A wall controller that looks and behaves like the real one.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-Cards"});const Ai="pump-system-card";class Mi extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${Ai}-editor`)}static getStubConfig(){return{type:`custom:${Ai}`,faceplate:"vertical-pumpset",options:{pumps:3}}}render(){if(!this._config||!this.hass)return V;const{faceplate:e,bindings:t,roles:i,hidden:o}=yi(this.hass,this._config,ti(Ai,this._config.faceplate),this._config.device?hi(this.hass,this._config.device):[]),r=e,a=i.filter(e=>t[e]).length,s=xi(this.hass,this._config);return F`
       <ha-card>
         ${s?F`<div class="title">${s}</div>`:V}
         <div class="frame">
-          ${gi({hass:this.hass,faceplate:r,bindings:t,page:"",onAction:()=>{}})}
+          ${wi({hass:this.hass,faceplate:r,bindings:t,page:"",onAction:()=>{}})}
         </div>
-        ${o?F`<div class="hint muted">${mi(o)}</div>`:V}
+        ${o?F`<div class="hint muted">${$i(o)}</div>`:V}
         ${0===a?F`<div class="hint">
               Nothing bound. Map <code>pump1_run</code>,
               <code>system_pressure</code> and the rest in YAML, or point the
               card at a device typed as a pump set.
             </div>`:V}
       </ha-card>
-    `}}vi.properties={hass:{attribute:!1},_config:{state:!0}},vi.styles=a`
+    `}}Mi.properties={hass:{attribute:!1},_config:{state:!0}},Mi.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -1483,21 +1510,21 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(_i,vi),ri(_i),window.customCards??=[],window.customCards.push({type:_i,name:"Pump System Card",description:"A booster set from one pump to ten, drawn to suit.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const zi="audio-zone-card";class Ai extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${zi}-editor`)}static getStubConfig(){return{type:`custom:${zi}`,faceplate:"qsys-zone-rack",options:{zones:4}}}_notify(e){this._error=e,setTimeout(()=>{this._error=void 0},4e3)}async _onAction(e,t){this.hass&&this._config&&await hi(this.hass,this._config.entities,e,e=>this._notify(e),Number(this._config.step??1),t)}render(){if(!this._config||!this.hass)return V;const{faceplate:e,bindings:t,roles:i,hidden:o}=xi(this.hass,this._config,Xt(zi,this._config.faceplate),this._config.device?li(this.hass,this._config.device):[]),r=function(e,t,i){return t?{...e,regions:e.regions.map(e=>{const o=/^name(\d+)$/.exec(e.id),r=o?t[`${i}${o[1]}`]:void 0;return r?{...e,text:r}:e})}:e}(e,this._config.labels,e.labelPrefix??"zone"),a=i.filter(e=>t[e]).length,s=pi(this.hass,this._config);return F`
+  `,customElements.define(Ai,Mi),ni(Ai),window.customCards??=[],window.customCards.push({type:Ai,name:"Pump System Card",description:"A booster set from one pump to ten, drawn to suit.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const Ci="audio-zone-card";class Si extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${Ci}-editor`)}static getStubConfig(){return{type:`custom:${Ci}`,faceplate:"qsys-zone-rack",options:{zones:4}}}_notify(e){this._error=e,setTimeout(()=>{this._error=void 0},4e3)}async _onAction(e,t){this.hass&&this._config&&await ui(this.hass,this._config.entities,e,e=>this._notify(e),Number(this._config.step??1),t)}render(){if(!this._config||!this.hass)return V;const{faceplate:e,bindings:t,roles:i,hidden:o}=yi(this.hass,this._config,ti(Ci,this._config.faceplate),this._config.device?hi(this.hass,this._config.device):[]),r=function(e,t,i){return t?{...e,regions:e.regions.map(e=>{const o=/^name(\d+)$/.exec(e.id),r=o?t[`${i}${o[1]}`]:void 0;return r?{...e,text:r}:e})}:e}(e,this._config.labels,e.labelPrefix??"zone"),a=i.filter(e=>t[e]).length,s=xi(this.hass,this._config);return F`
       <ha-card>
         ${s?F`<div class="title">${s}</div>`:V}
         <div class="frame">
-          ${gi({hass:this.hass,faceplate:r,bindings:t,page:"",onAction:(e,t)=>{this._onAction(e,t)}})}
+          ${wi({hass:this.hass,faceplate:r,bindings:t,page:"",onAction:(e,t)=>{this._onAction(e,t)}})}
         </div>
         ${this._error?F`<div class="hint">${this._error}</div>`:V}
-        ${o?F`<div class="hint muted">${mi(o)}</div>`:V}
+        ${o?F`<div class="hint muted">${$i(o)}</div>`:V}
         ${0===a?F`<div class="hint">
               Nothing bound. Map <code>zone1_volume</code> and
               <code>zone1_mute</code> in YAML, or generate the card from the
               Q-SYS add-on.
             </div>`:V}
       </ha-card>
-    `}}Ai.properties={hass:{attribute:!1},_config:{state:!0},_error:{state:!0}},Ai.styles=a`
+    `}}Si.properties={hass:{attribute:!1},_config:{state:!0},_error:{state:!0}},Si.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -1613,21 +1640,21 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(zi,Ai),ri(zi,{numbers:[{key:"step",label:"Trim step (dB)",min:.5,max:12,step:.5}]}),window.customCards??=[],window.customCards.push({type:zi,name:"Audio Zone Card",description:"Level, mute and trim for one to sixteen audio zones.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const Mi="room-controller-card";class Ci extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${Mi}-editor`)}static getStubConfig(){return{type:`custom:${Mi}`,faceplate:"av-room-controller"}}_notify(e){this._error=e,setTimeout(()=>{this._error=void 0},4e3)}async _onAction(e,t){this.hass&&this._config&&await hi(this.hass,this._config.entities,e,e=>this._notify(e),Number(this._config.step??1),t)}render(){if(!this._config||!this.hass)return V;const{faceplate:e,bindings:t,roles:i,hidden:o}=xi(this.hass,this._config,Xt(Mi,this._config.faceplate),this._config.device?li(this.hass,this._config.device):[]),r=e,a=i.filter(e=>t[e]).length,s=pi(this.hass,this._config);return F`
+  `,customElements.define(Ci,Si),ni(Ci,{numbers:[{key:"step",label:"Trim step (dB)",min:.5,max:12,step:.5}]}),window.customCards??=[],window.customCards.push({type:Ci,name:"Audio Zone Card",description:"Level, mute and trim for one to sixteen audio zones.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const Ei="room-controller-card";class Ni extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${Ei}-editor`)}static getStubConfig(){return{type:`custom:${Ei}`,faceplate:"av-room-controller"}}_notify(e){this._error=e,setTimeout(()=>{this._error=void 0},4e3)}async _onAction(e,t){this.hass&&this._config&&await ui(this.hass,this._config.entities,e,e=>this._notify(e),Number(this._config.step??1),t)}render(){if(!this._config||!this.hass)return V;const{faceplate:e,bindings:t,roles:i,hidden:o}=yi(this.hass,this._config,ti(Ei,this._config.faceplate),this._config.device?hi(this.hass,this._config.device):[]),r=e,a=i.filter(e=>t[e]).length,s=xi(this.hass,this._config);return F`
       <ha-card>
         ${s?F`<div class="title">${s}</div>`:V}
         <div class="frame">
-          ${gi({hass:this.hass,faceplate:r,bindings:t,page:"",onAction:(e,t)=>{this._onAction(e,t)}})}
+          ${wi({hass:this.hass,faceplate:r,bindings:t,page:"",onAction:(e,t)=>{this._onAction(e,t)}})}
         </div>
         ${this._error?F`<div class="hint">${this._error}</div>`:V}
-        ${o?F`<div class="hint muted">${mi(o)}</div>`:V}
+        ${o?F`<div class="hint muted">${$i(o)}</div>`:V}
         ${0===a?F`<div class="hint">
               Nothing bound. Map <code>volume</code>, <code>mute</code>,
               <code>source</code> and <code>display_power</code> in YAML, or
               generate the card from the Crestron add-on.
             </div>`:V}
       </ha-card>
-    `}}Ci.properties={hass:{attribute:!1},_config:{state:!0},_error:{state:!0}},Ci.styles=a`
+    `}}Ni.properties={hass:{attribute:!1},_config:{state:!0},_error:{state:!0}},Ni.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -1706,19 +1733,19 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(Mi,Ci),ri(Mi,{numbers:[{key:"step",label:"Trim step",min:.5,max:25,step:.5}]}),window.customCards??=[],window.customCards.push({type:Mi,name:"Room Controller Card",description:"One AV room: source, display, volume, mute and status.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const Si="plant-equipment-card";class Ei extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${Si}-editor`)}static getStubConfig(){return{type:`custom:${Si}`,faceplate:"supply-fan-top"}}render(){if(!this._config||!this.hass)return V;const{faceplate:e,bindings:t,roles:i,hidden:o}=xi(this.hass,this._config,Xt(Si,this._config.faceplate),this._config.device?li(this.hass,this._config.device):[]),r=e,a=i.filter(e=>t[e]).length,s=pi(this.hass,this._config);return F`
+  `,customElements.define(Ei,Ni),ni(Ei,{numbers:[{key:"step",label:"Trim step",min:.5,max:25,step:.5}]}),window.customCards??=[],window.customCards.push({type:Ei,name:"Room Controller Card",description:"One AV room: source, display, volume, mute and status.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const Pi="plant-equipment-card";class Li extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${Pi}-editor`)}static getStubConfig(){return{type:`custom:${Pi}`,faceplate:"supply-fan-top"}}render(){if(!this._config||!this.hass)return V;const{faceplate:e,bindings:t,roles:i,hidden:o}=yi(this.hass,this._config,ti(Pi,this._config.faceplate),this._config.device?hi(this.hass,this._config.device):[]),r=e,a=i.filter(e=>t[e]).length,s=xi(this.hass,this._config);return F`
       <ha-card>
         ${s?F`<div class="title">${s}</div>`:V}
         <div class="frame">
-          ${gi({hass:this.hass,faceplate:r,bindings:t,page:"",onAction:()=>{}})}
+          ${wi({hass:this.hass,faceplate:r,bindings:t,page:"",onAction:()=>{}})}
         </div>
-        ${o?F`<div class="hint muted">${mi(o)}</div>`:V}
+        ${o?F`<div class="hint muted">${$i(o)}</div>`:V}
         ${0===a?F`<div class="hint">
               Nothing bound. Map the roles this faceplate names in YAML,
               or point the card at a device with <code>device:</code>.
             </div>`:V}
       </ha-card>
-    `}}Ei.properties={hass:{attribute:!1},_config:{state:!0}},Ei.styles=a`
+    `}}Li.properties={hass:{attribute:!1},_config:{state:!0}},Li.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -1781,7 +1808,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(Si,Ei),ri(Si),window.customCards??=[],window.customCards.push({type:Si,name:"Plant Equipment Card",description:"Supply and exhaust fans, hot water units and circulators.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const Ni="fire-panel-card",Pi=["fire_alarm","fault","isolate","brigade_signal","power"];class Li extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${Ni}-editor`)}static getStubConfig(){return{type:`custom:${Ni}`,faceplate:"generic-fip",options:{zones:8}}}render(){if(!this._config||!this.hass)return V;const{faceplate:e,bindings:t,roles:i,hidden:o}=xi(this.hass,this._config,Xt(Ni,this._config.faceplate),this._config.device?li(this.hass,this._config.device):[]),r=e,a=i.filter(e=>t[e]).length,s=Pi.filter(e=>!t[e]),n=pi(this.hass,this._config);return F`
+  `,customElements.define(Pi,Li),ni(Pi),window.customCards??=[],window.customCards.push({type:Pi,name:"Plant Equipment Card",description:"Supply and exhaust fans, hot water units and circulators.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const Ii="fire-panel-card",Ri=["fire_alarm","fault","isolate","brigade_signal","power"];class Ti extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${Ii}-editor`)}static getStubConfig(){return{type:`custom:${Ii}`,faceplate:"generic-fip",options:{zones:8}}}render(){if(!this._config||!this.hass)return V;const{faceplate:e,bindings:t,roles:i,hidden:o}=yi(this.hass,this._config,ti(Ii,this._config.faceplate),this._config.device?hi(this.hass,this._config.device):[]),r=e,a=i.filter(e=>t[e]).length,s=Ri.filter(e=>!t[e]),n=xi(this.hass,this._config);return F`
       <ha-card>
         ${n?F`<div class="title">${n}</div>`:V}
         <div class="banner">BMS MONITORING — NOT THE FIRE PANEL</div>
@@ -1790,16 +1817,16 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
               ${s.map(e=>e.replace(/_/g," ").toUpperCase()).join(", ")}
             </div>`:V}
         <div class="frame">
-          ${gi({hass:this.hass,faceplate:r,bindings:t,page:"",onAction:()=>{}})}
+          ${wi({hass:this.hass,faceplate:r,bindings:t,page:"",onAction:()=>{}})}
         </div>
-        ${o?F`<div class="hint muted">${mi(o)}</div>`:V}
+        ${o?F`<div class="hint muted">${$i(o)}</div>`:V}
         ${0===a?F`<div class="hint">
               Nothing bound. Map <code>fire_alarm</code>,
               <code>zone1_alarm</code> and the rest, or point the card at a
               device with <code>device:</code>.
             </div>`:V}
       </ha-card>
-    `}}Li.properties={hass:{attribute:!1},_config:{state:!0}},Li.styles=a`
+    `}}Ti.properties={hass:{attribute:!1},_config:{state:!0}},Ti.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -1883,4 +1910,4 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(Ni,Li),ri(Ni),window.customCards??=[],window.customCards.push({type:Ni,name:"Fire Panel Card",description:"Zone and status mimic. Monitoring only — never the panel.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});
+  `,customElements.define(Ii,Ti),ni(Ii),window.customCards??=[],window.customCards.push({type:Ii,name:"Fire Panel Card",description:"Zone and status mimic. Monitoring only — never the panel.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});
