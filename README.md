@@ -17,7 +17,7 @@ See [PLAN.md](PLAN.md) for the full design and roadmap.
 | Card | Status | Faceplates |
 |------|--------|-----------|
 | `bms-meter-card` | Available | CVM-E3-MINI, PM2200, DIN-rail, generic, and six water registers (multi-jet, Woltmann, LCD, dial, compound, smart) |
-| `hvac-controller-card` | Available | Daikin BRC1E63, BRC2E61, BRC1H63K, BRC315D7 |
+| `hvac-controller-card` | Available | Daikin BRC1E63, BRC2E61, BRC1H63K, BRC315D7, and a generic BMS fan coil tile |
 | `pump-system-card` | Available | Vertical multistage set, 1–10 pumps |
 | `audio-zone-card` | Available | `qsys-zone-rack` (compact, 1–16 zones) and `zone-mixer` (full strip, 1–12 zones: click-to-position fader, balance, source, optional 3-band EQ) |
 | `room-controller-card` | Available | Generic AV room |
@@ -141,6 +141,24 @@ What reliably works is deploying to a path that has never been fetched:
 
 Keep the build stamp in the directory name and update the resource to match.
 The browser cannot have a stale copy of a URL it has never seen.
+
+## Rebuilding the sample dashboard
+
+Two scripts, run inside the add-on container (they authenticate with
+`SUPERVISOR_TOKEN` and need the `websockets` package):
+
+```
+python3 scripts/build-samples.py          # every faceplate, bound to live points
+python3 scripts/build-generated-view.py   # the cards the bridges generate
+```
+
+`build-samples.py` also writes `samples/dashboard.yaml`. That file is
+published, so it is sanitised first: entity ids are replaced by neutral
+ones named after the role they fill, and strip labels by their index.
+Pass `--no-export` to update the dashboard without rewriting it.
+
+`build-generated-view.py` is never exported — every title and label in
+it is a real device name.
 
 ## Trademarks
 
