@@ -2375,11 +2375,16 @@ const EQ_H = 96;
 const PAN_H = 44;
 const THROW = 210;
 const FOOT = 118;
+// How many strips before the console wraps to a second row, and the gap
+// between rows.
+const PER_ROW = 8;
+const ROW_GAP = 14;
+const MAX_CHANNELS = 16;
 // What the fader spans. The entity's own staging still wins on a write.
 const DB_MIN = -80;
 const DB_MAX = 10;
 function build(values, ctx) {
-    const count = Math.max(1, Math.min(12, Math.round(values.zones ?? 4)));
+    const count = Math.max(1, Math.min(MAX_CHANNELS, Math.round(values.zones ?? 4)));
     const wanted = Math.round(values.eq ?? 0) === 1;
     const bound = ctx?.bound ?? (() => true);
     // A channel with nothing bound is not a quiet channel, it is a channel
@@ -2397,23 +2402,35 @@ function build(values, ctx) {
     const eq = wanted &&
         (!ctx?.filtering ||
             channels.some((n) => ["low", "mid", "high"].some((b) => bound(`zone${n}_eq_${b}`))));
-    const bodyTop = TOP + ROW_SOURCE + 34;
-    const eqTop = bodyTop;
-    const panTop = eqTop + (eq ? EQ_H : 0);
-    const faderTop = panTop + PAN_H;
-    const height = faderTop + THROW + FOOT;
+    // Sixteen strips in one row is 1800px, which a dashboard column
+    // shrinks until nothing on them can be read. Past `perRow` the
+    // console wraps instead, keeping every strip at full size.
     const shown = channels.length;
-    const width = LEFT * 2 + shown * STRIP_W + (shown - 1) * GUTTER;
+    const perRow = Math.max(1, Math.min(shown, Math.round(values.per_row ?? PER_ROW)));
+    const rows = Math.ceil(shown / perRow);
+    // One strip's internal layout, measured from the top of its own row.
+    const localEqTop = ROW_SOURCE + 34;
+    const localPanTop = localEqTop + (eq ? EQ_H : 0);
+    const localFaderTop = localPanTop + PAN_H;
+    const stripH = localFaderTop + THROW + FOOT - TOP;
+    const width = LEFT * 2 + perRow * STRIP_W + (perRow - 1) * GUTTER;
+    const height = TOP + rows * stripH + (rows - 1) * ROW_GAP + 12;
     const regions = [];
     const strips = [];
     for (const [index, n] of channels.entries()) {
-        const x = LEFT + index * (STRIP_W + GUTTER);
+        const col = index % perRow;
+        const row = Math.floor(index / perRow);
+        const x = LEFT + col * (STRIP_W + GUTTER);
+        const rowTop = TOP + row * (stripH + ROW_GAP);
+        const eqTop = rowTop + localEqTop;
+        const panTop = rowTop + localPanTop;
+        const faderTop = rowTop + localFaderTop;
         // Regions carry a group so a control and the labels around it live
         // or die together — a lone "PAN" over empty space is worse than no
         // pan at all.
         const mid = x + STRIP_W / 2;
         strips.push(w `
-      <rect x=${x} y=${TOP} width=${STRIP_W} height=${height - TOP - 12}
+      <rect x=${x} y=${rowTop} width=${STRIP_W} height=${stripH}
             rx="6" fill="#15171b" stroke="#272b32" />
       ${eq
             ? w `<line x1=${x + 8} y1=${panTop - 6} x2=${x + STRIP_W - 8}
@@ -2430,13 +2447,13 @@ function build(values, ctx) {
         // -- Source ---------------------------------------------------------
         regions.push({
             id: `src${n}`, role: `zone${n}_source`, kind: "text", group: `src${n}`,
-            x: x + 6, y: TOP + 20, w: STRIP_W - 12, align: "middle",
+            x: x + 6, y: rowTop + 20, w: STRIP_W - 12, align: "middle",
             size: 12, placeholder: "",
         });
         regions.push({
             id: `srcbtn${n}`, role: "", kind: "button", text: "SRC", group: `src${n}`,
             action: "source_cycle", target: `zone${n}_source`,
-            x: mid - 26, y: TOP + 28, w: 52, h: 18,
+            x: mid - 26, y: rowTop + 28, w: 52, h: 18,
         });
         // -- EQ, when asked for ----------------------------------------------
         if (eq) {
@@ -2541,8 +2558,13 @@ const ZONE_MIXER = {
     options: [
         {
             key: "zones", label: "Channels", type: "number",
-            min: 1, max: 12, default: 4,
+            min: 1, max: 16, default: 4,
             help: "One strip per zone; roles are zone1_… through zoneN_…",
+        },
+        {
+            key: "per_row", label: "Strips per row", type: "number",
+            min: 1, max: 16, default: PER_ROW,
+            help: "The console wraps past this, so sixteen channels stay legible.",
         },
         {
             key: "eq", label: "Three-band EQ (0 off, 1 on)", type: "number",

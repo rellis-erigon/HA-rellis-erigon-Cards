@@ -109,7 +109,9 @@ export interface Region {
     | "level_down"
     // Click anywhere on a fader to go there, rather than stepping to it.
     | "set_level"
-    | "source_cycle";
+    | "source_cycle"
+    // A Crestron panel button: momentary, not a toggle.
+    | "press";
   /**
    * For action "page": which page to show. For the audio actions: which
    * *role* the button acts on, so one strip in a rack of them knows which
@@ -255,6 +257,12 @@ export interface FaceplateCardConfig {
   page?: string;
   /** A climate entity to read every role from, for HVAC faceplates. */
   climate?: string;
+  /**
+   * A faceplate supplied inline rather than chosen from the catalogue.
+   * An imported panel belongs to one site, so shipping it to everyone
+   * in the bundle would be absurd — it travels in the card config.
+   */
+  panel?: Faceplate;
   /** Values for the faceplate's declared options. */
   options?: Record<string, number>;
   /** How much a trim key moves a level, in the level's own units. */

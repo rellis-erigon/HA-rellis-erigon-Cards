@@ -14,6 +14,7 @@ const cards = {
   // Not a card: a dashboard/view strategy, added as its own resource.
   "plant-equipment-card": "src/cards/plant/plant-equipment-card.ts",
   "fire-panel-card": "src/cards/fire/fire-panel-card.ts",
+  "crestron-panel-card": "src/cards/panel/crestron-panel-card.ts",
   "bridge-devices-strategy": "src/strategy/bridge-devices.ts",
 };
 

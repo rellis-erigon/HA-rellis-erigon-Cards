@@ -52,6 +52,21 @@ export async function runControlAction(
     return;
   }
 
+  if (region.action === "press") {
+    // Momentary: a panel button is held, not latched. A `button` entity
+    // is exactly that; anything else is toggled, which is the closest
+    // honest equivalent.
+    const domain = entity.split(".")[0];
+    if (domain === "button" || domain === "input_button") {
+      await hass.callService(domain, "press", { entity_id: entity });
+    } else if (domain === "switch" || domain === "input_boolean") {
+      await hass.callService("homeassistant", "toggle", { entity_id: entity });
+    } else {
+      notify(`${entity} is a ${domain}; it cannot be pressed.`);
+    }
+    return;
+  }
+
   if (region.action === "mute_toggle" || region.action === "power_toggle") {
     const domain = entity.split(".")[0];
     if (domain === "sensor" || domain === "binary_sensor") {
