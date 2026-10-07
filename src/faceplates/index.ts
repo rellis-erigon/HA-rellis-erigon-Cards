@@ -31,6 +31,8 @@ import { GENERIC_FIP } from "./fire/generic-fip";
 import { QSYS_ZONES } from "./audio/qsys-zones";
 import { ZONE_MIXER } from "./audio/zone-mixer";
 import { ROOM_CONTROLLER } from "./av/room-controller";
+import { STORAGE_TANKS } from "./plant/storage-tanks";
+import { POOL_PLANT } from "./plant/pool-plant";
 import {
   UNDERBENCH_FRIDGE, UNDERBENCH_FREEZER,
   WALKIN_FRIDGE, WALKIN_FREEZER,
@@ -42,7 +44,7 @@ export const FACEPLATES: Faceplate[] = [CVM_E3_MINI, PM2200, DIN_3PHASE, GENERIC
   SUPPLY_FAN_TOP, SUPPLY_FAN_LEFT, SUPPLY_FAN_RIGHT, EXHAUST_FAN,
   HOT_WATER_UNIT, CIRCULATION_PUMPS, GENERIC_FIP, ZONE_MIXER, FCU_UNIT,
   UNDERBENCH_FRIDGE, UNDERBENCH_FREEZER, WALKIN_FRIDGE, WALKIN_FREEZER,
-  UPRIGHT_FRIDGE, UPRIGHT_FREEZER];
+  UPRIGHT_FRIDGE, UPRIGHT_FREEZER, STORAGE_TANKS, POOL_PLANT];
 
 export function faceplatesFor(card: string): Faceplate[] {
   return FACEPLATES.filter((f) => f.card === card);

@@ -16,7 +16,7 @@ const t$1=globalThis,e$2=t$1.ShadowRoot&&(void 0===t$1.ShadyCSS||t$1.ShadyCSS.na
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const t=globalThis,i$1=t=>t,s$1=t.trustedTypes,e=s$1?s$1.createPolicy("lit-html",{createHTML:t=>t}):void 0,h="$lit$",o$1=`lit$${Math.random().toFixed(9).slice(2)}$`,n="?"+o$1,r=`<${n}>`,l=document,c=()=>l.createComment(""),a=t=>null===t||"object"!=typeof t&&"function"!=typeof t,u=Array.isArray,d=t=>u(t)||"function"==typeof t?.[Symbol.iterator],f="[ \t\n\f\r]",v=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,_=/-->/g,m=/>/g,p=RegExp(`>|${f}(?:([^\\s"'>=/]+)(${f}*=${f}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),g=/'/g,$=/"/g,y=/^(?:script|style|textarea|title)$/i,x=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),w=x(2),E=Symbol.for("lit-noChange"),A=Symbol.for("lit-nothing"),C=new WeakMap,P=l.createTreeWalker(l,129);function V(t,i){if(!u(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==e?e.createHTML(i):i}const N=(t,i)=>{const s=t.length-1,e=[];let n,l=2===i?"<svg>":3===i?"<math>":"",c=v;for(let i=0;i<s;i++){const s=t[i];let a,u,d=-1,f=0;for(;f<s.length&&(c.lastIndex=f,u=c.exec(s),null!==u);)f=c.lastIndex,c===v?"!--"===u[1]?c=_:void 0!==u[1]?c=m:void 0!==u[2]?(y.test(u[2])&&(n=RegExp("</"+u[2],"g")),c=p):void 0!==u[3]&&(c=p):c===p?">"===u[0]?(c=n??v,d=-1):void 0===u[1]?d=-2:(d=c.lastIndex-u[2].length,a=u[1],c=void 0===u[3]?p:'"'===u[3]?$:g):c===$||c===g?c=p:c===_||c===m?c=v:(c=p,n=void 0);const x=c===p&&t[i+1].startsWith("/>")?" ":"";l+=c===v?s+r:d>=0?(e.push(a),s.slice(0,d)+h+s.slice(d)+o$1+x):s+o$1+(-2===d?i:x);}return [V(t,l+(t[s]||"<?>")+(2===i?"</svg>":3===i?"</math>":"")),e]};class S{constructor({strings:t,_$litType$:i},e){let r;this.parts=[];let l=0,a=0;const u=t.length-1,d=this.parts,[f,v]=N(t,i);if(this.el=S.createElement(f,e),P.currentNode=this.el.content,2===i||3===i){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes);}for(;null!==(r=P.nextNode())&&d.length<u;){if(1===r.nodeType){if(r.hasAttributes())for(const t of r.getAttributeNames())if(t.endsWith(h)){const i=v[a++],s=r.getAttribute(t).split(o$1),e=/([.?@])?(.*)/.exec(i);d.push({type:1,index:l,name:e[2],strings:s,ctor:"."===e[1]?I:"?"===e[1]?L:"@"===e[1]?z:H$k}),r.removeAttribute(t);}else t.startsWith(o$1)&&(d.push({type:6,index:l}),r.removeAttribute(t));if(y.test(r.tagName)){const t=r.textContent.split(o$1),i=t.length-1;if(i>0){r.textContent=s$1?s$1.emptyScript:"";for(let s=0;s<i;s++)r.append(t[s],c()),P.nextNode(),d.push({type:2,index:++l});r.append(t[i],c());}}}else if(8===r.nodeType)if(r.data===n)d.push({type:2,index:l});else {let t=-1;for(;-1!==(t=r.data.indexOf(o$1,t+1));)d.push({type:7,index:l}),t+=o$1.length-1;}l++;}}static createElement(t,i){const s=l.createElement("template");return s.innerHTML=t,s}}function M(t,i,s=t,e){if(i===E)return i;let h=void 0!==e?s._$Co?.[e]:s._$Cl;const o=a(i)?void 0:i._$litDirective$;return h?.constructor!==o&&(h?._$AO?.(false),void 0===o?h=void 0:(h=new o(t),h._$AT(t,s,e)),void 0!==e?(s._$Co??=[])[e]=h:s._$Cl=h),void 0!==h&&(i=M(t,h._$AS(t,i.values),h,e)),i}class R{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:i},parts:s}=this._$AD,e=(t?.creationScope??l).importNode(i,true);P.currentNode=e;let h=P.nextNode(),o=0,n=0,r=s[0];for(;void 0!==r;){if(o===r.index){let i;2===r.type?i=new k(h,h.nextSibling,this,t):1===r.type?i=new r.ctor(h,r.name,r.strings,this,t):6===r.type&&(i=new Z(h,this,t)),this._$AV.push(i),r=s[++n];}o!==r?.index&&(h=P.nextNode(),o++);}return P.currentNode=l,e}p(t){let i=0;for(const s of this._$AV) void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class k{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,i,s,e){this.type=2,this._$AH=A,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cv=e?.isConnected??true;}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t?.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=M(this,t,i),a(t)?t===A||null==t||""===t?(this._$AH!==A&&this._$AR(),this._$AH=A):t!==this._$AH&&t!==E&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):d(t)?this.k(t):this._(t);}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t));}_(t){this._$AH!==A&&a(this._$AH)?this._$AA.nextSibling.data=t:this.T(l.createTextNode(t)),this._$AH=t;}$(t){const{values:i,_$litType$:s}=t,e="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=S.createElement(V(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===e)this._$AH.p(i);else {const t=new R(e,this),s=t.u(this.options);t.p(i),this.T(s),this._$AH=t;}}_$AC(t){let i=C.get(t.strings);return void 0===i&&C.set(t.strings,i=new S(t)),i}k(t){u(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const h of t)e===i.length?i.push(s=new k(this.O(c()),this.O(c()),this,this.options)):s=i[e],s._$AI(h),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,s){for(this._$AP?.(false,true,s);t!==this._$AB;){const s=i$1(t).nextSibling;i$1(t).remove(),t=s;}}setConnected(t){ void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t));}}let H$k = class H{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,i,s,e,h){this.type=1,this._$AH=A,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=h,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=A;}_$AI(t,i=this,s,e){const h=this.strings;let o=false;if(void 0===h)t=M(this,t,i,0),o=!a(t)||t!==this._$AH&&t!==E,o&&(this._$AH=t);else {const e=t;let n,r;for(t=h[0],n=0;n<h.length-1;n++)r=M(this,e[s+n],i,n),r===E&&(r=this._$AH[n]),o||=!a(r)||r!==this._$AH[n],r===A?t=A:t!==A&&(t+=(r??"")+h[n+1]),this._$AH[n]=r;}o&&!e&&this.j(t);}j(t){t===A?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"");}};class I extends H$k{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===A?void 0:t;}}class L extends H$k{constructor(){super(...arguments),this.type=4;}j(t){this.element.toggleAttribute(this.name,!!t&&t!==A);}}class z extends H$k{constructor(t,i,s,e,h){super(t,i,s,e,h),this.type=5;}_$AI(t,i=this){if((t=M(this,t,i,0)??A)===E)return;const s=this._$AH,e=t===A&&s!==A||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,h=t!==A&&(s===A||e);e&&this.element.removeEventListener(this.name,this,s),h&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t);}}class Z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){M(this,t);}}const B=t.litHtmlPolyfillSupport;B?.(S,k),(t.litHtmlVersions??=[]).push("3.3.3");const D=(t,i,s)=>{const e=s?.renderBefore??i;let h=e._$litPart$;if(void 0===h){const t=s?.renderBefore??null;e._$litPart$=h=new k(i.insertBefore(c(),t),t,void 0,s??{});}return h._$AI(t),h};
+const t=globalThis,i$1=t=>t,s$1=t.trustedTypes,e=s$1?s$1.createPolicy("lit-html",{createHTML:t=>t}):void 0,h="$lit$",o$1=`lit$${Math.random().toFixed(9).slice(2)}$`,n="?"+o$1,r=`<${n}>`,l=document,c=()=>l.createComment(""),a=t=>null===t||"object"!=typeof t&&"function"!=typeof t,u=Array.isArray,d=t=>u(t)||"function"==typeof t?.[Symbol.iterator],f="[ \t\n\f\r]",v=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,_=/-->/g,m=/>/g,p=RegExp(`>|${f}(?:([^\\s"'>=/]+)(${f}*=${f}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),g=/'/g,$=/"/g,y=/^(?:script|style|textarea|title)$/i,x=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),w=x(2),E=Symbol.for("lit-noChange"),A=Symbol.for("lit-nothing"),C=new WeakMap,P=l.createTreeWalker(l,129);function V(t,i){if(!u(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==e?e.createHTML(i):i}const N=(t,i)=>{const s=t.length-1,e=[];let n,l=2===i?"<svg>":3===i?"<math>":"",c=v;for(let i=0;i<s;i++){const s=t[i];let a,u,d=-1,f=0;for(;f<s.length&&(c.lastIndex=f,u=c.exec(s),null!==u);)f=c.lastIndex,c===v?"!--"===u[1]?c=_:void 0!==u[1]?c=m:void 0!==u[2]?(y.test(u[2])&&(n=RegExp("</"+u[2],"g")),c=p):void 0!==u[3]&&(c=p):c===p?">"===u[0]?(c=n??v,d=-1):void 0===u[1]?d=-2:(d=c.lastIndex-u[2].length,a=u[1],c=void 0===u[3]?p:'"'===u[3]?$:g):c===$||c===g?c=p:c===_||c===m?c=v:(c=p,n=void 0);const x=c===p&&t[i+1].startsWith("/>")?" ":"";l+=c===v?s+r:d>=0?(e.push(a),s.slice(0,d)+h+s.slice(d)+o$1+x):s+o$1+(-2===d?i:x);}return [V(t,l+(t[s]||"<?>")+(2===i?"</svg>":3===i?"</math>":"")),e]};class S{constructor({strings:t,_$litType$:i},e){let r;this.parts=[];let l=0,a=0;const u=t.length-1,d=this.parts,[f,v]=N(t,i);if(this.el=S.createElement(f,e),P.currentNode=this.el.content,2===i||3===i){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes);}for(;null!==(r=P.nextNode())&&d.length<u;){if(1===r.nodeType){if(r.hasAttributes())for(const t of r.getAttributeNames())if(t.endsWith(h)){const i=v[a++],s=r.getAttribute(t).split(o$1),e=/([.?@])?(.*)/.exec(i);d.push({type:1,index:l,name:e[2],strings:s,ctor:"."===e[1]?I:"?"===e[1]?L:"@"===e[1]?z:H$l}),r.removeAttribute(t);}else t.startsWith(o$1)&&(d.push({type:6,index:l}),r.removeAttribute(t));if(y.test(r.tagName)){const t=r.textContent.split(o$1),i=t.length-1;if(i>0){r.textContent=s$1?s$1.emptyScript:"";for(let s=0;s<i;s++)r.append(t[s],c()),P.nextNode(),d.push({type:2,index:++l});r.append(t[i],c());}}}else if(8===r.nodeType)if(r.data===n)d.push({type:2,index:l});else {let t=-1;for(;-1!==(t=r.data.indexOf(o$1,t+1));)d.push({type:7,index:l}),t+=o$1.length-1;}l++;}}static createElement(t,i){const s=l.createElement("template");return s.innerHTML=t,s}}function M(t,i,s=t,e){if(i===E)return i;let h=void 0!==e?s._$Co?.[e]:s._$Cl;const o=a(i)?void 0:i._$litDirective$;return h?.constructor!==o&&(h?._$AO?.(false),void 0===o?h=void 0:(h=new o(t),h._$AT(t,s,e)),void 0!==e?(s._$Co??=[])[e]=h:s._$Cl=h),void 0!==h&&(i=M(t,h._$AS(t,i.values),h,e)),i}class R{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:i},parts:s}=this._$AD,e=(t?.creationScope??l).importNode(i,true);P.currentNode=e;let h=P.nextNode(),o=0,n=0,r=s[0];for(;void 0!==r;){if(o===r.index){let i;2===r.type?i=new k(h,h.nextSibling,this,t):1===r.type?i=new r.ctor(h,r.name,r.strings,this,t):6===r.type&&(i=new Z(h,this,t)),this._$AV.push(i),r=s[++n];}o!==r?.index&&(h=P.nextNode(),o++);}return P.currentNode=l,e}p(t){let i=0;for(const s of this._$AV) void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class k{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,i,s,e){this.type=2,this._$AH=A,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cv=e?.isConnected??true;}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t?.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=M(this,t,i),a(t)?t===A||null==t||""===t?(this._$AH!==A&&this._$AR(),this._$AH=A):t!==this._$AH&&t!==E&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):d(t)?this.k(t):this._(t);}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t));}_(t){this._$AH!==A&&a(this._$AH)?this._$AA.nextSibling.data=t:this.T(l.createTextNode(t)),this._$AH=t;}$(t){const{values:i,_$litType$:s}=t,e="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=S.createElement(V(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===e)this._$AH.p(i);else {const t=new R(e,this),s=t.u(this.options);t.p(i),this.T(s),this._$AH=t;}}_$AC(t){let i=C.get(t.strings);return void 0===i&&C.set(t.strings,i=new S(t)),i}k(t){u(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const h of t)e===i.length?i.push(s=new k(this.O(c()),this.O(c()),this,this.options)):s=i[e],s._$AI(h),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,s){for(this._$AP?.(false,true,s);t!==this._$AB;){const s=i$1(t).nextSibling;i$1(t).remove(),t=s;}}setConnected(t){ void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t));}}let H$l = class H{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,i,s,e,h){this.type=1,this._$AH=A,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=h,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=A;}_$AI(t,i=this,s,e){const h=this.strings;let o=false;if(void 0===h)t=M(this,t,i,0),o=!a(t)||t!==this._$AH&&t!==E,o&&(this._$AH=t);else {const e=t;let n,r;for(t=h[0],n=0;n<h.length-1;n++)r=M(this,e[s+n],i,n),r===E&&(r=this._$AH[n]),o||=!a(r)||r!==this._$AH[n],r===A?t=A:t!==A&&(t+=(r??"")+h[n+1]),this._$AH[n]=r;}o&&!e&&this.j(t);}j(t){t===A?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"");}};class I extends H$l{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===A?void 0:t;}}class L extends H$l{constructor(){super(...arguments),this.type=4;}j(t){this.element.toggleAttribute(this.name,!!t&&t!==A);}}class z extends H$l{constructor(t,i,s,e,h){super(t,i,s,e,h),this.type=5;}_$AI(t,i=this){if((t=M(this,t,i,0)??A)===E)return;const s=this._$AH,e=t===A&&s!==A||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,h=t!==A&&(s===A||e);e&&this.element.removeEventListener(this.name,this,s),h&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t);}}class Z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){M(this,t);}}const B=t.litHtmlPolyfillSupport;B?.(S,k),(t.litHtmlVersions??=[]).push("3.3.3");const D=(t,i,s)=>{const e=s?.renderBefore??i;let h=e._$litPart$;if(void 0===h){const t=s?.renderBefore??null;e._$litPart$=h=new k(i.insertBefore(c(),t),t,void 0,s??{});}return h._$AI(t),h};
 
 /**
  * @license
@@ -36,8 +36,8 @@ const t=globalThis,i$1=t=>t,s$1=t.trustedTypes,e=s$1?s$1.createPolicy("lit-html"
  * An earlier version of this file was drawn from memory rather than a
  * photograph and looked nothing like the product. Worth remembering.
  */
-const W$i = 400;
-const H$j = 400;
+const W$j = 400;
+const H$k = 400;
 // The LCD sits high and slightly narrower than the bezel.
 const LX$3 = 62;
 const LY$3 = 84;
@@ -64,10 +64,10 @@ const CHASSIS$8 = w `
     </radialGradient>
   </defs>
 
-  <rect x="0" y="0" width="${W$i}" height="${H$j}" rx="12" fill="url(#pm-bezel)" />
-  <rect x="7" y="7" width="${W$i - 14}" height="${H$j - 14}" rx="9"
+  <rect x="0" y="0" width="${W$j}" height="${H$k}" rx="12" fill="url(#pm-bezel)" />
+  <rect x="7" y="7" width="${W$j - 14}" height="${H$k - 14}" rx="9"
         fill="none" stroke="#20242700" stroke-width="1" />
-  <rect x="26" y="26" width="${W$i - 52}" height="${H$j - 52}" rx="6"
+  <rect x="26" y="26" width="${W$j - 52}" height="${H$k - 52}" rx="6"
         fill="none" stroke="#4d5358" stroke-width="1" />
 
   <!-- Brand. Wordmarks belong to their owners; see TRADEMARKS.md. -->
@@ -111,7 +111,7 @@ const PM2200 = {
     card: "bms-meter-card",
     render: "svg",
     display: "positive",
-    size: [W$i, H$j],
+    size: [W$j, H$k],
     artNode: CHASSIS$8,
     pages: ["summary", "amps", "volts", "power"],
     regions: [
@@ -204,8 +204,8 @@ const PM2200 = {
  * to prove the point of the engine — this file is data, and adding it
  * required no change to the card or the renderer.
  */
-const W$h = 460;
-const H$i = 260;
+const W$i = 460;
+const H$j = 260;
 const CHASSIS$7 = w `
   <defs>
     <linearGradient id="g3p-case" x1="0" y1="0" x2="0" y2="1">
@@ -213,11 +213,11 @@ const CHASSIS$7 = w `
       <stop offset="100%" stop-color="#343a40" />
     </linearGradient>
   </defs>
-  <rect x="0" y="0" width="${W$h}" height="${H$i}" rx="10" fill="url(#g3p-case)" />
-  <rect x="14" y="14" width="${W$h - 28}" height="${H$i - 28}" rx="6"
+  <rect x="0" y="0" width="${W$i}" height="${H$j}" rx="10" fill="url(#g3p-case)" />
+  <rect x="14" y="14" width="${W$i - 28}" height="${H$j - 28}" rx="6"
         fill="#151b17" stroke="#090c0a" stroke-width="2" />
-  <line x1="14" y1="110" x2="${W$h - 14}" y2="110" stroke="#3c4a40" stroke-width="1" />
-  <line x1="14" y1="186" x2="${W$h - 14}" y2="186" stroke="#3c4a40" stroke-width="1" />
+  <line x1="14" y1="110" x2="${W$i - 14}" y2="110" stroke="#3c4a40" stroke-width="1" />
+  <line x1="14" y1="186" x2="${W$i - 14}" y2="186" stroke="#3c4a40" stroke-width="1" />
 `;
 const GENERIC_3PHASE = {
     id: "generic-3phase",
@@ -226,7 +226,7 @@ const GENERIC_3PHASE = {
     card: "bms-meter-card",
     render: "svg",
     display: "negative",
-    size: [W$h, H$i],
+    size: [W$i, H$j],
     artNode: CHASSIS$7,
     regions: [
         { id: "etot", role: "energy_total", kind: "text",
@@ -259,8 +259,8 @@ const GENERIC_3PHASE = {
  * photograph and the manual — see the request template in the README.
  */
 // Roughly 3 DIN modules wide by 90mm tall, kept in proportion.
-const W$g = 230;
-const H$h = 380;
+const W$h = 230;
+const H$i = 380;
 const CHASSIS$6 = w `
   <defs>
     <linearGradient id="din3p-case" x1="0" y1="0" x2="1" y2="1">
@@ -275,23 +275,23 @@ const CHASSIS$6 = w `
   </defs>
 
   <!-- Housing with the stepped DIN profile -->
-  <rect x="0" y="22" width="${W$g}" height="${H$h - 44}" rx="6" fill="url(#din3p-case)" />
-  <rect x="18" y="0" width="${W$g - 36}" height="30" rx="3" fill="#333940" />
-  <rect x="18" y="${H$h - 30}" width="${W$g - 36}" height="30" rx="3" fill="#333940" />
+  <rect x="0" y="22" width="${W$h}" height="${H$i - 44}" rx="6" fill="url(#din3p-case)" />
+  <rect x="18" y="0" width="${W$h - 36}" height="30" rx="3" fill="#333940" />
+  <rect x="18" y="${H$i - 30}" width="${W$h - 36}" height="30" rx="3" fill="#333940" />
 
   <!-- Terminal detail, top and bottom -->
   ${[0, 1, 2, 3].map((i) => w `<rect x="${26 + i * 45}" y="4" width="34" height="20" rx="2" fill="#23282d" />`)}
-  ${[0, 1, 2, 3].map((i) => w `<rect x="${26 + i * 45}" y="${H$h - 26}" width="34" height="20" rx="2" fill="#23282d" />`)}
+  ${[0, 1, 2, 3].map((i) => w `<rect x="${26 + i * 45}" y="${H$i - 26}" width="34" height="20" rx="2" fill="#23282d" />`)}
 
   <!-- Display -->
-  <rect x="20" y="52" width="${W$g - 40}" height="168" rx="3" fill="url(#din3p-lcd)" />
-  <rect x="20" y="52" width="${W$g - 40}" height="168" rx="3"
+  <rect x="20" y="52" width="${W$h - 40}" height="168" rx="3" fill="url(#din3p-lcd)" />
+  <rect x="20" y="52" width="${W$h - 40}" height="168" rx="3"
         fill="none" stroke="#1d2226" stroke-width="3" />
-  <line x1="28" y1="108" x2="${W$g - 28}" y2="108" stroke="#9fae88" stroke-width="1" />
-  <line x1="28" y1="164" x2="${W$g - 28}" y2="164" stroke="#9fae88" stroke-width="1" />
+  <line x1="28" y1="108" x2="${W$h - 28}" y2="108" stroke="#9fae88" stroke-width="1" />
+  <line x1="28" y1="164" x2="${W$h - 28}" y2="164" stroke="#9fae88" stroke-width="1" />
 
   <!-- Key cluster -->
-  <rect x="20" y="234" width="${W$g - 40}" height="62" rx="4" fill="#2e343a" />
+  <rect x="20" y="234" width="${W$h - 40}" height="62" rx="4" fill="#2e343a" />
 `;
 const DIN_3PHASE = {
     id: "din-3phase-analyser",
@@ -303,7 +303,7 @@ const DIN_3PHASE = {
     // Row tops are 52 / 108 / 164 — the glass edge and the two rules. A
     // label is drawn 10px above its value, so the value sits at rowTop+25
     // to put the label inside the row rather than across the line.
-    size: [W$g, H$h],
+    size: [W$h, H$i],
     artNode: CHASSIS$6,
     pages: ["volts", "amps", "power"],
     regions: [
@@ -353,8 +353,8 @@ const DIN_3PHASE = {
  * The three default rows are active, apparent and reactive power, which is
  * what the unit shows on its power page.
  */
-const W$f = 400;
-const H$g = 330;
+const W$g = 400;
+const H$h = 330;
 const LCD_TOP = 50;
 const LCD_H = 196;
 const CHASSIS$5 = w `
@@ -370,16 +370,16 @@ const CHASSIS$5 = w `
     </linearGradient>
   </defs>
 
-  <rect x="0" y="0" width="${W$f}" height="${H$g}" rx="7" fill="url(#cvm-bezel)" />
-  <rect x="1" y="1" width="${W$f - 2}" height="${H$g - 2}" rx="6"
+  <rect x="0" y="0" width="${W$g}" height="${H$h}" rx="7" fill="url(#cvm-bezel)" />
+  <rect x="1" y="1" width="${W$g - 2}" height="${H$h - 2}" rx="6"
         fill="none" stroke="#b4b4b0" stroke-width="1" />
 
   <!-- Brand strip. Wordmarks belong to their owners; see TRADEMARKS.md. -->
   <text class="cvm-brand" x="18" y="34">Circutor</text>
-  <text class="cvm-model" x="${W$f - 18}" y="33" text-anchor="end">CVM-E3-MINI-WiEth</text>
+  <text class="cvm-model" x="${W$g - 18}" y="33" text-anchor="end">CVM-E3-MINI-WiEth</text>
 
   <!-- Display, recessed -->
-  <rect x="12" y="${LCD_TOP}" width="${W$f - 24}" height="${LCD_H}" rx="3"
+  <rect x="12" y="${LCD_TOP}" width="${W$g - 24}" height="${LCD_H}" rx="3"
         fill="url(#cvm-lcd)" stroke="#9a9a96" stroke-width="2" />
 
   <!-- Annunciator column -->
@@ -414,7 +414,7 @@ const CVM_E3_MINI = {
     card: "bms-meter-card",
     render: "svg",
     display: "negative",
-    size: [W$f, H$g],
+    size: [W$g, H$h],
     artNode: CHASSIS$5,
     pages: ["power", "volts", "amps", "energy"],
     regions: [
@@ -468,8 +468,8 @@ const CVM_E3_MINI = {
  * in the decade it reads. Nothing is derived or summed — they are five
  * windows onto one number, which is exactly how the real thing works.
  */
-const W$e = 400;
-const H$f = 400;
+const W$f = 400;
+const H$g = 400;
 const CX$3 = 200;
 const CY$3 = 200;
 const DIAL_Y = 286;
@@ -539,7 +539,7 @@ const MULTIJET_REGISTER = {
     card: "bms-meter-card",
     render: "svg",
     display: "positive",
-    size: [W$e, H$f],
+    size: [W$f, H$g],
     artNode: CHASSIS$4,
     regions: [
         // The odometer and every dial read the same role at different decades.
@@ -580,8 +580,8 @@ const MULTIJET_REGISTER = {
  * colour; that is not reproduced because it was not observable from one
  * photograph.
  */
-const W$d = 360;
-const H$e = 400;
+const W$e = 360;
+const H$f = 400;
 const CX$2 = 180;
 const CY$2 = 208;
 const FACE_R = 132;
@@ -599,7 +599,7 @@ const CHASSIS$3 = w `
   </defs>
 
   <!-- Wall plate -->
-  <rect x="26" y="26" width="${W$d - 52}" height="${H$e - 52}" rx="8"
+  <rect x="26" y="26" width="${W$e - 52}" height="${H$f - 52}" rx="8"
         fill="url(#madoka-plate)" stroke="#c7c2b8" stroke-width="1.5" />
 
   <!-- Brand, top-left of the plate as on the unit -->
@@ -625,7 +625,7 @@ const MADOKA_BRC1H = {
     card: "hvac-controller-card",
     render: "svg",
     display: "negative",
-    size: [W$d, H$e],
+    size: [W$e, H$f],
     artNode: CHASSIS$3,
     regions: [
         // Status ring, drawn over the face edge.
@@ -679,8 +679,8 @@ const MADOKA_BRC1H = {
  * clock across the top right, and set-point and room temperature side by
  * side beneath it.
  */
-const W$c = 400;
-const H$d = 400;
+const W$d = 400;
+const H$e = 400;
 // Display
 const LX$2 = 66;
 const LY$2 = 84;
@@ -689,7 +689,7 @@ const LH$2 = 124;
 const SPLIT = LX$2 + 104; // mode column | readings column
 const RULE = LY$2 + 34; // under the clock
 const MID = SPLIT + (LX$2 + LW$2 - SPLIT) / 2;
-const FOOT$1 = LY$2 + LH$2 - 20; // status strip along the bottom
+const FOOT$2 = LY$2 + LH$2 - 20; // status strip along the bottom
 // Keys
 const PAD_CX = 200;
 const PAD_CY = 296;
@@ -718,8 +718,8 @@ const CHASSIS$2 = w `
     </radialGradient>
   </defs>
 
-  <rect x="0" y="0" width="${W$c}" height="${H$d}" rx="16" fill="url(#brc-bezel)" />
-  <rect x="1" y="1" width="${W$c - 2}" height="${H$d - 2}" rx="15"
+  <rect x="0" y="0" width="${W$d}" height="${H$e}" rx="16" fill="url(#brc-bezel)" />
+  <rect x="1" y="1" width="${W$d - 2}" height="${H$e - 2}" rx="15"
         fill="none" stroke="#d2d2ce" stroke-width="1.5" />
 
   <!-- Wordmark. Marks belong to their owners; see TRADEMARKS.md. -->
@@ -732,10 +732,10 @@ const CHASSIS$2 = w `
   <rect x="${LX$2 - 4}" y="${LY$2 - 4}" width="${LW$2 + 8}" height="${LH$2 + 8}" rx="3"
         fill="#b3b8ac" />
   <rect x="${LX$2}" y="${LY$2}" width="${LW$2}" height="${LH$2}" fill="url(#brc-lcd)" />
-  <line x1="${SPLIT}" y1="${LY$2}" x2="${SPLIT}" y2="${FOOT$1}" stroke="#8d9788" stroke-width="1.5" />
+  <line x1="${SPLIT}" y1="${LY$2}" x2="${SPLIT}" y2="${FOOT$2}" stroke="#8d9788" stroke-width="1.5" />
   <line x1="${SPLIT}" y1="${RULE}" x2="${LX$2 + LW$2}" y2="${RULE}" stroke="#8d9788" stroke-width="1.5" />
-  <line x1="${MID}" y1="${RULE}" x2="${MID}" y2="${FOOT$1}" stroke="#8d9788" stroke-width="1.5" />
-  <line x1="${LX$2}" y1="${FOOT$1}" x2="${LX$2 + LW$2}" y2="${FOOT$1}" stroke="#8d9788" stroke-width="1.5" />
+  <line x1="${MID}" y1="${RULE}" x2="${MID}" y2="${FOOT$2}" stroke="#8d9788" stroke-width="1.5" />
+  <line x1="${LX$2}" y1="${FOOT$2}" x2="${LX$2 + LW$2}" y2="${FOOT$2}" stroke="#8d9788" stroke-width="1.5" />
 
   <!-- Fan and swing glyphs, as printed on the display -->
   <g transform="translate(${LX$2 + 12} ${LY$2 + 62})" fill="#26302a">
@@ -752,11 +752,11 @@ const CHASSIS$2 = w `
   <g>
     <rect x="46" y="228" width="${PILL_W}" height="${PILL_H}" rx="15"
           fill="url(#brc-pill)" stroke="#d5d5d1" stroke-width="1.2" />
-    <rect x="${W$c - 46 - PILL_W}" y="228" width="${PILL_W}" height="${PILL_H}" rx="15"
+    <rect x="${W$d - 46 - PILL_W}" y="228" width="${PILL_W}" height="${PILL_H}" rx="15"
           fill="url(#brc-pill)" stroke="#d5d5d1" stroke-width="1.2" />
     <rect x="46" y="332" width="${PILL_W}" height="${PILL_H}" rx="15"
           fill="url(#brc-pill)" stroke="#d5d5d1" stroke-width="1.2" />
-    <rect x="${W$c - 46 - PILL_W}" y="332" width="${PILL_W}" height="${PILL_H}" rx="15"
+    <rect x="${W$d - 46 - PILL_W}" y="332" width="${PILL_W}" height="${PILL_H}" rx="15"
           fill="url(#brc-pill)" stroke="#d5d5d1" stroke-width="1.2" />
   </g>
 
@@ -766,7 +766,7 @@ const CHASSIS$2 = w `
     <text class="brc-glyph" x="94" y="353" text-anchor="middle">&#10052;&#10052;</text>
     <text class="brc-glyph" x="306" y="353" text-anchor="middle">&#8635;</text>
   </g>
-  <g transform="translate(${W$c - 46 - PILL_W / 2} 243)" stroke="#3a4046"
+  <g transform="translate(${W$d - 46 - PILL_W / 2} 243)" stroke="#3a4046"
      stroke-width="1.8" fill="none">
     <circle cx="0" cy="0" r="7" />
     <line x1="0" y1="-10" x2="0" y2="-1" />
@@ -797,7 +797,7 @@ const BRC1E63 = {
     card: "hvac-controller-card",
     render: "svg",
     display: "positive",
-    size: [W$c, H$d],
+    size: [W$d, H$e],
     artNode: CHASSIS$2,
     regions: [
         // -- Left column: mode and fan -------------------------------------
@@ -822,13 +822,13 @@ const BRC1E63 = {
             unit: "°C", decimals: 0, size: 26 },
         // -- Status strip ----------------------------------------------------
         { id: "status", role: "hvac_action", kind: "text",
-            x: LX$2 + 8, y: FOOT$1 + 1, w: LW$2 - 16, align: "start", size: 12,
+            x: LX$2 + 8, y: FOOT$2 + 1, w: LW$2 - 16, align: "start", size: 12,
             placeholder: "" },
         // -- Keys -------------------------------------------------------------
         { id: "k-mode", role: "", kind: "button",
             x: 46, y: 228, w: PILL_W, h: PILL_H, text: "", action: "mode_cycle" },
         { id: "k-power", role: "", kind: "button",
-            x: W$c - 46 - PILL_W, y: 228, w: PILL_W, h: PILL_H, text: "", action: "power_toggle" },
+            x: W$d - 46 - PILL_W, y: 228, w: PILL_W, h: PILL_H, text: "", action: "power_toggle" },
         { id: "k-fan", role: "", kind: "button",
             x: 46, y: 332, w: PILL_W, h: PILL_H, text: "", action: "fan_cycle" },
         { id: "k-up", role: "", kind: "button",
@@ -852,8 +852,8 @@ const BRC1E63 = {
  * be offering, and showing it open would misrepresent the unit's resting
  * appearance.
  */
-const W$b = 400;
-const H$c = 400;
+const W$c = 400;
+const H$d = 400;
 const LX$1 = 30;
 const LY$1 = 92;
 const LW$1 = 340;
@@ -873,8 +873,8 @@ const CHASSIS$1 = w `
       <stop offset="100%" stop-color="#e9e5db" />
     </linearGradient>
   </defs>
-  <rect x="0" y="0" width="${W$b}" height="${H$c}" rx="12" fill="url(#brc315-body)" />
-  <rect x="1" y="1" width="${W$b - 2}" height="${H$c - 2}" rx="11"
+  <rect x="0" y="0" width="${W$c}" height="${H$d}" rx="12" fill="url(#brc315-body)" />
+  <rect x="1" y="1" width="${W$c - 2}" height="${H$d - 2}" rx="11"
         fill="none" stroke="#d6d1c5" stroke-width="1.5" />
   <!-- Ventilation slots -->
   <g fill="#cfcabd">
@@ -929,7 +929,7 @@ const BRC315D7 = {
     card: "hvac-controller-card",
     render: "svg",
     display: "positive",
-    size: [W$b, H$c],
+    size: [W$c, H$d],
     artNode: CHASSIS$1,
     regions: [
         { id: "hdr", role: "", kind: "text", text: "ONETIME  DAILY  TIMER",
@@ -971,9 +971,9 @@ const BRC315D7 = {
  * pump count rather than drawn once.
  */
 const PITCH$1 = 96; // centre-to-centre spacing of the pumps
-const LEFT$3 = 56; // skid overhang before the first pump
+const LEFT$4 = 56; // skid overhang before the first pump
 const PANEL_W = 190; // control panel and vessel at the right
-const H$b = 452;
+const H$c = 452;
 const SKID_Y = 348; // top of the skid rail
 const MANIFOLD_Y = 318; // the common header the pumps discharge into
 const MOTOR_Y = 74;
@@ -999,11 +999,11 @@ function pumpGraphic(x) {
     <circle cx="${x}" cy="${MANIFOLD_Y - 46}" r="9" fill="#c7a34a" />
   `;
 }
-function build$5(values) {
+function build$6(values) {
     const count = values.pumps ?? 3;
-    const width = LEFT$3 * 2 + (count - 1) * PITCH$1 + PANEL_W;
-    const panelX = LEFT$3 + (count - 1) * PITCH$1 + 70;
-    const xs = [...Array(count).keys()].map((i) => LEFT$3 + i * PITCH$1);
+    const width = LEFT$4 * 2 + (count - 1) * PITCH$1 + PANEL_W;
+    const panelX = LEFT$4 + (count - 1) * PITCH$1 + 70;
+    const xs = [...Array(count).keys()].map((i) => LEFT$4 + i * PITCH$1);
     const artNode = w `
     <defs>
       <linearGradient id="ps-steel" x1="0" y1="0" x2="1" y2="0">
@@ -1095,7 +1095,7 @@ function build$5(values) {
             x: x - 34, y: SKID_Y + 84, w: 68, align: "middle", size: 12,
         });
     });
-    return { size: [width, H$b], artNode, regions };
+    return { size: [width, H$c], artNode, regions };
 }
 const PUMPSET = {
     id: "vertical-pumpset",
@@ -1104,7 +1104,7 @@ const PUMPSET = {
     card: "pump-system-card",
     render: "svg",
     display: "negative",
-    size: [LEFT$3 * 2 + 2 * PITCH$1 + PANEL_W, H$b],
+    size: [LEFT$4 * 2 + 2 * PITCH$1 + PANEL_W, H$c],
     options: [
         {
             key: "pumps",
@@ -1116,7 +1116,7 @@ const PUMPSET = {
             help: "The skid widens to suit; roles are pump1_… through pumpN_…",
         },
     ],
-    build: build$5,
+    build: build$6,
     regions: [],
 };
 
@@ -1131,8 +1131,8 @@ const PUMPSET = {
  * The display is small on purpose — this controller shows the set point, the
  * mode and the fan speed, and little else.
  */
-const W$a = 400;
-const H$a = 400;
+const W$b = 400;
+const H$b = 400;
 // Central display, in its grey surround.
 //
 // The first attempt made this about half the size it should be. On the real
@@ -1165,8 +1165,8 @@ const CHASSIS = w `
     </linearGradient>
   </defs>
 
-  <rect x="0" y="0" width="${W$a}" height="${H$a}" rx="26" fill="url(#brc2-body)" />
-  <rect x="1" y="1" width="${W$a - 2}" height="${H$a - 2}" rx="25"
+  <rect x="0" y="0" width="${W$b}" height="${H$b}" rx="26" fill="url(#brc2-body)" />
+  <rect x="1" y="1" width="${W$b - 2}" height="${H$b - 2}" rx="25"
         fill="none" stroke="#dcdcda" stroke-width="1.5" />
 
   <!-- Key segmentation: the face is the keys, divided by fine seams -->
@@ -1241,7 +1241,7 @@ const BRC2E61 = {
     card: "hvac-controller-card",
     render: "svg",
     display: "positive",
-    size: [W$a, H$a],
+    size: [W$b, H$b],
     artNode: CHASSIS,
     regions: [
         // Mode glyph line across the top of the display.
@@ -1292,9 +1292,9 @@ const BRC2E61 = {
  * A single sweep hand shows the lowest decade, so it is visible that the
  * meter is turning at all when the digits are barely moving.
  */
-const W$9 = 440;
-const H$9 = 250;
-const artNode$6 = w `
+const W$a = 440;
+const H$a = 250;
+const artNode$7 = w `
   <defs>
     <linearGradient id="wt-body" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#5d6672" />
@@ -1307,19 +1307,19 @@ const artNode$6 = w `
     </linearGradient>
   </defs>
 
-  <rect x="0" y="0" width=${W$9} height=${H$9} rx="10" fill="url(#wt-body)" />
+  <rect x="0" y="0" width=${W$a} height=${H$a} rx="10" fill="url(#wt-body)" />
   <!-- Flanges, so the thing reads as an in-line body rather than a box -->
   <rect x="6" y="70" width="26" height="110" rx="4" fill="#232931" />
-  <rect x=${W$9 - 32} y="70" width="26" height="110" rx="4" fill="#232931" />
+  <rect x=${W$a - 32} y="70" width="26" height="110" rx="4" fill="#232931" />
 
-  <rect x="52" y="30" width=${W$9 - 104} height=${H$9 - 60} rx="8"
+  <rect x="52" y="30" width=${W$a - 104} height=${H$a - 60} rx="8"
         fill="url(#wt-plate)" />
-  <rect x="52" y="30" width=${W$9 - 104} height=${H$9 - 60} rx="8"
+  <rect x="52" y="30" width=${W$a - 104} height=${H$a - 60} rx="8"
         fill="none" stroke="#8d8a7c" stroke-width="2" />
 
-  <text x=${W$9 / 2} y="62" text-anchor="middle" fill="#6b6659"
+  <text x=${W$a / 2} y="62" text-anchor="middle" fill="#6b6659"
         font-size="13" letter-spacing="2" font-family="inherit">TOTAL VOLUME</text>
-  <text x=${W$9 / 2} y=${H$9 - 46} text-anchor="middle" fill="#6b6659"
+  <text x=${W$a / 2} y=${H$a - 46} text-anchor="middle" fill="#6b6659"
         font-size="12" letter-spacing="1" font-family="inherit">m³</text>
 `;
 const WOLTMANN_REGISTER = {
@@ -1328,8 +1328,8 @@ const WOLTMANN_REGISTER = {
     card: "bms-meter-card",
     render: "svg",
     display: "positive",
-    size: [W$9, H$9],
-    artNode: artNode$6,
+    size: [W$a, H$a],
+    artNode: artNode$7,
     description: "Straight-reading bulk register: black cells for whole cubic metres, "
         + "red for the decimals, with a sweep hand on the lowest decade.",
     emulates: "Woltmann-type bulk water meter register",
@@ -1365,9 +1365,9 @@ const WOLTMANN_REGISTER = {
  * the battery is the thing that fails, so it gets a permanent region
  * rather than being hidden until it is low.
  */
-const W$8 = 420;
-const H$8 = 300;
-const artNode$5 = w `
+const W$9 = 420;
+const H$9 = 300;
+const artNode$6 = w `
   <defs>
     <linearGradient id="lw-body" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#4a5361" />
@@ -1379,14 +1379,14 @@ const artNode$5 = w `
     </linearGradient>
   </defs>
 
-  <rect x="0" y="0" width=${W$8} height=${H$8} rx="12" fill="url(#lw-body)" />
+  <rect x="0" y="0" width=${W$9} height=${H$9} rx="12" fill="url(#lw-body)" />
   <rect x="8" y="112" width="30" height="96" rx="5" fill="#1b2027" />
-  <rect x=${W$8 - 38} y="112" width="30" height="96" rx="5" fill="#1b2027" />
+  <rect x=${W$9 - 38} y="112" width="30" height="96" rx="5" fill="#1b2027" />
 
   <!-- LCD head -->
-  <rect x="58" y="34" width=${W$8 - 116} height="180" rx="10"
+  <rect x="58" y="34" width=${W$9 - 116} height="180" rx="10"
         fill="#1b2027" stroke="#151a20" stroke-width="2" />
-  <rect x="74" y="50" width=${W$8 - 148} height="148" rx="6"
+  <rect x="74" y="50" width=${W$9 - 148} height="148" rx="6"
         fill="url(#lw-glass)" />
 
 `;
@@ -1396,8 +1396,8 @@ const LCD_WATER_METER = {
     card: "bms-meter-card",
     render: "svg",
     display: "positive",
-    size: [W$8, H$8],
-    artNode: artNode$5,
+    size: [W$9, H$9],
+    artNode: artNode$6,
     description: "Electronic register: cumulative total, instantaneous flow and a "
         + "battery bar, on a grey-green LCD.",
     emulates: "Battery-powered electronic water meter",
@@ -1457,11 +1457,11 @@ const LCD_WATER_METER = {
  * hand rather than four — this is the face you find on a single-jet meter,
  * where the fine decades are read off the hand's position alone.
  */
-const W$7 = 380;
-const H$7 = 380;
+const W$8 = 380;
+const H$8 = 380;
 const CX$1 = 190;
 const CY$1 = 190;
-const artNode$4 = w `
+const artNode$5 = w `
   <defs>
     <radialGradient id="dw-face" cx="0.38" cy="0.3" r="0.9">
       <stop offset="0%" stop-color="#ffffff" />
@@ -1512,8 +1512,8 @@ const DIAL_WATER_METER = {
     card: "bms-meter-card",
     render: "svg",
     display: "positive",
-    size: [W$7, H$7],
-    artNode: artNode$4,
+    size: [W$8, H$8],
+    artNode: artNode$5,
     description: "Domestic dial face: an odometer window for whole cubic metres and a "
         + "single sweep hand for the lowest decade.",
     emulates: "Single-jet dial-face water meter",
@@ -1544,9 +1544,9 @@ const DIAL_WATER_METER = {
  * how a slow leak shows itself, and adding them together hides exactly
  * that.
  */
-const W$6 = 460;
-const H$6 = 300;
-const artNode$3 = w `
+const W$7 = 460;
+const H$7 = 300;
+const artNode$4 = w `
   <defs>
     <linearGradient id="cm-body" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#55606e" />
@@ -1558,9 +1558,9 @@ const artNode$3 = w `
     </linearGradient>
   </defs>
 
-  <rect x="0" y="0" width=${W$6} height=${H$6} rx="12" fill="url(#cm-body)" />
+  <rect x="0" y="0" width=${W$7} height=${H$7} rx="12" fill="url(#cm-body)" />
   <rect x="6" y="118" width="26" height="92" rx="4" fill="#1f242b" />
-  <rect x=${W$6 - 32} y="118" width="26" height="92" rx="4" fill="#1f242b" />
+  <rect x=${W$7 - 32} y="118" width="26" height="92" rx="4" fill="#1f242b" />
 
   <rect x="44" y="26" width="192" height="180" rx="8" fill="url(#cm-plate)" />
   <rect x="44" y="26" width="192" height="180" rx="8" fill="none"
@@ -1585,8 +1585,8 @@ const COMPOUND_METER = {
     card: "bms-meter-card",
     render: "svg",
     display: "positive",
-    size: [W$6, H$6],
-    artNode: artNode$3,
+    size: [W$7, H$7],
+    artNode: artNode$4,
     description: "Two registers on one body — main turbine and low-flow bypass — kept "
         + "apart, because a bypass climbing alone is how a leak shows.",
     emulates: "Compound water meter with main and bypass registers",
@@ -1626,9 +1626,9 @@ const COMPOUND_METER = {
  * dashes beside the word LEAK reads as a fault to anyone glancing at it,
  * which is the opposite of what an all-clear should look like.
  */
-const W$5 = 440;
-const H$5 = 320;
-const artNode$2 = w `
+const W$6 = 440;
+const H$6 = 320;
+const artNode$3 = w `
   <defs>
     <linearGradient id="sw-body" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#46505e" />
@@ -1640,13 +1640,13 @@ const artNode$2 = w `
     </linearGradient>
   </defs>
 
-  <rect x="0" y="0" width=${W$5} height=${H$5} rx="12" fill="url(#sw-body)" />
-  <rect x="58" y="26" width=${W$5 - 116} height="196" rx="10"
+  <rect x="0" y="0" width=${W$6} height=${H$6} rx="12" fill="url(#sw-body)" />
+  <rect x="58" y="26" width=${W$6 - 116} height="196" rx="10"
         fill="#171c22" stroke="#12161b" stroke-width="2" />
-  <rect x="74" y="42" width=${W$5 - 148} height="164" rx="6" fill="url(#sw-glass)" />
+  <rect x="74" y="42" width=${W$6 - 148} height="164" rx="6" fill="url(#sw-glass)" />
 
   <!-- Annunciator strip along the bottom of the glass -->
-  <line x1="74" y1="176" x2=${W$5 - 74} y2="176" stroke="#9aa78f" stroke-width="1" />
+  <line x1="74" y1="176" x2=${W$6 - 74} y2="176" stroke="#9aa78f" stroke-width="1" />
 `;
 const SMART_WATER_METER = {
     id: "smart-water-meter",
@@ -1654,8 +1654,8 @@ const SMART_WATER_METER = {
     card: "bms-meter-card",
     render: "svg",
     display: "positive",
-    size: [W$5, H$5],
-    artNode: artNode$2,
+    size: [W$6, H$6],
+    artNode: artNode$3,
     description: "Electronic register with the flags these meters raise: leak, reverse "
         + "flow and battery. Clear annunciators show nothing, not dashes.",
     emulates: "Smart water meter with leak and reverse-flow detection",
@@ -1719,8 +1719,8 @@ const SMART_WATER_METER = {
  * because that is what a ducted supply fan is; the exhaust variant uses
  * an axial symbol, which is what sits in a discharge stack.
  */
-const W$4 = 360;
-const H$4 = 300;
+const W$5 = 360;
+const H$5 = 300;
 const CX = 180;
 const CY = 168;
 const SCROLL_R = 62;
@@ -1737,22 +1737,22 @@ function chassis(entry, exhaust) {
             ? w `<rect x="16" y=${CY - 26} width=${CX - SCROLL_R - 12} height="52"
                 fill=${duct} />`
             : w `<rect x=${CX + SCROLL_R + 12} y=${CY - 26}
-                width=${W$4 - CX - SCROLL_R - 28} height="52" fill=${duct} />`;
+                width=${W$5 - CX - SCROLL_R - 28} height="52" fill=${duct} />`;
     const inletArrow = entry === "top"
         ? arrow(CX, 30, CX, CY - SCROLL_R - 16)
         : entry === "left"
             ? arrow(30, CY, CX - SCROLL_R - 16, CY)
-            : arrow(W$4 - 30, CY, CX + SCROLL_R + 16, CY);
+            : arrow(W$5 - 30, CY, CX + SCROLL_R + 16, CY);
     // Discharge always leaves at the bottom on a supply fan; an exhaust
     // fan discharges up and out, to atmosphere.
     const outlet = exhaust
         ? w `<rect x=${CX - 24} y="16" width="48" height=${CY - SCROLL_R - 12}
             fill=${duct} />`
         : w `<rect x=${CX - 24} y=${CY + SCROLL_R - 4} width="48"
-            height=${H$4 - CY - SCROLL_R - 12} fill=${duct} />`;
+            height=${H$5 - CY - SCROLL_R - 12} fill=${duct} />`;
     const outletArrow = exhaust
         ? arrow(CX, CY - SCROLL_R - 16, CX, 26)
-        : arrow(CX, CY + SCROLL_R, CX, H$4 - 26);
+        : arrow(CX, CY + SCROLL_R, CX, H$5 - 26);
     return w `
     <defs>
       <marker id="pf-arrow" viewBox="0 0 10 10" refX="8" refY="5"
@@ -1765,7 +1765,7 @@ function chassis(entry, exhaust) {
       </radialGradient>
     </defs>
 
-    <rect x="0" y="0" width=${W$4} height=${H$4} rx="10" fill="#101216" />
+    <rect x="0" y="0" width=${W$5} height=${H$5} rx="10" fill="#101216" />
     ${exhaust ? outlet : inlet}
     ${exhaust ? "" : outlet}
 
@@ -1787,32 +1787,32 @@ function chassis(entry, exhaust) {
     ${exhaust ? "" : outletArrow}
   `;
 }
-function regions$2(exhaust) {
+function regions$3(exhaust) {
     const common = [
         { id: "run", role: "run", kind: "lamp", label: "RUN",
             x: 20, y: 24, w: 16, on: "#3ddc84", off: "#16281d" },
         { id: "fault", role: "fault", kind: "lamp", label: "FAULT",
             x: 88, y: 24, w: 16, on: "#ef4444", off: "#2a1717" },
         { id: "speed", role: "speed", kind: "text",
-            x: W$4 - 132, y: 40, w: 116, align: "end", decimals: 1, size: 20,
+            x: W$5 - 132, y: 40, w: 116, align: "end", decimals: 1, size: 20,
             placeholder: "" },
         { id: "speed_lbl", role: "", kind: "text", text: "SPEED",
-            x: W$4 - 132, y: 58, w: 116, align: "end", size: 10 },
+            x: W$5 - 132, y: 58, w: 116, align: "end", size: 10 },
         { id: "flow", role: "flow", kind: "text",
-            x: W$4 - 132, y: H$4 - 30, w: 116, align: "end", decimals: 0, size: 18,
+            x: W$5 - 132, y: H$5 - 30, w: 116, align: "end", decimals: 0, size: 18,
             placeholder: "" },
         { id: "flow_lbl", role: "", kind: "text", text: "AIRFLOW",
-            x: W$4 - 132, y: H$4 - 14, w: 116, align: "end", size: 10 },
+            x: W$5 - 132, y: H$5 - 14, w: 116, align: "end", size: 10 },
     ];
     if (exhaust)
         return common;
     return [
         ...common,
         { id: "dp", role: "filter_dp", kind: "text",
-            x: 20, y: H$4 - 30, w: 130, align: "start", decimals: 0, size: 16,
+            x: 20, y: H$5 - 30, w: 130, align: "start", decimals: 0, size: 16,
             placeholder: "" },
         { id: "dp_lbl", role: "", kind: "text", text: "FILTER ΔP",
-            x: 20, y: H$4 - 14, w: 130, align: "start", size: 10 },
+            x: 20, y: H$5 - 14, w: 130, align: "start", size: 10 },
     ];
 }
 function supply(entry, name) {
@@ -1822,9 +1822,9 @@ function supply(entry, name) {
         card: "plant-equipment-card",
         render: "svg",
         display: "negative",
-        size: [W$4, H$4],
+        size: [W$5, H$5],
         artNode: chassis(entry, false),
-        regions: regions$2(false),
+        regions: regions$3(false),
         description: `Supply fan with the duct entering from the ${entry}. Arrows follow `
             + "the air, so the mimic cannot be read backwards.",
         emulates: "Centrifugal supply fan",
@@ -1839,9 +1839,9 @@ const EXHAUST_FAN = {
     card: "plant-equipment-card",
     render: "svg",
     display: "negative",
-    size: [W$4, H$4],
+    size: [W$5, H$5],
     artNode: chassis("top", true),
-    regions: regions$2(true),
+    regions: regions$3(true),
     description: "Exhaust fan discharging to atmosphere, air drawn upward.",
     emulates: "Axial exhaust fan",
 };
@@ -1858,38 +1858,38 @@ const EXHAUST_FAN = {
  * and a single "temperature" region would throw that away.
  */
 const UNIT_W = 190;
-const GAP = 34;
-const LEFT$2 = 110;
-const TOP$4 = 78;
-const H$3 = 330;
-function build$4(values) {
+const GAP$1 = 34;
+const LEFT$3 = 110;
+const TOP$5 = 78;
+const H$4 = 330;
+function build$5(values) {
     const count = Math.max(1, Math.min(2, Math.round(values.units ?? 1)));
-    const width = LEFT$2 + count * UNIT_W + (count - 1) * GAP + 40;
+    const width = LEFT$3 + count * UNIT_W + (count - 1) * GAP$1 + 40;
     const regions = [];
     const bodies = [];
     for (let index = 0; index < count; index++) {
         const n = index + 1;
-        const x = LEFT$2 + index * (UNIT_W + GAP);
+        const x = LEFT$3 + index * (UNIT_W + GAP$1);
         bodies.push(w `
-      <rect x=${x} y=${TOP$4} width=${UNIT_W} height="150" rx="14"
+      <rect x=${x} y=${TOP$5} width=${UNIT_W} height="150" rx="14"
             fill="#2b323b" stroke="#3d4551" stroke-width="2" />
-      <rect x=${x + 14} y=${TOP$4 + 18} width=${UNIT_W - 28} height="46" rx="6"
+      <rect x=${x + 14} y=${TOP$5 + 18} width=${UNIT_W - 28} height="46" rx="6"
             fill="#1a1f25" />
-      <text x=${x + UNIT_W / 2} y=${TOP$4 + 138} text-anchor="middle"
+      <text x=${x + UNIT_W / 2} y=${TOP$5 + 138} text-anchor="middle"
             fill="#8b93a1" font-size="11" letter-spacing="1.4"
             font-family="inherit">UNIT ${n}</text>
     `);
         regions.push({
             id: `run${n}`, role: `unit${n}_run`, kind: "lamp",
-            x: x + 18, y: TOP$4 + 84, w: 14, on: "#3ddc84", off: "#16281d",
+            x: x + 18, y: TOP$5 + 84, w: 14, on: "#3ddc84", off: "#16281d",
         });
         regions.push({
             id: `flt${n}`, role: `unit${n}_fault`, kind: "lamp",
-            x: x + 44, y: TOP$4 + 84, w: 14, on: "#ef4444", off: "#2a1717",
+            x: x + 44, y: TOP$5 + 84, w: 14, on: "#ef4444", off: "#2a1717",
         });
         regions.push({
             id: `tank${n}`, role: `unit${n}_tank_temp`, kind: "text",
-            x: x + 14, y: TOP$4 + 50, w: UNIT_W - 28, align: "middle",
+            x: x + 14, y: TOP$5 + 50, w: UNIT_W - 28, align: "middle",
             decimals: 1, size: 24, placeholder: "",
         });
     }
@@ -1900,40 +1900,40 @@ function build$4(values) {
         <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b93a1" />
       </marker>
     </defs>
-    <rect x="0" y="0" width=${width} height=${H$3} rx="10" fill="#101216" />
+    <rect x="0" y="0" width=${width} height=${H$4} rx="10" fill="#101216" />
     <text x="16" y="26" fill="#8b93a1" font-size="12" letter-spacing="1.6"
           font-family="inherit">HOT WATER</text>
 
     <!-- Secondary flow along the top, return along the bottom -->
-    <line x1="24" y1=${TOP$4 + 12} x2=${width - 24} y2=${TOP$4 + 12}
+    <line x1="24" y1=${TOP$5 + 12} x2=${width - 24} y2=${TOP$5 + 12}
           stroke="#c2410c" stroke-width="5" stroke-linecap="round"
           marker-end="url(#hw-arrow)" />
-    <line x1=${width - 24} y1=${TOP$4 + 214} x2="24" y2=${TOP$4 + 214}
+    <line x1=${width - 24} y1=${TOP$5 + 214} x2="24" y2=${TOP$5 + 214}
           stroke="#1d4ed8" stroke-width="5" stroke-linecap="round"
           marker-end="url(#hw-arrow)" />
     ${bodies}
   `;
     const shared = [
         { id: "flow_t", role: "flow_temp", kind: "text",
-            x: 16, y: TOP$4 + 4, w: 86, align: "start", decimals: 1, size: 20,
+            x: 16, y: TOP$5 + 4, w: 86, align: "start", decimals: 1, size: 20,
             placeholder: "" },
         { id: "flow_lbl", role: "", kind: "text", text: "FLOW",
-            x: 16, y: TOP$4 + 22, w: 86, align: "start", size: 10 },
+            x: 16, y: TOP$5 + 22, w: 86, align: "start", size: 10 },
         { id: "ret_t", role: "return_temp", kind: "text",
-            x: 16, y: TOP$4 + 206, w: 86, align: "start", decimals: 1, size: 20,
+            x: 16, y: TOP$5 + 206, w: 86, align: "start", decimals: 1, size: 20,
             placeholder: "" },
         { id: "ret_lbl", role: "", kind: "text", text: "RETURN",
-            x: 16, y: TOP$4 + 224, w: 86, align: "start", size: 10 },
+            x: 16, y: TOP$5 + 224, w: 86, align: "start", size: 10 },
         { id: "sp", role: "setpoint", kind: "text",
-            x: 16, y: H$3 - 30, w: 140, align: "start", decimals: 1, size: 16,
+            x: 16, y: H$4 - 30, w: 140, align: "start", decimals: 1, size: 16,
             placeholder: "" },
         { id: "sp_lbl", role: "", kind: "text", text: "SETPOINT",
-            x: 16, y: H$3 - 14, w: 140, align: "start", size: 10 },
+            x: 16, y: H$4 - 14, w: 140, align: "start", size: 10 },
         { id: "fault", role: "common_fault", kind: "lamp", label: "FAULT",
-            x: width - 44, y: H$3 - 44, w: 16, on: "#ef4444", off: "#2a1717" },
+            x: width - 44, y: H$4 - 44, w: 16, on: "#ef4444", off: "#2a1717" },
     ];
     return {
-        size: [width, H$3],
+        size: [width, H$4],
         artNode,
         regions: [...regions, ...shared],
     };
@@ -1944,7 +1944,7 @@ const HOT_WATER_UNIT = {
     card: "plant-equipment-card",
     render: "svg",
     display: "negative",
-    size: [LEFT$2 + UNIT_W + 40, H$3],
+    size: [LEFT$3 + UNIT_W + 40, H$4],
     regions: [],
     description: "Calorifier set with flow and return drawn separately — the pair of "
         + "temperatures is the diagnosis. One unit or a duty/standby pair.",
@@ -1954,7 +1954,7 @@ const HOT_WATER_UNIT = {
             min: 1, max: 2, default: 1,
             help: "Roles are unit1_… and unit2_…; the drawing widens to suit.",
         }],
-    build: build$4,
+    build: build$5,
 };
 
 /**
@@ -1971,83 +1971,83 @@ const HOT_WATER_UNIT = {
  * the pumps themselves.
  */
 const PITCH = 116;
-const LEFT$1 = 112;
-const TOP$3 = 92;
-const H$2 = 300;
+const LEFT$2 = 112;
+const TOP$4 = 92;
+const H$3 = 300;
 // 0 = hot, 1 = cold. A number because that is what an option carries.
 const SERVICES = [
     { key: "hot", label: "HOT WATER CIRCULATION", flow: "#c2410c", ret: "#7c2d12" },
     { key: "cold", label: "CHILLED WATER CIRCULATION", flow: "#0e7490", ret: "#155e75" },
 ];
-function build$3(values) {
+function build$4(values) {
     const count = Math.max(1, Math.min(4, Math.round(values.pumps ?? 2)));
     const service = SERVICES[Math.max(0, Math.min(1, Math.round(values.service ?? 0)))];
-    const width = LEFT$1 + (count - 1) * PITCH + 150;
+    const width = LEFT$2 + (count - 1) * PITCH + 150;
     const regions = [];
     const bodies = [];
     for (let index = 0; index < count; index++) {
         const n = index + 1;
-        const x = LEFT$1 + index * PITCH;
+        const x = LEFT$2 + index * PITCH;
         bodies.push(w `
-      <line x1=${x} y1=${TOP$3 + 18} x2=${x} y2=${TOP$3 + 58}
+      <line x1=${x} y1=${TOP$4 + 18} x2=${x} y2=${TOP$4 + 58}
             stroke="#5a6472" stroke-width="6" />
-      <line x1=${x} y1=${TOP$3 + 106} x2=${x} y2=${TOP$3 + 146}
+      <line x1=${x} y1=${TOP$4 + 106} x2=${x} y2=${TOP$4 + 146}
             stroke="#5a6472" stroke-width="6" />
-      <circle cx=${x} cy=${TOP$3 + 82} r="26" fill="#39414c"
+      <circle cx=${x} cy=${TOP$4 + 82} r="26" fill="#39414c"
               stroke="#4d5663" stroke-width="2" />
-      <circle cx=${x} cy=${TOP$3 + 82} r="9" fill="#78818f" />
+      <circle cx=${x} cy=${TOP$4 + 82} r="9" fill="#78818f" />
       ${[...Array(6).keys()].map((i) => {
             const a = (i / 6) * Math.PI * 2;
             return w `<line
-          x1=${x + Math.cos(a) * 10} y1=${TOP$3 + 82 + Math.sin(a) * 10}
-          x2=${x + Math.cos(a) * 22} y2=${TOP$3 + 82 + Math.sin(a) * 22}
+          x1=${x + Math.cos(a) * 10} y1=${TOP$4 + 82 + Math.sin(a) * 10}
+          x2=${x + Math.cos(a) * 22} y2=${TOP$4 + 82 + Math.sin(a) * 22}
           stroke="#8b93a1" stroke-width="2.5" stroke-linecap="round" />`;
         })}
-      <text x=${x} y=${TOP$3 + 178} text-anchor="middle" fill="#8b93a1"
+      <text x=${x} y=${TOP$4 + 178} text-anchor="middle" fill="#8b93a1"
             font-size="12" font-family="inherit">P${n}</text>
     `);
         regions.push({
             id: `run${n}`, role: `pump${n}_run`, kind: "lamp",
-            x: x - 22, y: TOP$3 + 34, w: 14, on: "#3ddc84", off: "#16281d",
+            x: x - 22, y: TOP$4 + 34, w: 14, on: "#3ddc84", off: "#16281d",
         });
         regions.push({
             id: `flt${n}`, role: `pump${n}_fault`, kind: "lamp",
-            x: x + 8, y: TOP$3 + 34, w: 14, on: "#ef4444", off: "#2a1717",
+            x: x + 8, y: TOP$4 + 34, w: 14, on: "#ef4444", off: "#2a1717",
         });
         regions.push({
             id: `amp${n}`, role: `pump${n}_current`, kind: "text",
-            x: x - 40, y: TOP$3 + 196, w: 80, align: "middle",
+            x: x - 40, y: TOP$4 + 196, w: 80, align: "middle",
             unit: "A", decimals: 1, size: 13, placeholder: "",
         });
     }
     const artNode = w `
-    <rect x="0" y="0" width=${width} height=${H$2} rx="10" fill="#101216" />
+    <rect x="0" y="0" width=${width} height=${H$3} rx="10" fill="#101216" />
     <text x="16" y="26" fill="#8b93a1" font-size="12" letter-spacing="1.6"
           font-family="inherit">${service.label}</text>
 
     <!-- Flow header above the pumps, return header below -->
-    <line x1="24" y1=${TOP$3 + 18} x2=${width - 24} y2=${TOP$3 + 18}
+    <line x1="24" y1=${TOP$4 + 18} x2=${width - 24} y2=${TOP$4 + 18}
           stroke=${service.flow} stroke-width="7" stroke-linecap="round" />
-    <line x1="24" y1=${TOP$3 + 146} x2=${width - 24} y2=${TOP$3 + 146}
+    <line x1="24" y1=${TOP$4 + 146} x2=${width - 24} y2=${TOP$4 + 146}
           stroke=${service.ret} stroke-width="7" stroke-linecap="round" />
     ${bodies}
   `;
     const shared = [
         { id: "flow_t", role: "flow_temp", kind: "text",
-            x: 16, y: TOP$3 + 10, w: 88, align: "start", decimals: 1, size: 20,
+            x: 16, y: TOP$4 + 10, w: 88, align: "start", decimals: 1, size: 20,
             placeholder: "" },
         { id: "flow_lbl", role: "", kind: "text", text: "FLOW",
-            x: 16, y: TOP$3 + 28, w: 88, align: "start", size: 10 },
+            x: 16, y: TOP$4 + 28, w: 88, align: "start", size: 10 },
         { id: "ret_t", role: "return_temp", kind: "text",
-            x: 16, y: TOP$3 + 138, w: 88, align: "start", decimals: 1, size: 20,
+            x: 16, y: TOP$4 + 138, w: 88, align: "start", decimals: 1, size: 20,
             placeholder: "" },
         { id: "ret_lbl", role: "", kind: "text", text: "RETURN",
-            x: 16, y: TOP$3 + 156, w: 88, align: "start", size: 10 },
+            x: 16, y: TOP$4 + 156, w: 88, align: "start", size: 10 },
         { id: "fault", role: "common_fault", kind: "lamp", label: "FAULT",
             x: width - 44, y: 18, w: 16, on: "#ef4444", off: "#2a1717" },
     ];
     return {
-        size: [width, H$2],
+        size: [width, H$3],
         artNode,
         regions: [...regions, ...shared],
     };
@@ -2058,7 +2058,7 @@ const CIRCULATION_PUMPS = {
     card: "plant-equipment-card",
     render: "svg",
     display: "negative",
-    size: [LEFT$1 + PITCH + 150, H$2],
+    size: [LEFT$2 + PITCH + 150, H$3],
     regions: [],
     description: "Circulator set, one to four pumps, hot or chilled service. The "
         + "service recolours the pipework rather than needing a second drawing.",
@@ -2075,7 +2075,7 @@ const CIRCULATION_PUMPS = {
             help: "Recolours the flow and return headers and the header caption.",
         },
     ],
-    build: build$3,
+    build: build$4,
 };
 
 /**
@@ -2090,9 +2090,9 @@ const CIRCULATION_PUMPS = {
  * site and they get laid out in a grid, so the tile is wide and short
  * and the room temperature is the thing you can read from across a desk.
  */
-const W$3 = 360;
-const H$1 = 170;
-const artNode$1 = w `
+const W$4 = 360;
+const H$2 = 170;
+const artNode$2 = w `
   <defs>
     <linearGradient id="fcu-case" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#2a3139" />
@@ -2100,9 +2100,9 @@ const artNode$1 = w `
     </linearGradient>
   </defs>
 
-  <rect x="0" y="0" width=${W$3} height=${H$1} rx="8" fill="url(#fcu-case)" />
-  <rect x="0" y="0" width=${W$3} height="24" rx="8" fill="#232a32" />
-  <rect x="0" y="16" width=${W$3} height="8" fill="#232a32" />
+  <rect x="0" y="0" width=${W$4} height=${H$2} rx="8" fill="url(#fcu-case)" />
+  <rect x="0" y="0" width=${W$4} height="24" rx="8" fill="#232a32" />
+  <rect x="0" y="16" width=${W$4} height="8" fill="#232a32" />
   <text x="12" y="17" fill="#8b93a1" font-size="10" letter-spacing="1.6"
         font-family="inherit">FAN COIL UNIT</text>
 
@@ -2121,9 +2121,9 @@ const artNode$1 = w `
 })}
   </g>
 
-  <line x1="12" y1=${H$1 - 44} x2=${W$3 - 12} y2=${H$1 - 44} stroke="#2b323b" />
+  <line x1="12" y1=${H$2 - 44} x2=${W$4 - 12} y2=${H$2 - 44} stroke="#2b323b" />
 `;
-const regions$1 = [
+const regions$2 = [
     { id: "room_lbl", role: "", kind: "text", text: "ROOM", group: "room",
         x: 14, y: 36, w: 70, align: "start", size: 10 },
     // unit: "" because the degree glyph is its own region, kept at a size
@@ -2145,9 +2145,9 @@ const regions$1 = [
     { id: "fan", role: "fan_speed", kind: "text", group: "fan",
         x: 182, y: 96, w: 90, align: "start", size: 15, placeholder: "" },
     { id: "run", role: "run", kind: "lamp", label: "RUN", group: "run",
-        x: 16, y: H$1 - 34, w: 13, on: "#3ddc84", off: "#16281d" },
+        x: 16, y: H$2 - 34, w: 13, on: "#3ddc84", off: "#16281d" },
     { id: "fault", role: "fault", kind: "lamp", label: "ALARM", group: "fault",
-        x: 92, y: H$1 - 34, w: 13, on: "#ef4444", off: "#2a1717" },
+        x: 92, y: H$2 - 34, w: 13, on: "#ef4444", off: "#2a1717" },
 ];
 const FCU_UNIT = {
     id: "fcu-unit",
@@ -2155,9 +2155,9 @@ const FCU_UNIT = {
     card: "hvac-controller-card",
     render: "svg",
     display: "negative",
-    size: [W$3, H$1],
-    artNode: artNode$1,
-    regions: regions$1,
+    size: [W$4, H$2],
+    artNode: artNode$2,
+    regions: regions$2,
     description: "Compact status tile for a BMS fan coil: room against setpoint, mode, "
         + "fan and alarm. Built to tile, because sites have hundreds.",
     emulates: "Generic BMS fan coil unit",
@@ -2176,23 +2176,23 @@ const FCU_UNIT = {
  * A brand-accurate faceplate can be added later from photographs, behind
  * the same band. It is not being drawn from memory.
  */
-const W$2 = 460;
-const TOP$2 = 132;
+const W$3 = 460;
+const TOP$3 = 132;
 const ZONE_H = 30;
-function build$2(values) {
+function build$3(values) {
     const zones = Math.max(0, Math.min(24, Math.round(values.zones ?? 8)));
     const cols = zones > 12 ? 2 : 1;
     const rows = Math.ceil(zones / cols) || 1;
-    const height = TOP$2 + rows * ZONE_H + 28;
+    const height = TOP$3 + rows * ZONE_H + 28;
     const regions = [];
     const cells = [];
     for (let index = 0; index < zones; index++) {
         const n = index + 1;
         const col = Math.floor(index / rows);
         const row = index % rows;
-        const x = 22 + col * ((W$2 - 44) / cols);
-        const y = TOP$2 + row * ZONE_H;
-        const cellW = (W$2 - 44) / cols - 12;
+        const x = 22 + col * ((W$3 - 44) / cols);
+        const y = TOP$3 + row * ZONE_H;
+        const cellW = (W$3 - 44) / cols - 12;
         cells.push(w `
       <rect x=${x} y=${y} width=${cellW} height=${ZONE_H - 6} rx="4"
             fill="#14181d" stroke="#232930" />
@@ -2205,10 +2205,10 @@ function build$2(values) {
         });
     }
     const artNode = w `
-    <rect x="0" y="0" width=${W$2} height=${height} rx="10" fill="#0e1013" />
+    <rect x="0" y="0" width=${W$3} height=${height} rx="10" fill="#0e1013" />
 
     <!-- Status row -->
-    <rect x="16" y="46" width=${W$2 - 32} height="68" rx="8"
+    <rect x="16" y="46" width=${W$3 - 32} height="68" rx="8"
           fill="#14181d" stroke="#232930" />
     <text x="30" y="70" fill="#8b93a1" font-size="11" letter-spacing="1.5"
           font-family="inherit">PANEL STATUS</text>
@@ -2227,7 +2227,7 @@ function build$2(values) {
             x: 412, y: 82, w: 18, on: "#3ddc84", off: "#16281d" },
     ];
     return {
-        size: [W$2, height],
+        size: [W$3, height],
         artNode,
         regions: [...shared, ...regions],
     };
@@ -2238,7 +2238,7 @@ const GENERIC_FIP = {
     card: "fire-panel-card",
     render: "svg",
     display: "negative",
-    size: [W$2, TOP$2 + 8 * ZONE_H + 28],
+    size: [W$3, TOP$3 + 8 * ZONE_H + 28],
     regions: [],
     description: "Zone and status mimic of a fire panel as the BMS sees it. Schematic "
         + "on purpose — it must never be mistaken for the panel itself.",
@@ -2248,7 +2248,7 @@ const GENERIC_FIP = {
             min: 0, max: 24, default: 8,
             help: "Roles are zone1_alarm through zoneN_alarm; two columns above 12.",
         }],
-    build: build$2,
+    build: build$3,
 };
 
 /**
@@ -2264,23 +2264,23 @@ const GENERIC_FIP = {
  * zones as sixteen, and a fixed drawing would be wrong for both.
  */
 const ROW_H = 56;
-const TOP$1 = 34;
-const W$1 = 500;
+const TOP$2 = 34;
+const W$2 = 500;
 // A fader's useful range. Q-SYS gain blocks commonly stage -100..+20, but
 // -100 is silence and the top is rarely used; showing the whole span would
 // crush every normal level into the middle of the bar.
 const DB_MIN$1 = -80;
 const DB_MAX$1 = 10;
-function build$1(values) {
+function build$2(values) {
     const count = Math.max(1, Math.min(16, Math.round(values.zones ?? 4)));
-    const height = TOP$1 + count * ROW_H + 12;
+    const height = TOP$2 + count * ROW_H + 12;
     const regions = [];
     const rows = [];
     for (let index = 0; index < count; index++) {
         const n = index + 1;
-        const y = TOP$1 + index * ROW_H;
+        const y = TOP$2 + index * ROW_H;
         rows.push(w `
-      <rect class="strip" x="8" y=${y} width=${W$1 - 16} height=${ROW_H - 8}
+      <rect class="strip" x="8" y=${y} width=${W$2 - 16} height=${ROW_H - 8}
             rx="5" fill="#15171b" stroke="#272b32" />
       <line x1="84" y1=${y + 6} x2="84" y2=${y + ROW_H - 14}
             stroke="#272b32" stroke-width="1" />
@@ -2321,14 +2321,14 @@ function build$1(values) {
         });
     }
     const artNode = w `
-    <rect x="0" y="0" width=${W$1} height=${height} rx="8" fill="#0e1013" />
-    <rect x="0" y="0" width=${W$1} height="26" rx="8" fill="#171a1f" />
-    <rect x="0" y="18" width=${W$1} height="8" fill="#171a1f" />
+    <rect x="0" y="0" width=${W$2} height=${height} rx="8" fill="#0e1013" />
+    <rect x="0" y="0" width=${W$2} height="26" rx="8" fill="#171a1f" />
+    <rect x="0" y="18" width=${W$2} height="8" fill="#171a1f" />
     <text x="14" y="18" fill="#8b93a1" font-size="12"
           font-family="inherit" letter-spacing="1.5">ZONE OUTPUTS</text>
     ${rows}
   `;
-    return { size: [W$1, height], artNode, regions };
+    return { size: [W$2, height], artNode, regions };
 }
 const QSYS_ZONES = {
     id: "qsys-zone-rack",
@@ -2336,7 +2336,7 @@ const QSYS_ZONES = {
     card: "audio-zone-card",
     render: "svg",
     display: "negative",
-    size: [W$1, TOP$1 + 4 * ROW_H + 12],
+    size: [W$2, TOP$2 + 4 * ROW_H + 12],
     regions: [],
     description: "One strip per audio zone: level bar in dB, mute with an indicator, "
         + "and trim keys. Widens to the number of zones you set.",
@@ -2351,7 +2351,7 @@ const QSYS_ZONES = {
             default: 4,
             help: "One strip per zone; roles are zone1_… through zoneN_…",
         }],
-    build: build$1,
+    build: build$2,
 };
 
 /**
@@ -2368,13 +2368,13 @@ const QSYS_ZONES = {
  */
 const STRIP_W = 104;
 const GUTTER = 6;
-const LEFT = 14;
-const TOP = 36;
+const LEFT$1 = 14;
+const TOP$1 = 36;
 const ROW_SOURCE = 12;
 const EQ_H = 96;
 const PAN_H = 44;
 const THROW = 210;
-const FOOT = 118;
+const FOOT$1 = 118;
 // How many strips before the console wraps to a second row, and the gap
 // between rows.
 const PER_ROW = 8;
@@ -2383,7 +2383,7 @@ const MAX_CHANNELS = 16;
 // What the fader spans. The entity's own staging still wins on a write.
 const DB_MIN = -80;
 const DB_MAX = 10;
-function build(values, ctx) {
+function build$1(values, ctx) {
     const count = Math.max(1, Math.min(MAX_CHANNELS, Math.round(values.zones ?? 4)));
     const wanted = Math.round(values.eq ?? 0) === 1;
     const bound = ctx?.bound ?? (() => true);
@@ -2412,16 +2412,16 @@ function build(values, ctx) {
     const localEqTop = ROW_SOURCE + 34;
     const localPanTop = localEqTop + (eq ? EQ_H : 0);
     const localFaderTop = localPanTop + PAN_H;
-    const stripH = localFaderTop + THROW + FOOT - TOP;
-    const width = LEFT * 2 + perRow * STRIP_W + (perRow - 1) * GUTTER;
-    const height = TOP + rows * stripH + (rows - 1) * ROW_GAP + 12;
+    const stripH = localFaderTop + THROW + FOOT$1 - TOP$1;
+    const width = LEFT$1 * 2 + perRow * STRIP_W + (perRow - 1) * GUTTER;
+    const height = TOP$1 + rows * stripH + (rows - 1) * ROW_GAP + 12;
     const regions = [];
     const strips = [];
     for (const [index, n] of channels.entries()) {
         const col = index % perRow;
         const row = Math.floor(index / perRow);
-        const x = LEFT + col * (STRIP_W + GUTTER);
-        const rowTop = TOP + row * (stripH + ROW_GAP);
+        const x = LEFT$1 + col * (STRIP_W + GUTTER);
+        const rowTop = TOP$1 + row * (stripH + ROW_GAP);
         const eqTop = rowTop + localEqTop;
         const panTop = rowTop + localPanTop;
         const faderTop = rowTop + localFaderTop;
@@ -2549,7 +2549,7 @@ const ZONE_MIXER = {
     card: "audio-zone-card",
     render: "svg",
     display: "negative",
-    size: [LEFT * 2 + 4 * STRIP_W + 3 * GUTTER, 600],
+    size: [LEFT$1 * 2 + 4 * STRIP_W + 3 * GUTTER, 600],
     regions: [],
     labelPrefix: "zone",
     description: "Channel strips side by side with vertical faders: source, optional "
@@ -2572,7 +2572,7 @@ const ZONE_MIXER = {
             help: "Adds high/mid/low per strip, above the pan.",
         },
     ],
-    build,
+    build: build$1,
 };
 
 /**
@@ -2588,41 +2588,41 @@ const ZONE_MIXER = {
  * The roles are named for those, and the bridge binds whichever joins
  * carry them.
  */
-const W = 420;
-const H = 300;
-const artNode = w `
-  <rect x="0" y="0" width=${W} height=${H} rx="10" fill="#101216" />
-  <rect x="0" y="0" width=${W} height="34" rx="10" fill="#1a1e24" />
-  <rect x="0" y="24" width=${W} height="10" fill="#1a1e24" />
+const W$1 = 420;
+const H$1 = 300;
+const artNode$1 = w `
+  <rect x="0" y="0" width=${W$1} height=${H$1} rx="10" fill="#101216" />
+  <rect x="0" y="0" width=${W$1} height="34" rx="10" fill="#1a1e24" />
+  <rect x="0" y="24" width=${W$1} height="10" fill="#1a1e24" />
   <text x="16" y="23" fill="#8b93a1" font-size="12" letter-spacing="1.5"
         font-family="inherit">ROOM CONTROL</text>
 
   <!-- Source display: the big pane, as on a panel's home page. -->
-  <rect x="16" y="48" width=${W - 32} height="64" rx="6"
+  <rect x="16" y="48" width=${W$1 - 32} height="64" rx="6"
         fill="#0a0c0f" stroke="#252a31" />
 
   <!-- Level meter well -->
-  <rect x="16" y="126" width=${W - 32} height="58" rx="6"
+  <rect x="16" y="126" width=${W$1 - 32} height="58" rx="6"
         fill="#14171c" stroke="#252a31" />
   <text x="28" y="146" fill="#8b93a1" font-size="11" letter-spacing="1.2"
         font-family="inherit">VOLUME</text>
 
   <!-- Status row -->
-  <rect x="16" y="196" width=${W - 32} height="46" rx="6"
+  <rect x="16" y="196" width=${W$1 - 32} height="46" rx="6"
         fill="#14171c" stroke="#252a31" />
 `;
-const regions = [
+const regions$1 = [
     // What is on screen. An empty placeholder, not dashes: a panel with no
     // source selected shows nothing rather than "--".
     { id: "source", role: "source", kind: "text",
-        x: 32, y: 76, w: W - 64, align: "start", size: 20, placeholder: "" },
+        x: 32, y: 76, w: W$1 - 64, align: "start", size: 20, placeholder: "" },
     { id: "source_label", role: "", kind: "text", text: "SOURCE",
         x: 32, y: 100, w: 120, align: "start", size: 11 },
     { id: "display_lamp", role: "display_power", kind: "lamp",
-        x: W - 46, y: 58, w: 14, on: "#3ddc84", off: "#16281d" },
+        x: W$1 - 46, y: 58, w: 14, on: "#3ddc84", off: "#16281d" },
     { id: "power", role: "", kind: "button", text: "DISPLAY",
         action: "power_toggle", target: "display_power",
-        x: W - 132, y: 86, w: 100, h: 22 },
+        x: W$1 - 132, y: 86, w: 100, h: 22 },
     { id: "vol_bar", role: "volume", kind: "bar",
         x: 28, y: 154, w: 210, h: 12, min: 0, max: 100 },
     { id: "vol_text", role: "volume", kind: "text",
@@ -2653,11 +2653,241 @@ const ROOM_CONTROLLER = {
     card: "room-controller-card",
     render: "svg",
     display: "negative",
+    size: [W$1, H$1],
+    artNode: artNode$1,
+    regions: regions$1,
+    description: "A room at a glance: source, display power, volume and mute, with mic, "
+        + "fault and online indicators. Bind whichever joins carry them.",
+};
+
+/**
+ * Water storage tanks, one to four, with the pressure they feed.
+ *
+ * A tank is a level and an alarm, which a pair of sensors reports perfectly
+ * well — but a tank farm is read by comparing tanks, and two numbers in a
+ * list do not compare. Side-by-side fill levels against a shared scale do,
+ * and that is the whole case for drawing this.
+ *
+ * The high-level alarm sits at the top of the tank where the float is,
+ * rather than in a row of lamps underneath, because where the alarm is on
+ * the drawing is itself information.
+ */
+const TANK_W = 108;
+const GAP = 26;
+const LEFT = 26;
+const TOP = 74;
+const TANK_H = 210;
+const FOOT = 74;
+const BODY_FILL$1 = "#20262e";
+const BODY_EDGE$2 = "#3d4551";
+const MUTED$2 = "#8b93a1";
+function build(values) {
+    const count = Math.max(1, Math.min(4, Math.round(values.tanks ?? 2)));
+    const width = LEFT * 2 + count * TANK_W + (count - 1) * GAP + 150;
+    const height = TOP + TANK_H + FOOT;
+    const regions = [];
+    const bodies = [];
+    for (let index = 0; index < count; index++) {
+        const n = index + 1;
+        const x = LEFT + index * (TANK_W + GAP);
+        bodies.push(w `
+      <!-- Shell, with a domed top so it reads as a tank and not a bar chart -->
+      <path d=${`M ${x} ${TOP + 22}
+                 Q ${x} ${TOP} ${x + 22} ${TOP}
+                 L ${x + TANK_W - 22} ${TOP}
+                 Q ${x + TANK_W} ${TOP} ${x + TANK_W} ${TOP + 22}
+                 L ${x + TANK_W} ${TOP + TANK_H}
+                 L ${x} ${TOP + TANK_H} Z`}
+            fill=${BODY_FILL$1} stroke=${BODY_EDGE$2} stroke-width="2" />
+      <!-- Quarter marks: a fill with no scale beside it is a mood, not a level -->
+      ${[25, 50, 75].map((pct) => w `
+        <line x1=${x + 4} y1=${TOP + TANK_H - (TANK_H - 26) * pct / 100}
+              x2=${x + 16} y2=${TOP + TANK_H - (TANK_H - 26) * pct / 100}
+              stroke=${BODY_EDGE$2} stroke-width="1" />
+      `)}
+      <text x=${x + TANK_W / 2} y=${TOP + TANK_H + 20} text-anchor="middle"
+            fill=${MUTED$2} font-size="11" letter-spacing="1.2"
+            font-family="inherit">TANK ${n}</text>
+    `);
+        regions.push({
+            id: `lvl${n}`, role: `tank${n}_level`, kind: "bar",
+            x: x + 6, y: TOP + 20, w: TANK_W - 12, h: TANK_H - 26,
+            min: 0, max: 100,
+        });
+        regions.push({
+            id: `lvlt${n}`, role: `tank${n}_level`, kind: "text",
+            x, y: TOP + TANK_H - 16, w: TANK_W, align: "middle",
+            decimals: 0, unit: "%", size: 22, placeholder: "--",
+        });
+        // At the top of the tank, where the float switch is.
+        regions.push({
+            id: `hi${n}`, role: `tank${n}_high_alarm`, kind: "lamp", label: "HIGH",
+            x: x + TANK_W / 2 - 7, y: TOP - 22, w: 14,
+            on: "#ef4444", off: "#2a1717",
+        });
+        regions.push({
+            id: `lo${n}`, role: `tank${n}_low_alarm`, kind: "lamp", label: "LOW",
+            x: x + TANK_W / 2 - 7, y: TOP + TANK_H + 30, w: 14,
+            on: "#f59e0b", off: "#2a2317",
+        });
+    }
+    const sideX = LEFT + count * TANK_W + (count - 1) * GAP + 30;
+    const artNode = w `
+    <rect x="0" y="0" width=${width} height=${height} rx="10" fill="#101216" />
+    <text x="16" y="26" fill=${MUTED$2} font-size="12" letter-spacing="1.6"
+          font-family="inherit">WATER STORAGE</text>
+    ${bodies}
+    <!-- Common outlet header the tanks feed -->
+    <line x1=${LEFT} y1=${TOP + TANK_H + 44} x2=${sideX - 14}
+          y2=${TOP + TANK_H + 44}
+          stroke="#2563eb" stroke-width="5" stroke-linecap="round" />
+  `;
+    const shared = [
+        { id: "press", role: "pressure", kind: "text",
+            x: sideX, y: TOP + 30, w: 118, align: "start", decimals: 2, size: 26,
+            unit: "", placeholder: "--", group: "pressure" },
+        { id: "press_u", role: "pressure", kind: "text", show: "unit",
+            x: sideX, y: TOP + 48, w: 118, align: "start", size: 11,
+            group: "pressure" },
+        { id: "press_lbl", role: "", kind: "text", text: "PRESSURE",
+            x: sideX, y: TOP + 12, w: 118, align: "start", size: 10,
+            group: "pressure" },
+        { id: "fill", role: "fill_valve", kind: "lamp", label: "FILL",
+            x: sideX, y: TOP + 92, w: 14, on: "#3ddc84", off: "#16281d" },
+        { id: "fault", role: "common_fault", kind: "lamp", label: "FAULT",
+            x: sideX, y: TOP + 130, w: 14, on: "#ef4444", off: "#2a1717" },
+    ];
+    return {
+        size: [width, height],
+        artNode,
+        regions: [...regions, ...shared],
+    };
+}
+const STORAGE_TANKS = {
+    id: "storage-tanks",
+    name: "Water Storage Tanks",
+    card: "plant-equipment-card",
+    render: "svg",
+    display: "negative",
+    size: [LEFT * 2 + 2 * TANK_W + GAP + 150, TOP + TANK_H + FOOT],
+    regions: [],
+    description: "One to four storage tanks side by side against a shared scale, because "
+        + "a tank farm is read by comparing tanks. High-level alarms sit at the "
+        + "top of each tank where the float is. Roles are tank1_level, "
+        + "tank1_high_alarm, tank1_low_alarm and so on, plus a shared pressure.",
+    emulates: "Cold water storage tank set",
+    options: [{
+            key: "tanks", label: "Tanks", type: "number",
+            min: 1, max: 4, default: 2,
+            help: "The drawing widens to suit. Unbound tanks hide themselves.",
+        }],
+    build,
+};
+
+/**
+ * Swimming pool plant.
+ *
+ * The pool is one thing to whoever is looking at it, and on this estate it
+ * is two systems: the chlorinator and heating sit on their own controller,
+ * and the water consumption comes off the BMS. This draws the plant half.
+ * Pair it with a water meter faceplate in the same stack for the rest.
+ *
+ * Water temperature is the hero because it is the only number anyone
+ * actually asks about. Everything else — heater, solar, filter pump — is
+ * there to explain why the temperature is what it is.
+ *
+ * Read-only by construction: the modes are selects and the setpoints are
+ * numbers, and Home Assistant's own rows handle those better than a
+ * drawing can. Stack them underneath.
+ */
+const W = 420;
+const H = 290;
+const MUTED$1 = "#8b93a1";
+const WATER = "#38bdf8";
+const BODY_EDGE$1 = "#3d4551";
+const artNode = w `
+  <defs>
+    <linearGradient id="pool-water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#0369a1" stop-opacity="0.25" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width=${W} height=${H} rx="10" fill="#101216" />
+  <text x="16" y="26" fill=${MUTED$1} font-size="12" letter-spacing="1.6"
+        font-family="inherit">POOL</text>
+
+  <!-- The pool itself: a sectioned basin, deep end to the right -->
+  <path d="M 24 128 L 232 128 L 232 206 Q 232 216 222 216
+           L 34 216 Q 24 216 24 206 Z"
+        fill="url(#pool-water)" stroke=${BODY_EDGE$1} stroke-width="2" />
+  <path d="M 24 140 Q 60 132 96 140 T 168 140 T 232 140"
+        fill="none" stroke=${WATER} stroke-width="2" opacity="0.65" />
+  <path d="M 24 154 Q 60 146 96 154 T 168 154 T 232 154"
+        fill="none" stroke=${WATER} stroke-width="1.5" opacity="0.35" />
+
+  <!-- Return and suction, so the pump lamp has something to belong to -->
+  <line x1="24" y1="236" x2="232" y2="236" stroke="#2563eb"
+        stroke-width="4" stroke-linecap="round" opacity="0.8" />
+  <text x="24" y="256" fill=${MUTED$1} font-size="9" letter-spacing="1.2"
+        font-family="inherit">CIRCULATION</text>
+`;
+const regions = [
+    // Water temperature, large, with its unit taken from the entity rather
+    // than painted on — a pool read in Fahrenheit is a real configuration.
+    { id: "wt", role: "water_temp", kind: "text",
+        x: 20, y: 86, w: 168, align: "start", decimals: 1, size: 52,
+        unit: "", placeholder: "--" },
+    { id: "wt_u", role: "water_temp", kind: "text", show: "unit",
+        x: 192, y: 72, w: 40, align: "start", size: 16 },
+    { id: "wt_lbl", role: "", kind: "text", text: "WATER",
+        x: 20, y: 46, w: 168, align: "start", size: 10 },
+    // Heating on the right, each with the setpoint it is working to.
+    { id: "htr", role: "heater", kind: "lamp", label: "HEATER",
+        x: 262, y: 58, w: 16, on: "#f97316", off: "#2a1d11" },
+    { id: "htr_sp", role: "heater_setpoint", kind: "text",
+        x: 324, y: 70, w: 80, align: "end", decimals: 1, size: 20,
+        unit: "", placeholder: "", group: "heater_sp" },
+    { id: "htr_sp_l", role: "", kind: "text", text: "HEATER SET",
+        x: 324, y: 84, w: 80, align: "end", size: 9, group: "heater_sp" },
+    { id: "solar", role: "solar", kind: "lamp", label: "SOLAR",
+        x: 262, y: 110, w: 16, on: "#fbbf24", off: "#2a2512" },
+    { id: "solar_sp", role: "solar_setpoint", kind: "text",
+        x: 324, y: 122, w: 80, align: "end", decimals: 1, size: 20,
+        unit: "", placeholder: "", group: "solar_sp" },
+    { id: "solar_sp_l", role: "", kind: "text", text: "SOLAR SET",
+        x: 324, y: 136, w: 80, align: "end", size: 9, group: "solar_sp" },
+    { id: "pump", role: "filter_pump", kind: "lamp", label: "PUMP",
+        x: 262, y: 162, w: 16, on: "#3ddc84", off: "#16281d" },
+    // Modes as text: a chlorinator has more of them than a lamp can say,
+    // and the word is what the operator recognises.
+    { id: "pmode", role: "pump_mode", kind: "text",
+        x: 262, y: 206, w: 142, align: "start", size: 13,
+        placeholder: "", group: "pump_mode" },
+    { id: "pmode_l", role: "", kind: "text", text: "PUMP MODE",
+        x: 262, y: 220, w: 142, align: "start", size: 9, group: "pump_mode" },
+    { id: "mode", role: "pool_mode", kind: "text",
+        x: 262, y: 248, w: 142, align: "start", size: 13,
+        placeholder: "", group: "pool_mode" },
+    { id: "mode_l", role: "", kind: "text", text: "POOL MODE",
+        x: 262, y: 262, w: 142, align: "start", size: 9, group: "pool_mode" },
+    { id: "fault", role: "fault", kind: "lamp", label: "FAULT",
+        x: 20, y: H - 26, w: 14, on: "#ef4444", off: "#2a1717" },
+];
+const POOL_PLANT = {
+    id: "pool-plant",
+    name: "Pool Plant",
+    card: "plant-equipment-card",
+    render: "svg",
+    display: "negative",
     size: [W, H],
     artNode,
     regions,
-    description: "A room at a glance: source, display power, volume and mute, with mic, "
-        + "fault and online indicators. Bind whichever joins carry them.",
+    description: "Pool heating and circulation. Water temperature is the hero; heater, "
+        + "solar and filter pump explain why it is what it is. Read-only — "
+        + "stack the mode selects and setpoint numbers underneath, which Home "
+        + "Assistant's own rows do better than a drawing. Pair with a water "
+        + "meter faceplate for consumption.",
+    emulates: "Pool chlorinator / heat pump controller",
 };
 
 /**
@@ -2952,7 +3182,7 @@ const FACEPLATES = [CVM_E3_MINI, PM2200, DIN_3PHASE, GENERIC_3PHASE, MULTIJET_RE
     SUPPLY_FAN_TOP, SUPPLY_FAN_LEFT, SUPPLY_FAN_RIGHT, EXHAUST_FAN,
     HOT_WATER_UNIT, CIRCULATION_PUMPS, GENERIC_FIP, ZONE_MIXER, FCU_UNIT,
     UNDERBENCH_FRIDGE, UNDERBENCH_FREEZER, WALKIN_FRIDGE, WALKIN_FREEZER,
-    UPRIGHT_FRIDGE, UPRIGHT_FREEZER];
+    UPRIGHT_FRIDGE, UPRIGHT_FREEZER, STORAGE_TANKS, POOL_PLANT];
 function faceplatesFor(card) {
     return FACEPLATES.filter((f) => f.card === card);
 }
