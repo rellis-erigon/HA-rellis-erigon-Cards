@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-06",
+  "generated": "2026-10-07",
   "faceplates": [
     {
       "id": "av-room-controller",
@@ -439,6 +439,126 @@
       ]
     },
     {
+      "id": "underbench-freezer",
+      "name": "Under-bench Freezer",
+      "card": "plant-equipment-card",
+      "description": "Under-counter freezer, 1-6 doors or 1-8 drawers. Temperature against its -26 to -12 °C band is the primary reading; door, compressor and alarm are lamps. Doors and drawers are drawn to identify the cabinet, not bound separately — a real unit has one door switch for the whole thing.",
+      "emulates": "Under-counter commercial freezer",
+      "pages": [],
+      "roles": [
+        "alarm",
+        "compressor",
+        "door",
+        "setpoint",
+        "temperature"
+      ],
+      "options": [
+        {
+          "key": "doors",
+          "label": "Doors",
+          "type": "number",
+          "min": 0,
+          "max": 6,
+          "default": 2
+        },
+        {
+          "key": "drawers",
+          "label": "Drawers",
+          "type": "number",
+          "min": 0,
+          "max": 8,
+          "default": 0
+        }
+      ],
+      "roles_vary_with_options": true
+    },
+    {
+      "id": "underbench-fridge",
+      "name": "Under-bench Fridge",
+      "card": "plant-equipment-card",
+      "description": "Under-counter refrigerator, 1-6 doors or 1-8 drawers. Temperature against its 0 to 8 °C band is the primary reading; door, compressor and alarm are lamps. Doors and drawers are drawn to identify the cabinet, not bound separately — a real unit has one door switch for the whole thing.",
+      "emulates": "Under-counter commercial refrigerator",
+      "pages": [],
+      "roles": [
+        "alarm",
+        "compressor",
+        "door",
+        "setpoint",
+        "temperature"
+      ],
+      "options": [
+        {
+          "key": "doors",
+          "label": "Doors",
+          "type": "number",
+          "min": 0,
+          "max": 6,
+          "default": 2
+        },
+        {
+          "key": "drawers",
+          "label": "Drawers",
+          "type": "number",
+          "min": 0,
+          "max": 8,
+          "default": 0
+        }
+      ],
+      "roles_vary_with_options": true
+    },
+    {
+      "id": "upright-freezer",
+      "name": "Upright Freezer",
+      "card": "plant-equipment-card",
+      "description": "Upright reach-in freezer. Temperature against its -26 to -12 °C band is the primary reading; door, compressor and alarm are lamps. Doors and drawers are drawn to identify the cabinet, not bound separately — a real unit has one door switch for the whole thing.",
+      "emulates": "Upright reach-in freezer",
+      "pages": [],
+      "roles": [
+        "alarm",
+        "compressor",
+        "door",
+        "setpoint",
+        "temperature"
+      ],
+      "options": [
+        {
+          "key": "doors",
+          "label": "Doors",
+          "type": "number",
+          "min": 1,
+          "max": 2,
+          "default": 1
+        }
+      ],
+      "roles_vary_with_options": true
+    },
+    {
+      "id": "upright-fridge",
+      "name": "Upright Fridge",
+      "card": "plant-equipment-card",
+      "description": "Upright reach-in refrigerator. Temperature against its 0 to 8 °C band is the primary reading; door, compressor and alarm are lamps. Doors and drawers are drawn to identify the cabinet, not bound separately — a real unit has one door switch for the whole thing.",
+      "emulates": "Upright reach-in refrigerator",
+      "pages": [],
+      "roles": [
+        "alarm",
+        "compressor",
+        "door",
+        "setpoint",
+        "temperature"
+      ],
+      "options": [
+        {
+          "key": "doors",
+          "label": "Doors",
+          "type": "number",
+          "min": 1,
+          "max": 2,
+          "default": 1
+        }
+      ],
+      "roles_vary_with_options": true
+    },
+    {
       "id": "vertical-pumpset",
       "name": "Vertical multistage pump set",
       "card": "pump-system-card",
@@ -473,6 +593,36 @@
         }
       ],
       "roles_vary_with_options": true
+    },
+    {
+      "id": "walkin-freezer",
+      "name": "Walk-in Freezer",
+      "card": "plant-equipment-card",
+      "description": "Walk-in freezer room. Temperature against its -26 to -12 °C band is the primary reading; door, compressor and alarm are lamps. Doors and drawers are drawn to identify the cabinet, not bound separately — a real unit has one door switch for the whole thing.",
+      "emulates": "Walk-in freezer room",
+      "pages": [],
+      "roles": [
+        "alarm",
+        "compressor",
+        "door",
+        "setpoint",
+        "temperature"
+      ]
+    },
+    {
+      "id": "walkin-fridge",
+      "name": "Walk-in Fridge",
+      "card": "plant-equipment-card",
+      "description": "Walk-in cold room. Temperature against its 0 to 8 °C band is the primary reading; door, compressor and alarm are lamps. Doors and drawers are drawn to identify the cabinet, not bound separately — a real unit has one door switch for the whole thing.",
+      "emulates": "Walk-in cold room",
+      "pages": [],
+      "roles": [
+        "alarm",
+        "compressor",
+        "door",
+        "setpoint",
+        "temperature"
+      ]
     },
     {
       "id": "woltmann-register",
