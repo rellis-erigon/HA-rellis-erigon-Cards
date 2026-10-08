@@ -27,13 +27,42 @@ const { FACEPLATES, resolveFaceplate } = await import(
   "../dist/faceplates-registry.mjs"
 );
 
+/**
+ * Every role a faceplate can ever bind, not just the ones its default
+ * shape happens to have.
+ *
+ * Resolving at defaults alone under-reports a parametric faceplate: a tank
+ * set defaulting to two tanks never mentions tank3_level, and a consumer
+ * validating against that list rejects a perfectly good binding. So build
+ * at the bottom, the middle and the top of every option's range and take
+ * the union. A mixer declares all sixteen channels, a tank farm all four.
+ */
+function allRoles(faceplate) {
+  const options = faceplate.options ?? [];
+  const shapes = [{}];
+  if (options.length) {
+    for (const pick of ["min", "default", "max"]) {
+      shapes.push(Object.fromEntries(options.map((o) => [o.key, o[pick]])));
+    }
+    // Also each option at its maximum on its own: two options can be
+    // mutually exclusive in the drawing, and taking both to the top at
+    // once could leave one of them out.
+    for (const o of options) {
+      shapes.push({ ...Object.fromEntries(
+        options.map((x) => [x.key, x.default])), [o.key]: o.max });
+    }
+  }
+  const roles = new Set();
+  for (const shape of shapes) {
+    for (const region of resolveFaceplate(faceplate, shape).regions) {
+      if (region.role) roles.add(region.role);
+    }
+  }
+  return [...roles].sort();
+}
+
 const entries = FACEPLATES.map((faceplate) => {
-  // Resolve at default options so a parametric faceplate reports the roles
-  // of its default size, and note the option that changes them.
-  const resolved = resolveFaceplate(faceplate, {});
-  const roles = [
-    ...new Set(resolved.regions.map((r) => r.role).filter(Boolean)),
-  ].sort();
+  const roles = allRoles(faceplate);
 
   const entry = {
     id: faceplate.id,
@@ -50,6 +79,12 @@ const entries = FACEPLATES.map((faceplate) => {
       min: o.min, max: o.max, default: o.default,
     }));
     entry.roles_vary_with_options = true;
+    // What the default shape actually draws, for a picker that wants to
+    // show the common case rather than everything possible.
+    entry.roles_at_default = [
+      ...new Set(resolveFaceplate(faceplate, {}).regions
+        .map((r) => r.role).filter(Boolean)),
+    ].sort();
   }
   return entry;
 });
