@@ -27,13 +27,36 @@ export interface RenderContext {
 }
 
 /** Regions on the current page, plus those pinned to every page. */
-function visibleRegions(faceplate: Faceplate, page: string): Region[] {
-  return faceplate.regions.filter((r) => !r.page || r.page === page);
+function visibleRegions(ctx: RenderContext): Region[] {
+  return ctx.faceplate.regions.filter((region) => {
+    // A region whose visibility join is bound follows the panel: it is on
+    // screen exactly when the processor says it is. This is what lets two
+    // subpages sitting side by side both show, while two occupying the
+    // same space take turns — a fact about the running program that no
+    // amount of reading the project file would settle.
+    if (region.visible_role && ctx.bindings[region.visible_role]) {
+      return isOn(readRole(ctx.hass, ctx.bindings, region.visible_role));
+    }
+    if (!region.page) return true;
+    if (region.page === ctx.page) return true;
+    // Side by side on the panel, so side by side here.
+    return Boolean(
+      ctx.faceplate.page_companions?.[ctx.page]?.includes(region.page),
+    );
+  });
+}
+
+/** True once the panel itself is driving what is on screen. */
+export function visibilityIsLive(
+  faceplate: Faceplate, bindings: Record<string, string>,
+): boolean {
+  const gated = faceplate.regions.filter((r) => r.visible_role);
+  return gated.length > 0 && gated.every((r) => bindings[r.visible_role!]);
 }
 
 export function renderFaceplate(ctx: RenderContext): TemplateResult {
   const [width, height] = ctx.faceplate.size;
-  const regions = visibleRegions(ctx.faceplate, ctx.page);
+  const regions = visibleRegions(ctx);
 
   return html`
     <svg

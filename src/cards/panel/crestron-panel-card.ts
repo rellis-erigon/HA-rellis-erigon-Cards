@@ -27,7 +27,7 @@
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
 import { defineFaceplateEditor } from "../../core/card-editor";
 import { hiddenNote, prepare } from "../../core/prepare";
-import { renderFaceplate } from "../../core/faceplate";
+import { renderFaceplate, visibilityIsLive } from "../../core/faceplate";
 import { deviceEntityIds } from "../../core/bind";
 import { cardTitle, runControlAction, DEFAULT_STEP } from "../../core/controls";
 import { FaceplateCardConfig, HomeAssistant, Region } from "../../core/types";
@@ -135,11 +135,15 @@ class CrestronPanelCard extends LitElement {
 
     const pages = faceplate.pages;
     const page = this._currentPage(pages);
+    // Once every subpage's visibility join has an entity behind it, the
+    // panel decides what is on screen and choosing by hand would only
+    // fight it.
+    const live = visibilityIsLive(faceplate, bindings);
 
     return html`
       <ha-card>
         ${name ? html`<div class="title">${name}</div>` : nothing}
-        ${pages && pages.length > 1 && !blank
+        ${pages && pages.length > 1 && !blank && !live
           ? html`<div class="pages">
               ${pages.map(
                 (candidate) => html`<button

@@ -71,7 +71,11 @@ export function prepare(
     filtering: false,
   });
   const roles = expandRoles(
-    [...new Set(full.regions.map((r) => r.role))].filter(Boolean)
+    [
+      ...new Set(
+        full.regions.flatMap((r) => [r.role, r.visible_role ?? ""]),
+      ),
+    ].filter(Boolean)
   );
   const bindings = resolveRoles(hass, roles, config.entities ?? {}, deviceEntities);
 

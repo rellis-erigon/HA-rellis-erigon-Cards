@@ -38,6 +38,20 @@ export interface Region {
    * label with it. A group survives while any role in it is bound.
    */
   group?: string;
+  /**
+   * A role whose truth decides whether this region is on screen.
+   *
+   * This is how a real Crestron panel works: the processor raises a
+   * digital join and the subpage bound to it appears. Two subpages side
+   * by side have two different joins and are shown at the same time,
+   * while two that occupy the same space are alternatives — and which is
+   * which is a fact about the running program, not about the project
+   * file. Following the join reproduces it exactly instead of guessing.
+   *
+   * When the role is not bound the region falls back to `page`, so a
+   * panel imported before its joins were exposed still draws.
+   */
+  visible_role?: string;
   /** printf-ish hint: decimals and a unit suffix. */
   decimals?: number;
   unit?: string;
@@ -191,6 +205,15 @@ export interface Faceplate {
   artNode?: unknown;
   regions: Region[];
   pages?: string[];
+  /**
+   * Which pages are on screen together, keyed by page.
+   *
+   * A generated panel's "pages" are its subpages, and two that sit side
+   * by side are shown at once rather than instead of one another. Used
+   * only until the visibility joins are bound, after which the panel
+   * itself says what is up. See `Region.visible_role`.
+   */
+  page_companions?: Record<string, string[]>;
   /** Shown in the picker and the README. */
   description?: string;
   /**

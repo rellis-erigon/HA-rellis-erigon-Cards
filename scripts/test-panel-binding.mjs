@@ -200,5 +200,75 @@ async function mount(config, hass) {
     svg.querySelectorAll("rect.plate").length === 1);
 }
 
+
+
+// -- what is on screen ----------------------------------------------------
+
+const PANEL_WITH_STATES = {
+  id: "states", name: "States", card: "crestron-panel-card", render: "svg",
+  size: [1280, 800],
+  pages: ["sources", "volume", "confirm"],
+  // Sources and volume sit side by side; the popup covers both.
+  page_companions: { sources: ["volume"], volume: ["sources"], confirm: [] },
+  regions: [
+    { id: "a", kind: "text", role: "text_1", x: 10, y: 10, w: 200, h: 40,
+      page: "sources", group: "sources", visible_role: "lamp_31",
+      placeholder: "" },
+    { id: "b", kind: "text", role: "text_2", x: 1010, y: 10, w: 200, h: 40,
+      page: "volume", group: "volume", visible_role: "lamp_32",
+      placeholder: "" },
+    { id: "c", kind: "text", role: "text_3", x: 300, y: 300, w: 400, h: 40,
+      page: "confirm", group: "confirm", visible_role: "lamp_35",
+      placeholder: "" },
+  ],
+};
+
+function drawn(svg) {
+  return [...svg.querySelectorAll("text")].map((t) => t.textContent.trim())
+    .filter(Boolean);
+}
+
+{
+  // Nothing bound: the fallback shows the selected page and whatever the
+  // panel puts beside it.
+  const hass = hassWith({ s1: "Sources", s2: "Volume", s3: "Confirm" });
+  const { svg } = await mount(
+    { panel: PANEL_WITH_STATES, device: "Function 1-2", hide_unbound: false },
+    hass);
+  const texts = drawn(svg);
+  check("a side-by-side subpage is drawn with its neighbour",
+    texts.includes("Sources") && texts.includes("Volume"), texts.join("|"));
+  check("and one that covers them is not",
+    !texts.includes("Confirm"), texts.join("|"));
+}
+
+{
+  // Joins bound: the panel decides, and it says the popup is up.
+  const hass = hassWith({
+    s1: "Sources", s2: "Volume", s3: "Confirm",
+    d31: "off", d32: "off", d35: "on",
+  });
+  const { root, svg } = await mount(
+    { panel: PANEL_WITH_STATES, device: "Function 1-2", hide_unbound: false },
+    hass);
+  const texts = drawn(svg);
+  check("a bound visibility join decides what is on screen",
+    texts.includes("Confirm") && !texts.includes("Sources"), texts.join("|"));
+  check("and the manual tabs step out of the way",
+    root.querySelectorAll(".pages button").length === 0);
+}
+
+{
+  // Half exposed: the joins that exist are followed, the rest fall back.
+  const hass = hassWith({ s1: "Sources", s2: "Volume", s3: "Confirm", d35: "off" });
+  const { root, svg } = await mount(
+    { panel: PANEL_WITH_STATES, device: "Function 1-2", hide_unbound: false },
+    hass);
+  check("an unexposed join still falls back to the page",
+    drawn(svg).includes("Sources"), drawn(svg).join("|"));
+  check("and the tabs stay while any join is missing",
+    root.querySelectorAll(".pages button").length === 3);
+}
+
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed ? 1 : 0);
