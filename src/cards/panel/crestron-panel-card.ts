@@ -265,6 +265,56 @@ class CrestronPanelCard extends LitElement {
     .display-negative .lcd-value.chrome {
       fill: #cdd3dc;
     }
+    /* An imported panel is usually a pale screen, which is the opposite
+       of the dark instrument faces the hand-drawn faceplates emulate.
+       Only the dark case was ever styled here, so a white panel drew its
+       text in the theme's own colour — light on light, and invisible. */
+    .display-positive .lcd-value {
+      fill: #11161c;
+      font-family: ui-monospace, Menlo, monospace;
+      font-weight: 600;
+    }
+    .display-positive .lcd-label,
+    .display-positive .lcd-value.chrome {
+      fill: #333b45;
+      font-family: inherit;
+      letter-spacing: 0.4px;
+      font-weight: 500;
+    }
+    .display-positive .lcd-value.dark {
+      fill: #9aa3ad;
+    }
+    .display-positive .lcd-value.stale {
+      fill: #8a6410;
+    }
+    .display-positive .plate-label {
+      fill: #333b45;
+    }
+    /* A button whose face comes from the project draws its own artwork.
+       The chassis fill underneath it is for buttons that have none, and
+       on a pale panel it would be a dark block where the real one is a
+       light key. The panel's own unlit face lives compiled inside a theme
+       SWF and cannot be pulled out, so this is a neutral stand-in. */
+    .display-positive .button.art rect {
+      fill: rgba(16, 22, 30, 0.05);
+      stroke: rgba(16, 22, 30, 0.14);
+    }
+    .display-positive .button.art text {
+      fill: #11161c;
+    }
+    .display-positive .button:not(.art) rect {
+      fill: #e9edf2;
+      stroke: #c6ccd4;
+    }
+    .display-positive .button:not(.art) text {
+      fill: #11161c;
+    }
+    .display-positive .button:hover rect {
+      fill: rgba(16, 22, 30, 0.12);
+    }
+    .display-positive .bar-track {
+      fill: rgba(16, 22, 30, 0.10);
+    }
     /* Panel chrome from an imported project: borders, fills and the
        boxes where artwork sat. Fill and stroke arrive as attributes on
        the element, carried over from the panel's own colours, so nothing

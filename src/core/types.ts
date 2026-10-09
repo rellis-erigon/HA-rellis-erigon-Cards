@@ -73,6 +73,17 @@ export interface Region {
   /** plate only: fill and border, as CSS. Either may be omitted. */
   fill?: string;
   border?: string;
+  /**
+   * Artwork, for a faceplate generated from a real panel's project.
+   *
+   * `src` is what the control always shows; `src_on` is the selected
+   * state, which is the one change of appearance a card can honestly
+   * reproduce from a reading; `icon` sits on top of either. Hand-drawn
+   * faceplates have no use for these — their artwork is the chassis SVG.
+   */
+  src?: string;
+  src_on?: string;
+  icon?: string;
   /** plate and button: corner radius. */
   radius?: number;
   /** lamp only */

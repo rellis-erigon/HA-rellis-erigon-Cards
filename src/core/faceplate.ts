@@ -81,7 +81,7 @@ function renderRegion(ctx: RenderContext, region: Region): SVGTemplateResult {
     case "fader":
       return faderRegion(ctx, region, reading);
     case "button":
-      return buttonRegion(ctx, region);
+      return buttonRegion(ctx, region, reading);
     case "plate":
       return plateRegion(region);
   }
@@ -96,16 +96,28 @@ function plateRegion(region: Region): SVGTemplateResult {
   // Plates must come first in the region list, since regions draw in
   // order and a plate emitted late paints over the values on top of it.
   return svg`
-    <rect
-      class="plate"
-      x=${region.x}
-      y=${region.y}
-      width=${region.w ?? 0}
-      height=${region.h ?? 0}
-      rx=${region.radius ?? 0}
-      fill=${region.fill ?? "none"}
-      stroke=${region.border ?? "none"}
-    />
+    ${region.fill || region.border || !region.src
+      ? svg`<rect
+          class="plate"
+          x=${region.x}
+          y=${region.y}
+          width=${region.w ?? 0}
+          height=${region.h ?? 0}
+          rx=${region.radius ?? 0}
+          fill=${region.fill ?? "none"}
+          stroke=${region.border ?? "none"}
+        />`
+      : ""}
+    ${region.src
+      ? svg`<image
+          href=${region.src}
+          x=${region.x}
+          y=${region.y}
+          width=${region.w ?? 0}
+          height=${region.h ?? 0}
+          preserveAspectRatio="xMidYMid meet"
+        />`
+      : ""}
     ${region.text
       ? svg`<text
           class="plate-label"
@@ -150,20 +162,35 @@ function textRegion(region: Region, reading: Reading): SVGTemplateResult {
   `;
 }
 
-function lampRegion(region: Region, reading: Reading): SVGTemplateResult {
-  // A lamp is lit for a truthy state and dark otherwise. Unbound is dark
-  // too — an unlit lamp is honest and looks like real hardware with
-  // nothing to report, where a hidden one looks like a complete card.
-  // Numeric states are compared as numbers: Niagara exports a fault history
-  // as "0.0", which a string comparison against "0" would read as a fault.
+/**
+ * Whether a reading means "on".
+ *
+ * Numeric states are compared as numbers: Niagara exports a fault history
+ * as "0.0", which a string comparison against "0" would read as a fault.
+ * Unbound is never on — an unlit control is honest, where one asserting a
+ * state it has not been told is not.
+ *
+ * `ringRegion` still carries its own, looser version of this, which does
+ * not handle "0.0". Unifying them changes what existing plant cards draw,
+ * so it has been left where it is rather than altered in passing.
+ */
+export function isOn(reading: Reading): boolean {
   const state = reading.state?.trim() ?? "";
   const number = state === "" ? NaN : Number(state);
-  const lit =
+  return (
     !reading.dark &&
     reading.state !== undefined &&
     (Number.isFinite(number)
       ? number !== 0
-      : !["off", "false", "normal", "ok"].includes(state.toLowerCase()));
+      : !["off", "false", "normal", "ok"].includes(state.toLowerCase()))
+  );
+}
+
+function lampRegion(region: Region, reading: Reading): SVGTemplateResult {
+  // A lamp is lit for a truthy state and dark otherwise. Unbound is dark
+  // too — an unlit lamp is honest and looks like real hardware with
+  // nothing to report, where a hidden one looks like a complete card.
+  const lit = isOn(reading);
   const radius = (region.w ?? 12) / 2;
   return svg`
     <circle
@@ -385,9 +412,22 @@ function needleRegion(region: Region, reading: Reading): SVGTemplateResult {
   `;
 }
 
-function buttonRegion(ctx: RenderContext, region: Region): SVGTemplateResult {
+function buttonRegion(
+  ctx: RenderContext, region: Region, reading?: Reading,
+): SVGTemplateResult {
   const width = region.w ?? 44;
   const height = region.h ?? 26;
+  // The panel draws a different background when a button is lit. That is
+  // the one change of appearance a card can reproduce honestly, and on a
+  // source-select page it is the only thing that says which source is
+  // playing. Unknown is not off, so a reading that has not arrived leaves
+  // the button in its normal state rather than asserting either.
+  const lit = reading !== undefined && !reading.dark && isOn(reading);
+  const background = (lit && region.src_on) || region.src;
+  // A button carrying any artwork is styled as a panel key rather than as
+  // part of a dark chassis, whether or not it is lit right now.
+  const arty = Boolean(region.src || region.src_on || region.icon);
+  const plain = !background;
   // A generated faceplate carries the panel's own type size and colour.
   // These go in a style attribute rather than as SVG attributes because
   // the card's stylesheet sets a font-size for button text, and a
@@ -399,17 +439,42 @@ function buttonRegion(ctx: RenderContext, region: Region): SVGTemplateResult {
     .filter(Boolean)
     .join(";");
   return svg`
-    <g class="button" @click=${() => ctx.onAction(region)} role="button" tabindex="0">
-      <rect
-        x=${region.x}
-        y=${region.y}
-        width=${width}
-        height=${height}
-        rx=${region.radius ?? 4}
-      />
+    <g class="button ${lit ? "lit" : ""} ${arty ? "art" : ""}"
+       @click=${() => ctx.onAction(region)} role="button" tabindex="0">
+      ${plain
+        ? svg`<rect
+            x=${region.x}
+            y=${region.y}
+            width=${width}
+            height=${height}
+            rx=${region.radius ?? 4}
+          />`
+        : ""}
+      ${background
+        ? svg`<image
+            href=${background}
+            x=${region.x}
+            y=${region.y}
+            width=${width}
+            height=${height}
+            preserveAspectRatio="none"
+          />`
+        : ""}
+      ${region.icon
+        ? svg`<image
+            href=${region.icon}
+            x=${region.x + width * 0.2}
+            y=${region.y + height * 0.15}
+            width=${width * 0.6}
+            height=${height * 0.6}
+            preserveAspectRatio="xMidYMid meet"
+          />`
+        : ""}
       <text
         x=${region.x + width / 2}
-        y=${region.y + height / 2 + (region.size ?? 12) / 3}
+        y=${region.icon
+          ? region.y + height * 0.9
+          : region.y + height / 2 + (region.size ?? 12) / 3}
         text-anchor="middle"
         style=${ink}
       >${region.text ?? ""}</text>

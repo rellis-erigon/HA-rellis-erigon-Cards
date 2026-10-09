@@ -64,8 +64,11 @@ for (const page of pages) {
     styles = [...root.querySelectorAll("style")].map((s) => s.textContent).join("\n");
   }
   const svg = root.querySelector("svg");
+  // No display class here: the SVG carries its own, set from the panel's
+  // backdrop. Forcing one on the wrapper overrode it and drew a pale
+  // panel with the dark instrument's palette.
   sections.push(`<section><h2>${page || "(single screen)"}</h2>
-    <div class="frame display-negative">${svg ? svg.outerHTML : "<p>nothing drawn</p>"}</div></section>`);
+    <div class="frame">${svg ? svg.outerHTML : "<p>nothing drawn</p>"}</div></section>`);
 }
 
 writeFileSync(outPath, `<!doctype html>
@@ -77,7 +80,8 @@ writeFileSync(outPath, `<!doctype html>
   h2 { font-size: 12px; font-weight: 600; letter-spacing: 1px;
        text-transform: uppercase; color: #8b93a1; margin: 28px 0 8px; }
   section { max-width: 1000px; }
-  .frame { background: #1b1e23; border: 1px solid #2b313a; border-radius: 8px;
+  /* Neutral, so the panel's own colours are what is being judged. */
+  .frame { background: #2a2e34; border: 1px solid #3a4048; border-radius: 8px;
            padding: 10px; }
   svg { width: 100%; height: auto; display: block; }
   ${styles}
