@@ -17,7 +17,8 @@ export type RegionKind =
   | "ring"
   | "odometer"
   | "needle"
-  | "fader";
+  | "fader"
+  | "plate";
 
 export interface Region {
   id: string;
@@ -61,6 +62,19 @@ export interface Region {
   placeholder?: string;
   align?: "start" | "middle" | "end";
   size?: number;
+  /**
+   * Ink colour, as CSS. Faceplates drawn by hand leave this out and inherit
+   * the card's theme, which is what keeps them consistent. It exists for
+   * faceplates *generated* from a real panel's project file, where the
+   * colours are part of what makes the screen recognisable: an operator who
+   * knows the panel finds the red mute by its colour before reading it.
+   */
+  color?: string;
+  /** plate only: fill and border, as CSS. Either may be omitted. */
+  fill?: string;
+  border?: string;
+  /** plate and button: corner radius. */
+  radius?: number;
   /** lamp only */
   on?: string;
   off?: string;

@@ -951,6 +951,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       y=${e.y+(e.size??22)}
       font-size=${e.size??22}
       text-anchor=${r}
+      style=${e.color?`fill:${e.color}`:""}
     >${i}</text>
   `}(t,i);case"lamp":return function(e,t){const i=t.state?.trim()??"",r=""===i?NaN:Number(i),o=!t.dark&&void 0!==t.state&&(Number.isFinite(r)?0!==r:!["off","false","normal","ok"].includes(i.toLowerCase())),a=(e.w??12)/2;return B`
     <circle
@@ -1043,16 +1044,42 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       ${"set_level"===t.action?B`<rect class="fader-hit" x=${t.x} y=${t.y}
             width=${r} height=${o} fill="transparent" @click=${f} />`:""}
     </g>
-  `}(e,t,i);case"button":return function(e,t){const i=t.w??44,r=t.h??26;return B`
+  `}(e,t,i);case"button":return function(e,t){const i=t.w??44,r=t.h??26,o=[t.size?`font-size:${t.size}px`:"",t.color?`fill:${t.color}`:""].filter(Boolean).join(";");return B`
     <g class="button" @click=${()=>e.onAction(t)} role="button" tabindex="0">
-      <rect x=${t.x} y=${t.y} width=${i} height=${r} rx="4" />
+      <rect
+        x=${t.x}
+        y=${t.y}
+        width=${i}
+        height=${r}
+        rx=${t.radius??4}
+      />
       <text
         x=${t.x+i/2}
-        y=${t.y+r/2+4}
+        y=${t.y+r/2+(t.size??12)/3}
         text-anchor="middle"
+        style=${o}
       >${t.text??""}</text>
     </g>
-  `}(e,t)}}(e,t))}
+  `}(e,t);case"plate":return function(e){return B`
+    <rect
+      class="plate"
+      x=${e.x}
+      y=${e.y}
+      width=${e.w??0}
+      height=${e.h??0}
+      rx=${e.radius??0}
+      fill=${e.fill??"none"}
+      stroke=${e.border??"none"}
+    />
+    ${e.text?B`<text
+          class="plate-label"
+          x=${e.x+(e.w??0)/2}
+          y=${e.y+(e.size??16)}
+          font-size=${e.size??16}
+          text-anchor="middle"
+          fill=${e.color??"currentColor"}
+        >${e.text}</text>`:""}
+  `}(t)}}(e,t))}
     </svg>
   `}function ji(e,t){if(!t)return;const i=(t.title??t.name??"").trim();return i||(e&&t.device?function(e,t){const i=e.devices??{},r=i[t]??Object.values(i).find(e=>{const i=t.trim().toLowerCase();return(e.name_by_user??"").trim().toLowerCase()===i||(e.name??"").trim().toLowerCase()===i});return(r?.name_by_user||r?.name)??void 0}(e,t.device):void 0)}const qi="audio-zone-card";class Vi extends ne{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${qi}-editor`)}static getStubConfig(){return{type:`custom:${qi}`,faceplate:"qsys-zone-rack",options:{zones:4}}}_notify(e){this._error=e,setTimeout(()=>{this._error=void 0},4e3)}async _onAction(e,t){this.hass&&this._config&&await async function(e,t,i,r,o=1,a){const l=i.target?t?.[i.target]:void 0;if(!l)return void r(`Nothing is bound to ${i.target??"this control"}.`);const s=e.states[l];if(!s)return void r(`${l} does not exist.`);if("source_cycle"===i.action){const t=l.split(".")[0];return"select"!==t&&"input_select"!==t?void r(`${l} is a ${t}; it has no source list to step.`):void await e.callService(t,"select_next",{entity_id:l,cycle:!0})}if("press"===i.action){const t=l.split(".")[0];return void("button"===t||"input_button"===t?await e.callService(t,"press",{entity_id:l}):"switch"===t||"input_boolean"===t?await e.callService("homeassistant","toggle",{entity_id:l}):r(`${l} is a ${t}; it cannot be pressed.`))}if("mute_toggle"===i.action||"power_toggle"===i.action){const t=l.split(".")[0];return"sensor"===t||"binary_sensor"===t?void r(`${l} is read-only — it reports state but cannot be set.`):void await e.callService("homeassistant","toggle",{entity_id:l})}const n=Number(s.state);if(!Number.isFinite(n))return void r(`${l} has no numeric level to change.`);const d=Number(s.attributes.min??-1/0),c=Number(s.attributes.max??1/0);let h;if("set_level"===i.action){if(void 0===a||!Number.isFinite(a))return;h=Math.min(c,Math.max(d,a));const e=Number(s.attributes.step);Number.isFinite(e)&&e>0&&(h=Math.round(h/e)*e),h=Math.round(100*h)/100}else{const e=Number(o)||1,t="level_up"===i.action?e:-e;if(h=Math.min(c,Math.max(d,n+t)),h===n)return void r(`${l} is already at its ${t>0?"maximum":"minimum"}.`)}if(h===n)return;const p=l.split(".")[0];"number"===p||"input_number"===p?await e.callService(p,"set_value",{entity_id:l,value:h}):r(`${l} is a ${p}; its level cannot be set from here.`)}(this.hass,this._config.entities,e,e=>this._notify(e),Number(this._config.step??1),t)}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Wi(this.hass,this._config,Ni(qi,this._config.faceplate),this._config.device?function(e,t){const i=e.entities??{};let r=t;const o=e.devices??{};if(!o[t]){const e=t.trim().toLowerCase(),i=Object.entries(o).find(([i,r])=>(r.name_by_user??"").trim().toLowerCase()===e||(r.name??"").trim().toLowerCase()===e||i===t);i&&(r=i[0])}const a=Object.values(i).filter(e=>e.device_id===r).map(e=>e.entity_id).filter(t=>void 0!==e.states[t]).sort();return a.length?a:Object.keys(e.states).filter(e=>e.includes(t)).sort()}(this.hass,this._config.device):[]),o=function(e,t,i){return t?{...e,regions:e.regions.map(e=>{const r=/^name(\d+)$/.exec(e.id),o=r?t[`${i}${r[1]}`]:void 0;return o?{...e,text:o}:e})}:e}(e,this._config.labels,e.labelPrefix??"zone"),a=i.filter(e=>t[e]).length,l=0===a&&!1!==this._config.hide_unbound,s=ji(this.hass,this._config);return W`
       <ha-card>

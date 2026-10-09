@@ -951,6 +951,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       y=${e.y+(e.size??22)}
       font-size=${e.size??22}
       text-anchor=${r}
+      style=${e.color?`fill:${e.color}`:""}
     >${i}</text>
   `}(t,i);case"lamp":return function(e,t){const i=t.state?.trim()??"",r=""===i?NaN:Number(i),o=!t.dark&&void 0!==t.state&&(Number.isFinite(r)?0!==r:!["off","false","normal","ok"].includes(i.toLowerCase())),a=(e.w??12)/2;return B`
     <circle
@@ -1043,16 +1044,42 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       ${"set_level"===t.action?B`<rect class="fader-hit" x=${t.x} y=${t.y}
             width=${r} height=${o} fill="transparent" @click=${f} />`:""}
     </g>
-  `}(e,t,i);case"button":return function(e,t){const i=t.w??44,r=t.h??26;return B`
+  `}(e,t,i);case"button":return function(e,t){const i=t.w??44,r=t.h??26,o=[t.size?`font-size:${t.size}px`:"",t.color?`fill:${t.color}`:""].filter(Boolean).join(";");return B`
     <g class="button" @click=${()=>e.onAction(t)} role="button" tabindex="0">
-      <rect x=${t.x} y=${t.y} width=${i} height=${r} rx="4" />
+      <rect
+        x=${t.x}
+        y=${t.y}
+        width=${i}
+        height=${r}
+        rx=${t.radius??4}
+      />
       <text
         x=${t.x+i/2}
-        y=${t.y+r/2+4}
+        y=${t.y+r/2+(t.size??12)/3}
         text-anchor="middle"
+        style=${o}
       >${t.text??""}</text>
     </g>
-  `}(e,t)}}(e,t))}
+  `}(e,t);case"plate":return function(e){return B`
+    <rect
+      class="plate"
+      x=${e.x}
+      y=${e.y}
+      width=${e.w??0}
+      height=${e.h??0}
+      rx=${e.radius??0}
+      fill=${e.fill??"none"}
+      stroke=${e.border??"none"}
+    />
+    ${e.text?B`<text
+          class="plate-label"
+          x=${e.x+(e.w??0)/2}
+          y=${e.y+(e.size??16)}
+          font-size=${e.size??16}
+          text-anchor="middle"
+          fill=${e.color??"currentColor"}
+        >${e.text}</text>`:""}
+  `}(t)}}(e,t))}
     </svg>
   `}const qi="fire-panel-card",Vi=["fire_alarm","fault","isolate","brigade_signal","power"];class Ki extends ne{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${qi}-editor`)}static getStubConfig(){return{type:`custom:${qi}`,faceplate:"generic-fip",options:{zones:8}}}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Bi(this.hass,this._config,Ni(qi,this._config.faceplate),this._config.device?function(e,t){const i=e.entities??{};let r=t;const o=e.devices??{};if(!o[t]){const e=t.trim().toLowerCase(),i=Object.entries(o).find(([i,r])=>(r.name_by_user??"").trim().toLowerCase()===e||(r.name??"").trim().toLowerCase()===e||i===t);i&&(r=i[0])}const a=Object.values(i).filter(e=>e.device_id===r).map(e=>e.entity_id).filter(t=>void 0!==e.states[t]).sort();return a.length?a:Object.keys(e.states).filter(e=>e.includes(t)).sort()}(this.hass,this._config.device):[]),o=e,a=i.filter(e=>t[e]).length,l=Vi.filter(e=>!t[e]),s=0===a&&!1!==this._config.hide_unbound,n=Hi(this.hass,this._config);return F`
       <ha-card>

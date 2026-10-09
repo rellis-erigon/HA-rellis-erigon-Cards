@@ -951,6 +951,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       y=${e.y+(e.size??22)}
       font-size=${e.size??22}
       text-anchor=${r}
+      style=${e.color?`fill:${e.color}`:""}
     >${i}</text>
   `}(t,i);case"lamp":return function(e,t){const i=t.state?.trim()??"",r=""===i?NaN:Number(i),o=!t.dark&&void 0!==t.state&&(Number.isFinite(r)?0!==r:!["off","false","normal","ok"].includes(i.toLowerCase())),a=(e.w??12)/2;return B`
     <circle
@@ -1043,16 +1044,42 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       ${"set_level"===t.action?B`<rect class="fader-hit" x=${t.x} y=${t.y}
             width=${r} height=${o} fill="transparent" @click=${f} />`:""}
     </g>
-  `}(e,t,i);case"button":return function(e,t){const i=t.w??44,r=t.h??26;return B`
+  `}(e,t,i);case"button":return function(e,t){const i=t.w??44,r=t.h??26,o=[t.size?`font-size:${t.size}px`:"",t.color?`fill:${t.color}`:""].filter(Boolean).join(";");return B`
     <g class="button" @click=${()=>e.onAction(t)} role="button" tabindex="0">
-      <rect x=${t.x} y=${t.y} width=${i} height=${r} rx="4" />
+      <rect
+        x=${t.x}
+        y=${t.y}
+        width=${i}
+        height=${r}
+        rx=${t.radius??4}
+      />
       <text
         x=${t.x+i/2}
-        y=${t.y+r/2+4}
+        y=${t.y+r/2+(t.size??12)/3}
         text-anchor="middle"
+        style=${o}
       >${t.text??""}</text>
     </g>
-  `}(e,t)}}(e,t))}
+  `}(e,t);case"plate":return function(e){return B`
+    <rect
+      class="plate"
+      x=${e.x}
+      y=${e.y}
+      width=${e.w??0}
+      height=${e.h??0}
+      rx=${e.radius??0}
+      fill=${e.fill??"none"}
+      stroke=${e.border??"none"}
+    />
+    ${e.text?B`<text
+          class="plate-label"
+          x=${e.x+(e.w??0)/2}
+          y=${e.y+(e.size??16)}
+          font-size=${e.size??16}
+          text-anchor="middle"
+          fill=${e.color??"currentColor"}
+        >${e.text}</text>`:""}
+  `}(t)}}(e,t))}
     </svg>
   `}const Vi="hvac-controller-card",Ki=["off","cool","heat","dry","fan_only","auto"];class Zi extends ne{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${Vi}-editor`)}static getStubConfig(){return{type:`custom:${Vi}`,faceplate:"daikin-brc1e63"}}_setpoint(){if(!this.hass||!this._config)return;if(this._config.climate)return Hi(this.hass,this._config.climate,"setpoint").value;const e=this._config.entities?.setpoint;return e?Number(this.hass.states[e]?.state):void 0}async _onAction(e){if(!this.hass||!this._config)return;const t=this._config.climate;if(!t)return void this._notify("This controller is read-only — no climate entity is set.");const i=this._setpoint();switch(e.action){case"temp_up":case"temp_down":{if(void 0===i)return;const r="temp_up"===e.action?.5:-.5;return void await this.hass.callService("climate","set_temperature",{entity_id:t,temperature:Math.round(2*(i+r))/2})}case"power_toggle":{const e="off"!==this.hass.states[t]?.state;return void await this.hass.callService("climate",e?"turn_off":"turn_on",{entity_id:t})}case"fan_cycle":{const e=this.hass.states[t]?.attributes.fan_modes??[];if(!e.length)return;const i=this.hass.states[t]?.attributes.fan_mode,r=e[(e.indexOf(i)+1)%e.length];return void await this.hass.callService("climate","set_fan_mode",{entity_id:t,fan_mode:r})}case"mode_cycle":{const e=this.hass.states[t]?.attributes.hvac_modes??Ki,i=this.hass.states[t]?.state??e[0],r=e[(e.indexOf(i)+1)%e.length];return void await this.hass.callService("climate","set_hvac_mode",{entity_id:t,hvac_mode:r})}default:return}}_notify(e){this.dispatchEvent(new CustomEvent("hass-notification",{detail:{message:e},bubbles:!0,composed:!0}))}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=ji(this.hass,this._config.climate?{...this._config,hide_unbound:!1}:this._config,Ni(Vi,this._config.faceplate),this._config.device?function(e,t){const i=e.entities??{};let r=t;const o=e.devices??{};if(!o[t]){const e=t.trim().toLowerCase(),i=Object.entries(o).find(([i,r])=>(r.name_by_user??"").trim().toLowerCase()===e||(r.name??"").trim().toLowerCase()===e||i===t);i&&(r=i[0])}const a=Object.values(i).filter(e=>e.device_id===r).map(e=>e.entity_id).filter(t=>void 0!==e.states[t]).sort();return a.length?a:Object.keys(e.states).filter(e=>e.includes(t)).sort()}(this.hass,this._config.device):[]),o=this._config.climate?i.length:i.filter(e=>t[e]).length,a=0===o&&!1!==this._config.hide_unbound,l=Fi(this.hass,this._config);return W`
       <ha-card>

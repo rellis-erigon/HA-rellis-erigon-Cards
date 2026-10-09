@@ -82,8 +82,43 @@ function renderRegion(ctx: RenderContext, region: Region): SVGTemplateResult {
       return faderRegion(ctx, region, reading);
     case "button":
       return buttonRegion(ctx, region);
+    case "plate":
+      return plateRegion(region);
   }
 }
+
+function plateRegion(region: Region): SVGTemplateResult {
+  // Flat chrome: the panel's borders, fills and the boxes where artwork
+  // sat. It shows no reading and takes no action, so it is drawn and
+  // forgotten — but without it a generated panel is text floating on
+  // nothing, and the layout stops being recognisable.
+  //
+  // Plates must come first in the region list, since regions draw in
+  // order and a plate emitted late paints over the values on top of it.
+  return svg`
+    <rect
+      class="plate"
+      x=${region.x}
+      y=${region.y}
+      width=${region.w ?? 0}
+      height=${region.h ?? 0}
+      rx=${region.radius ?? 0}
+      fill=${region.fill ?? "none"}
+      stroke=${region.border ?? "none"}
+    />
+    ${region.text
+      ? svg`<text
+          class="plate-label"
+          x=${region.x + (region.w ?? 0) / 2}
+          y=${region.y + (region.size ?? 16)}
+          font-size=${region.size ?? 16}
+          text-anchor="middle"
+          fill=${region.color ?? "currentColor"}
+        >${region.text}</text>`
+      : ""}
+  `;
+}
+
 
 function textRegion(region: Region, reading: Reading): SVGTemplateResult {
   // A region with literal text and no role is chrome — a title band, a
@@ -110,6 +145,7 @@ function textRegion(region: Region, reading: Reading): SVGTemplateResult {
       y=${region.y + (region.size ?? 22)}
       font-size=${region.size ?? 22}
       text-anchor=${anchor}
+      style=${region.color ? `fill:${region.color}` : ""}
     >${value}</text>
   `;
 }
@@ -352,13 +388,30 @@ function needleRegion(region: Region, reading: Reading): SVGTemplateResult {
 function buttonRegion(ctx: RenderContext, region: Region): SVGTemplateResult {
   const width = region.w ?? 44;
   const height = region.h ?? 26;
+  // A generated faceplate carries the panel's own type size and colour.
+  // These go in a style attribute rather than as SVG attributes because
+  // the card's stylesheet sets a font-size for button text, and a
+  // stylesheet rule beats a presentation attribute.
+  const ink = [
+    region.size ? `font-size:${region.size}px` : "",
+    region.color ? `fill:${region.color}` : "",
+  ]
+    .filter(Boolean)
+    .join(";");
   return svg`
     <g class="button" @click=${() => ctx.onAction(region)} role="button" tabindex="0">
-      <rect x=${region.x} y=${region.y} width=${width} height=${height} rx="4" />
+      <rect
+        x=${region.x}
+        y=${region.y}
+        width=${width}
+        height=${height}
+        rx=${region.radius ?? 4}
+      />
       <text
         x=${region.x + width / 2}
-        y=${region.y + height / 2 + 4}
+        y=${region.y + height / 2 + (region.size ?? 12) / 3}
         text-anchor="middle"
+        style=${ink}
       >${region.text ?? ""}</text>
     </g>
   `;

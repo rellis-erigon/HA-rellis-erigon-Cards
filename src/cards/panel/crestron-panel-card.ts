@@ -1,15 +1,27 @@
 /**
- * audio-zone-card — a rack of audio zone strips, and the controls to work
- * them.
+ * crestron-panel-card — a Crestron touch panel, imported and rendered as a
+ * card.
  *
- * Built for the Q-SYS bridge, which exposes each zone as exactly two
- * entities: a `number` carrying gain in dB and a `switch` carrying mute.
- * Roles follow that shape — `zone1_volume`, `zone1_mute` — so a Core with
- * sixteen zones needs one card, not sixteen.
+ * The faceplate is not written by hand. The Crestron add-on reads the
+ * panel's own compiled project — the same file that is loaded onto the
+ * hardware — and generates a faceplate from it: every control at the
+ * position and size the panel draws it, with the words it shows and the
+ * join it binds. Roles are named after those joins (`button_101`,
+ * `level_211`, `text_1`), so the card an operator ends up with is the
+ * screen they already know rather than a fresh interpretation of it.
  *
- * Unlike the meter and pump cards this one writes. Mute toggles the switch;
- * the trim keys step the number entity, clamped to the range the entity
- * itself declares so the card can never drive a fader past its staging.
+ * Two consequences worth knowing.
+ *
+ * **Nothing is drawn as a control unless the project says what it does.**
+ * A control bound only to a reserved join flips a page on the panel itself
+ * and can never be driven from Home Assistant; it is rendered as inert
+ * chrome instead. The layout stays right and no button lies about what it
+ * will do.
+ *
+ * **A panel's states are faceplate pages.** The main screen of a real
+ * panel is a frame of subpage references, several of which overlap and are
+ * shown one at a time by a visibility join. Each becomes a page here, and
+ * the references with no visibility join are always-on chrome.
  */
 
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
@@ -27,11 +39,18 @@ class CrestronPanelCard extends LitElement {
     hass: { attribute: false },
     _config: { state: true },
     _error: { state: true },
+    _page: { state: true },
   };
 
   declare hass?: HomeAssistant;
   declare private _config?: FaceplateCardConfig;
   declare private _error?: string;
+  /**
+   * Which state of the panel is showing. An imported panel's main screen
+   * is several overlapping subpages shown one at a time, so with nothing
+   * selected the card drew the top and bottom bars and an empty middle.
+   */
+  declare private _page?: string;
 
   setConfig(config: FaceplateCardConfig): void {
     if (!config) throw new Error("Invalid configuration");
@@ -60,8 +79,21 @@ class CrestronPanelCard extends LitElement {
     }, 4000);
   }
 
+  /** The state to draw: whatever is selected, else the panel's first. */
+  private _currentPage(pages: string[] | undefined): string {
+    if (!pages?.length) return "";
+    return this._page && pages.includes(this._page) ? this._page : pages[0];
+  }
+
   private async _onAction(region: Region, value?: number): Promise<void> {
     if (!this.hass || !this._config) return;
+    // A page button switches the card's own state rather than asking the
+    // processor to, because the panel's page flips run on joins the
+    // control program never sees.
+    if (region.action === "page" && region.target) {
+      this._page = region.target;
+      return;
+    }
     await runControlAction(
       this.hass,
       this._config.entities,
@@ -101,9 +133,26 @@ class CrestronPanelCard extends LitElement {
     // controls included, so it is still drawn.
     const blank = bound === 0 && this._config.hide_unbound !== false;
 
+    const pages = faceplate.pages;
+    const page = this._currentPage(pages);
+
     return html`
       <ha-card>
         ${name ? html`<div class="title">${name}</div>` : nothing}
+        ${pages && pages.length > 1 && !blank
+          ? html`<div class="pages">
+              ${pages.map(
+                (candidate) => html`<button
+                  class=${candidate === page ? "on" : ""}
+                  @click=${() => {
+                    this._page = candidate;
+                  }}
+                >
+                  ${candidate}
+                </button>`,
+              )}
+            </div>`
+          : nothing}
         ${blank
           ? nothing
           : html`<div class="frame">
@@ -111,7 +160,7 @@ class CrestronPanelCard extends LitElement {
             hass: this.hass,
             faceplate,
             bindings,
-            page: "",
+            page,
             onAction: (region, value) => void this._onAction(region, value),
           })}
         </div>`}
@@ -216,6 +265,18 @@ class CrestronPanelCard extends LitElement {
     .display-negative .lcd-value.chrome {
       fill: #cdd3dc;
     }
+    /* Panel chrome from an imported project: borders, fills and the
+       boxes where artwork sat. Fill and stroke arrive as attributes on
+       the element, carried over from the panel's own colours, so nothing
+       here may set either — a stylesheet rule would override them. */
+    .plate {
+      stroke-width: 1;
+    }
+    .plate-label {
+      font-family: inherit;
+      letter-spacing: 0.5px;
+      opacity: 0.75;
+    }
     .lamp {
       stroke: #0d1013;
       stroke-width: 1;
@@ -237,6 +298,30 @@ class CrestronPanelCard extends LitElement {
     }
     .button {
       cursor: pointer;
+    }
+    /* The panel's own states. A real panel switches these on a join the
+       control program drives; a card has no such signal, so they are
+       offered as what they are — the screens this panel has. */
+    .pages {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 0 4px 8px;
+    }
+    .pages button {
+      font: inherit;
+      font-size: 11px;
+      letter-spacing: 0.6px;
+      padding: 3px 9px;
+      cursor: pointer;
+      color: var(--secondary-text-color);
+      background: var(--secondary-background-color, rgba(127, 127, 127, 0.14));
+      border: 1px solid transparent;
+      border-radius: 11px;
+    }
+    .pages button.on {
+      color: var(--primary-text-color);
+      border-color: var(--primary-color);
     }
     /* A footnote. It has to be findable, not announced. */
     .hint.muted {
