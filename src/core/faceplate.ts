@@ -235,8 +235,17 @@ function barRegion(
 ): SVGTemplateResult {
   const width = region.w ?? 100;
   const height = region.h ?? 10;
-  const max = region.max ?? 100;
-  const min = region.min ?? 0;
+  let max = region.max ?? 100;
+  let min = region.min ?? 0;
+  if (region.auto_range && reading.entityId) {
+    const attrs = ctx.hass.states[reading.entityId]?.attributes as
+      | { min?: number; max?: number }
+      | undefined;
+    if (typeof attrs?.min === "number" && typeof attrs?.max === "number") {
+      min = attrs.min;
+      max = attrs.max;
+    }
+  }
   const span = max - min || 1;
   const fraction =
     reading.dark || reading.value === undefined

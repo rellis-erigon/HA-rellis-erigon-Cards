@@ -270,5 +270,43 @@ function drawn(svg) {
     root.querySelectorAll(".pages button").length === 3);
 }
 
+
+
+// -- scale --------------------------------------------------------------
+
+{
+  // A generated bar assumes a 16-bit join. Bound to a Q-SYS gain that
+  // states dB, the assumption would peg every normal level near empty.
+  const hass = hassWith({ a211: -5 });
+  hass.states["number.function_1_2_a211"].attributes.min = -30;
+  hass.states["number.function_1_2_a211"].attributes.max = 6;
+  const fp = {
+    ...PANEL_WITH_STATES, pages: undefined, page_companions: undefined,
+    regions: [{ id: "v", kind: "bar", role: "level_211", x: 0, y: 0,
+                w: 100, h: 20, max: 65535, auto_range: true }],
+  };
+  const { svg } = await mount(
+    { panel: fp, device: "Function 1-2", hide_unbound: false }, hass);
+  const fill = Number(svg.querySelector(".bar-fill").getAttribute("width"));
+  // -5 dB across -30..6 is about 69% of travel.
+  check("a bar takes its scale from the entity when told to",
+    fill > 60 && fill < 78, `fill ${fill}`);
+}
+
+{
+  const hass = hassWith({ a211: -5 });
+  const fp = {
+    ...PANEL_WITH_STATES, pages: undefined, page_companions: undefined,
+    regions: [{ id: "v", kind: "bar", role: "level_211", x: 0, y: 0,
+                w: 100, h: 20, min: -80, max: 10 }],
+  };
+  const { svg } = await mount(
+    { panel: fp, device: "Function 1-2", hide_unbound: false }, hass);
+  const fill = Number(svg.querySelector(".bar-fill").getAttribute("width"));
+  // A hand-drawn range is chosen, not assumed, so it stands.
+  check("without the flag the faceplate's own range stands",
+    fill > 78 && fill < 90, `fill ${fill}`);
+}
+
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed ? 1 : 0);

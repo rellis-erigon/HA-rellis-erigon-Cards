@@ -111,6 +111,17 @@ export interface Region {
    */
   max?: number;
   min?: number;
+  /**
+   * Take the scale from the bound entity when it declares one.
+   *
+   * A faceplate generated from a Crestron project only knows that an
+   * analog join is 16-bit, so it guesses 0-65535. Bound to the Q-SYS
+   * control the processor actually passes that join through to, the real
+   * scale is dB over a range the entity states — and the guess would peg
+   * the bar near empty for every normal level. Hand-drawn faceplates
+   * leave this off: their ranges are chosen, not assumed.
+   */
+  auto_range?: boolean;
   /** ring only: stroke width, and the radius measured from x,y as centre. */
   r?: number;
   stroke?: number;

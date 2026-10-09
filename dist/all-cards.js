@@ -1072,7 +1072,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
     />
     ${e.label?W`<text class="lamp-label" x=${e.x+r} y=${e.y+2*r+12}
               text-anchor="middle">${e.label}</text>`:""}
-  `}(t,i);case"bar":return function(e,t,i){const r=t.w??100,o=t.h??10,a=t.max??100,n=t.min??0,s=a-n||1,l=i.dark||void 0===i.value?0:Math.max(0,Math.min(1,(i.value-n)/s)),d="set_level"===t.action,c=i=>{const r=i.currentTarget.getBoundingClientRect();if(!r.width)return;const o=Math.min(1,Math.max(0,(i.clientX-r.left)/r.width));e.onAction(t,n+o*s)};return W`
+  `}(t,i);case"bar":return function(e,t,i){const r=t.w??100,o=t.h??10;let a=t.max??100,n=t.min??0;if(t.auto_range&&i.entityId){const t=e.hass.states[i.entityId]?.attributes;"number"==typeof t?.min&&"number"==typeof t?.max&&(n=t.min,a=t.max)}const s=a-n||1,l=i.dark||void 0===i.value?0:Math.max(0,Math.min(1,(i.value-n)/s)),d="set_level"===t.action,c=i=>{const r=i.currentTarget.getBoundingClientRect();if(!r.width)return;const o=Math.min(1,Math.max(0,(i.clientX-r.left)/r.width));e.onAction(t,n+o*s)};return W`
     <rect class="bar-track" x=${t.x} y=${t.y} width=${r} height=${o} rx="2" />
     <rect
       class="bar-fill"
