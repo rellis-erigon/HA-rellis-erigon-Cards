@@ -7,7 +7,7 @@
     "build": "rollup -c && node scripts/build-catalogue.mjs",
     "watch": "rollup -c --watch",
     "check": "tsc --noEmit",
-    "test": "node scripts/test-contract.mjs && node scripts/test-cards.mjs dist/bms-meter-card.js bms-meter-card '{}' && node scripts/test-cards.mjs dist/hvac-controller-card.js hvac-controller-card '{}' && node scripts/test-cards.mjs dist/pump-system-card.js pump-system-card '{}' && node scripts/test-cards.mjs dist/audio-zone-card.js audio-zone-card '{}' && node scripts/test-cards.mjs dist/room-controller-card.js room-controller-card '{}' && node scripts/test-cards.mjs dist/plant-equipment-card.js plant-equipment-card '{}' && node scripts/test-cards.mjs dist/fire-panel-card.js fire-panel-card '{}' && node scripts/test-cards.mjs dist/crestron-panel-card.js crestron-panel-card '{}' && node scripts/test-editors.mjs && node scripts/test-hiding.mjs",
+    "test": "node scripts/test-contract.mjs && node scripts/test-cards.mjs dist/bms-meter-card.js bms-meter-card '{}' && node scripts/test-cards.mjs dist/hvac-controller-card.js hvac-controller-card '{}' && node scripts/test-cards.mjs dist/pump-system-card.js pump-system-card '{}' && node scripts/test-cards.mjs dist/audio-zone-card.js audio-zone-card '{}' && node scripts/test-cards.mjs dist/room-controller-card.js room-controller-card '{}' && node scripts/test-cards.mjs dist/plant-equipment-card.js plant-equipment-card '{}' && node scripts/test-cards.mjs dist/fire-panel-card.js fire-panel-card '{}' && node scripts/test-cards.mjs dist/crestron-panel-card.js crestron-panel-card '{}' && node scripts/test-editors.mjs && node scripts/test-hiding.mjs && node scripts/test-panel-binding.mjs",
     "contract:update": "node scripts/test-contract.mjs --update"
   },
   "keywords": [

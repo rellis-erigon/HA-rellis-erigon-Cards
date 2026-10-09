@@ -1042,7 +1042,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
         font-size: 12px;
         color: var(--secondary-text-color);
       }
-    `,customElements.define(`${e}-editor`,i)}const Ui={energy_total:/metertotal$|_energy_total$|_kwh_total$/,power_total:/3phase_active_power$|_active_power$|_power_total$/,power_l1:/active_power_p1$/,power_l2:/active_power_p2$/,power_l3:/active_power_p3$/,volts_l1:/phase_1_v$|_l1_n$|_voltage_l1$/,volts_l2:/phase_2_v$|_l2_n$|_voltage_l2$/,volts_l3:/phase_3_v$|_l3_n$|_voltage_l3$/,current_l1:/phase_1_a$|_current_l1$/,current_l2:/phase_2_a$|_current_l2$/,current_l3:/phase_3_a$|_current_l3$/,power_factor:/power_factor$/,frequency:/frequency$/,volume_total:/_cubicmetre$|_volume_total$|_water_total$|watermeter_total$/,bypass_total:/_bypass_total$|_bypass_cubicmetre$/,flow_rate:/_flow_rate$|_flowrate$|_l_min$|_l_s$|_m3_h$/,battery:/_battery$|_battery_level$|_batt$/,alarm:/_alarm$|_common_fault$/,reverse_flow:/_reverse_flow$|_reverse$/},Di=new Set(["unavailable","unknown","none",""]),Gi={volts_avg:["volts_l1","volts_l2","volts_l3"],current_avg:["current_l1","current_l2","current_l3"]};function Hi(e,t){const i=e.entities??{};let r=t;const o=e.devices??{};if(!o[t]){const e=t.trim().toLowerCase(),i=Object.entries(o).find(([i,r])=>(r.name_by_user??"").trim().toLowerCase()===e||(r.name??"").trim().toLowerCase()===e||i===t);i&&(r=i[0])}const a=Object.values(i).filter(e=>e.device_id===r).map(e=>e.entity_id).filter(t=>void 0!==e.states[t]).sort();return a.length?a:Object.keys(e.states).filter(e=>e.includes(t)).sort()}function Fi(e,t){if(!t)return{dark:!0,stale:!1};const i=e.states[t];if(!i)return{entityId:t,dark:!0,stale:!1};const r=String(i.state);if(Di.has(r.toLowerCase()))return{entityId:t,state:r,dark:!0,stale:!0};const o=Number(r);return{entityId:t,state:r,value:Number.isFinite(o)?o:void 0,unit:i.attributes.unit_of_measurement,dark:!1,stale:!1}}function Bi(e,t,i){const r=e.states[t];if(!r)return{entityId:t,dark:!0,stale:!1};if(Di.has(String(r.state).toLowerCase()))return{entityId:t,state:r.state,dark:!0,stale:!0};const o=r.attributes,a=(e,i)=>{if(null==e)return{entityId:t,dark:!0,stale:!1};const r=Number(e);return{entityId:t,state:String(e),value:Number.isFinite(r)?r:void 0,unit:i,dark:!1,stale:!1}};switch(i){case"hvac_mode":return a(r.state);case"hvac_action":return a(o.hvac_action??r.state);case"setpoint":return a(o.temperature,"°C");case"room_temp":return a(o.current_temperature,"°C");case"fan_speed":return a(o.fan_mode);case"swing":return a(o.swing_mode);case"power":return a("off"===r.state?"off":"on");case"humidity":return a(o.current_humidity,"%");default:return{entityId:t,dark:!0,stale:!1}}}async function Wi(e,t,i,r,o=1,a){const n=i.target?t?.[i.target]:void 0;if(!n)return void r(`Nothing is bound to ${i.target??"this control"}.`);const s=e.states[n];if(!s)return void r(`${n} does not exist.`);if("source_cycle"===i.action){const t=n.split(".")[0];return"select"!==t&&"input_select"!==t?void r(`${n} is a ${t}; it has no source list to step.`):void await e.callService(t,"select_next",{entity_id:n,cycle:!0})}if("press"===i.action){const t=n.split(".")[0];return void("button"===t||"input_button"===t?await e.callService(t,"press",{entity_id:n}):"switch"===t||"input_boolean"===t?await e.callService("homeassistant","toggle",{entity_id:n}):r(`${n} is a ${t}; it cannot be pressed.`))}if("mute_toggle"===i.action||"power_toggle"===i.action){const t=n.split(".")[0];return"sensor"===t||"binary_sensor"===t?void r(`${n} is read-only — it reports state but cannot be set.`):void await e.callService("homeassistant","toggle",{entity_id:n})}const l=Number(s.state);if(!Number.isFinite(l))return void r(`${n} has no numeric level to change.`);const d=Number(s.attributes.min??-1/0),c=Number(s.attributes.max??1/0);let h;if("set_level"===i.action){if(void 0===a||!Number.isFinite(a))return;h=Math.min(c,Math.max(d,a));const e=Number(s.attributes.step);Number.isFinite(e)&&e>0&&(h=Math.round(h/e)*e),h=Math.round(100*h)/100}else{const e=Number(o)||1,t="level_up"===i.action?e:-e;if(h=Math.min(c,Math.max(d,l+t)),h===l)return void r(`${n} is already at its ${t>0?"maximum":"minimum"}.`)}if(h===l)return;const p=n.split(".")[0];"number"===p||"input_number"===p?await e.callService(p,"set_value",{entity_id:n,value:h}):r(`${n} is a ${p}; its level cannot be set from here.`)}function ji(e,t){if(!t)return;const i=(t.title??t.name??"").trim();return i||(e&&t.device?function(e,t){const i=e.devices??{},r=i[t]??Object.values(i).find(e=>{const i=t.trim().toLowerCase();return(e.name_by_user??"").trim().toLowerCase()===i||(e.name??"").trim().toLowerCase()===i});return(r?.name_by_user||r?.name)??void 0}(e,t.device):void 0)}const qi=new Set(["mute_toggle","power_toggle","level_up","level_down","set_level","source_cycle"]);function Vi(e,t,i){return e.group?i(e.group):e.role?t(e.role):!(e.target&&e.action&&qi.has(e.action))||t(e.target)}function Ki(e,t,i,r,o=e=>e){const a=t.options??{},n=Pi(i,a,{bound:()=>!0,filtering:!1}),s=o([...new Set(n.regions.map(e=>e.role))].filter(Boolean)),l=function(e,t,i={},r=[]){const o={};for(const a of t){if(i[a]){o[a]=i[a];continue}const t=r.length?r:Object.keys(e.states),n=Ui[a];if(!n)continue;const s=t.find(e=>n.test(e));s&&(o[a]=s)}return o}(e,s,t.entities??{},r),d=e=>{if(l[e])return!0;const t=Gi[e];return Boolean(t?.length&&t.every(e=>l[e]))};if(!1===t.hide_unbound)return{faceplate:n,bindings:l,roles:s,hidden:0};const c=Pi(i,a,{bound:d,filtering:!0}),h=new Set;for(const e of c.regions)e.group&&e.role&&d(e.role)&&h.add(e.group);const p=e=>h.has(e),f=c.regions.filter(e=>Vi(e,d,p)),u=new Set;let x=0;for(const e of c.regions)Vi(e,d,p)||(e.group?u.add(e.group):x+=1);const m=u.size+x;return{faceplate:{...c,regions:f},bindings:l,roles:s,hidden:m}}function Zi(e){return 1===e?"1 control hidden — nothing bound to it.":`${e} controls hidden — nothing bound to them.`}function Yi(e){const[t,i]=e.faceplate.size,r=(o=e.faceplate,a=e.page,o.regions.filter(e=>!e.page||e.page===a));var o,a;return B`
+    `,customElements.define(`${e}-editor`,i)}const Ui={energy_total:/metertotal$|_energy_total$|_kwh_total$/,power_total:/3phase_active_power$|_active_power$|_power_total$/,power_l1:/active_power_p1$/,power_l2:/active_power_p2$/,power_l3:/active_power_p3$/,volts_l1:/phase_1_v$|_l1_n$|_voltage_l1$/,volts_l2:/phase_2_v$|_l2_n$|_voltage_l2$/,volts_l3:/phase_3_v$|_l3_n$|_voltage_l3$/,current_l1:/phase_1_a$|_current_l1$/,current_l2:/phase_2_a$|_current_l2$/,current_l3:/phase_3_a$|_current_l3$/,power_factor:/power_factor$/,frequency:/frequency$/,volume_total:/_cubicmetre$|_volume_total$|_water_total$|watermeter_total$/,bypass_total:/_bypass_total$|_bypass_cubicmetre$/,flow_rate:/_flow_rate$|_flowrate$|_l_min$|_l_s$|_m3_h$/,battery:/_battery$|_battery_level$|_batt$/,alarm:/_alarm$|_common_fault$/,reverse_flow:/_reverse_flow$|_reverse$/},Di=new Set(["unavailable","unknown","none",""]),Gi={volts_avg:["volts_l1","volts_l2","volts_l3"],current_avg:["current_l1","current_l2","current_l3"]};function Hi(e,t){const i=e.entities??{};let r=t;const o=e.devices??{};if(!o[t]){const e=t.trim().toLowerCase(),i=Object.entries(o).find(([i,r])=>(r.name_by_user??"").trim().toLowerCase()===e||(r.name??"").trim().toLowerCase()===e||i===t);i&&(r=i[0])}const a=Object.values(i).filter(e=>e.device_id===r).map(e=>e.entity_id).filter(t=>void 0!==e.states[t]).sort();return a.length?a:Object.keys(e.states).filter(e=>e.includes(t)).sort()}const Fi={button:"d",lamp:"d",level:"a",fader:"a",text:"s"};function Bi(e){const t=e.lastIndexOf("_");if(t<=0)return;const i=Fi[e.slice(0,t)],r=e.slice(t+1);return!i||!/^\d+$/.test(r)||Number(r)<1?void 0:`${i}${r}`}function Wi(e,t){if(!t)return{dark:!0,stale:!1};const i=e.states[t];if(!i)return{entityId:t,dark:!0,stale:!1};const r=String(i.state);if(Di.has(r.toLowerCase()))return{entityId:t,state:r,dark:!0,stale:!0};const o=Number(r);return{entityId:t,state:r,value:Number.isFinite(o)?o:void 0,unit:i.attributes.unit_of_measurement,dark:!1,stale:!1}}function ji(e,t,i){const r=e.states[t];if(!r)return{entityId:t,dark:!0,stale:!1};if(Di.has(String(r.state).toLowerCase()))return{entityId:t,state:r.state,dark:!0,stale:!0};const o=r.attributes,a=(e,i)=>{if(null==e)return{entityId:t,dark:!0,stale:!1};const r=Number(e);return{entityId:t,state:String(e),value:Number.isFinite(r)?r:void 0,unit:i,dark:!1,stale:!1}};switch(i){case"hvac_mode":return a(r.state);case"hvac_action":return a(o.hvac_action??r.state);case"setpoint":return a(o.temperature,"°C");case"room_temp":return a(o.current_temperature,"°C");case"fan_speed":return a(o.fan_mode);case"swing":return a(o.swing_mode);case"power":return a("off"===r.state?"off":"on");case"humidity":return a(o.current_humidity,"%");default:return{entityId:t,dark:!0,stale:!1}}}async function qi(e,t,i,r,o=1,a){const n=i.target?t?.[i.target]:void 0;if(!n)return void r(`Nothing is bound to ${i.target??"this control"}.`);const s=e.states[n];if(!s)return void r(`${n} does not exist.`);if("source_cycle"===i.action){const t=n.split(".")[0];return"select"!==t&&"input_select"!==t?void r(`${n} is a ${t}; it has no source list to step.`):void await e.callService(t,"select_next",{entity_id:n,cycle:!0})}if("press"===i.action){const t=n.split(".")[0];return void("button"===t||"input_button"===t?await e.callService(t,"press",{entity_id:n}):"switch"===t||"input_boolean"===t?await e.callService("homeassistant","toggle",{entity_id:n}):r(`${n} is a ${t}; it cannot be pressed.`))}if("mute_toggle"===i.action||"power_toggle"===i.action){const t=n.split(".")[0];return"sensor"===t||"binary_sensor"===t?void r(`${n} is read-only — it reports state but cannot be set.`):void await e.callService("homeassistant","toggle",{entity_id:n})}const l=Number(s.state);if(!Number.isFinite(l))return void r(`${n} has no numeric level to change.`);const d=Number(s.attributes.min??-1/0),c=Number(s.attributes.max??1/0);let h;if("set_level"===i.action){if(void 0===a||!Number.isFinite(a))return;h=Math.min(c,Math.max(d,a));const e=Number(s.attributes.step);Number.isFinite(e)&&e>0&&(h=Math.round(h/e)*e),h=Math.round(100*h)/100}else{const e=Number(o)||1,t="level_up"===i.action?e:-e;if(h=Math.min(c,Math.max(d,l+t)),h===l)return void r(`${n} is already at its ${t>0?"maximum":"minimum"}.`)}if(h===l)return;const p=n.split(".")[0];"number"===p||"input_number"===p?await e.callService(p,"set_value",{entity_id:n,value:h}):r(`${n} is a ${p}; its level cannot be set from here.`)}function Vi(e,t){if(!t)return;const i=(t.title??t.name??"").trim();return i||(e&&t.device?function(e,t){const i=e.devices??{},r=i[t]??Object.values(i).find(e=>{const i=t.trim().toLowerCase();return(e.name_by_user??"").trim().toLowerCase()===i||(e.name??"").trim().toLowerCase()===i});return(r?.name_by_user||r?.name)??void 0}(e,t.device):void 0)}const Ki=new Set(["mute_toggle","power_toggle","level_up","level_down","set_level","source_cycle"]);function Zi(e,t,i){return e.group?i(e.group):e.role?t(e.role):!(e.target&&e.action&&Ki.has(e.action))||t(e.target)}function Yi(e,t,i,r,o=e=>e){const a=t.options??{},n=Pi(i,a,{bound:()=>!0,filtering:!1}),s=o([...new Set(n.regions.map(e=>e.role))].filter(Boolean)),l=function(e,t,i={},r=[]){const o={};for(const a of t){if(i[a]){o[a]=i[a];continue}const t=r.length?r:Object.keys(e.states),n=Ui[a];if(n){const e=t.find(e=>n.test(e));if(e){o[a]=e;continue}}const s=Bi(a);if(!s)continue;const l=t.find(t=>e.states[t]?.attributes?.join===s);l&&(o[a]=l)}return o}(e,s,t.entities??{},r),d=e=>{if(l[e])return!0;const t=Gi[e];return Boolean(t?.length&&t.every(e=>l[e]))};if(!1===t.hide_unbound)return{faceplate:n,bindings:l,roles:s,hidden:0};const c=Pi(i,a,{bound:d,filtering:!0}),h=new Set;for(const e of c.regions)e.group&&e.role&&d(e.role)&&h.add(e.group);const p=e=>h.has(e),f=c.regions.filter(e=>Zi(e,d,p)),u=new Set;let x=0;for(const e of c.regions)Zi(e,d,p)||(e.group?u.add(e.group):x+=1);const m=u.size+x;return{faceplate:{...c,regions:f},bindings:l,roles:s,hidden:m}}function Qi(e){return 1===e?"1 control hidden — nothing bound to it.":`${e} controls hidden — nothing bound to them.`}function Xi(e){const[t,i]=e.faceplate.size,r=(o=e.faceplate,a=e.page,o.regions.filter(e=>!e.page||e.page===a));var o,a;return B`
     <svg
       class="faceplate display-${e.faceplate.display??"positive"}"
       viewBox="0 0 ${t} ${i}"
@@ -1052,7 +1052,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       style=${`--faceplate-width:${t}px`}
     >
       ${function(e){if("image"===e.render&&e.art){const[t,i]=e.size;return W`<image href=${e.art} x="0" y="0" width=${t} height=${i} />`}return W`${e.artNode??""}`}(e.faceplate)}
-      ${r.map(t=>function(e,t){const i=e.climate&&!e.bindings[t.role]?Bi(e.hass,e.climate,t.role):function(e,t,i){if(t[i])return Fi(e,t[i]);if("clock"===i){const e=new Date;return{state:`${String(e.getHours()).padStart(2,"0")}:${String(e.getMinutes()).padStart(2,"0")}`,dark:!1,stale:!1}}const r=Gi[i];if(!r)return{dark:!0,stale:!1};const o=r.map(i=>Fi(e,t[i]));if(o.some(e=>e.dark||void 0===e.value))return{dark:!0,stale:o.some(e=>e.stale)};const a=o.reduce((e,t)=>e+(t.value??0),0);return{value:a/o.length,state:String(a/o.length),unit:o[0].unit,dark:!1,stale:!1}}(e.hass,e.bindings,t.role);switch(t.kind){case"text":return function(e,t){const i=e.role?"unit"===e.show?(t.unit??e.text??"").toUpperCase():t.dark&&void 0!==e.placeholder?e.placeholder:function(e,t=1,i){if(e.dark)return"--";if(void 0===e.value)return e.state??"--";const r=e.value.toFixed(t),o=i??e.unit??"";return o?`${r} ${o}`:r}(t,e.decimals??1,e.unit):e.text??"";if(!e.role&&!e.text)return W``;const r=e.align??"start",o=e.x+("end"===r?e.w??0:"middle"===r?(e.w??0)/2:0);return W`
+      ${r.map(t=>function(e,t){const i=e.climate&&!e.bindings[t.role]?ji(e.hass,e.climate,t.role):function(e,t,i){if(t[i])return Wi(e,t[i]);if("clock"===i){const e=new Date;return{state:`${String(e.getHours()).padStart(2,"0")}:${String(e.getMinutes()).padStart(2,"0")}`,dark:!1,stale:!1}}const r=Gi[i];if(!r)return{dark:!0,stale:!1};const o=r.map(i=>Wi(e,t[i]));if(o.some(e=>e.dark||void 0===e.value))return{dark:!0,stale:o.some(e=>e.stale)};const a=o.reduce((e,t)=>e+(t.value??0),0);return{value:a/o.length,state:String(a/o.length),unit:o[0].unit,dark:!1,stale:!1}}(e.hass,e.bindings,t.role);switch(t.kind){case"text":return function(e,t){const i=e.role?"unit"===e.show?(t.unit??e.text??"").toUpperCase():t.dark&&void 0!==e.placeholder?e.placeholder:function(e,t=1,i){if(e.dark)return"--";if(void 0===e.value)return e.state??"--";const r=e.value.toFixed(t),o=i??e.unit??"";return o?`${r} ${o}`:r}(t,e.decimals??1,e.unit):e.text??"";if(!e.role&&!e.text)return W``;const r=e.align??"start",o=e.x+("end"===r?e.w??0:"middle"===r?(e.w??0)/2:0);return W`
     ${e.label?W`<text class="lcd-label" x=${e.x} y=${e.y-10}>${e.label}</text>`:""}
     <text
       class="lcd-value ${e.role?"":"chrome"} ${e.role&&t.dark?"dark":""} ${t.stale?"stale":""}"
@@ -1190,22 +1190,22 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
         >${e.text}</text>`:""}
   `}(t)}}(e,t))}
     </svg>
-  `}const Qi="bms-meter-card";class Xi extends le{constructor(){super(),this._page=""}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e;const t=Ni(Qi,e.faceplate);this._page=e.page??t.pages?.[0]??""}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${Qi}-editor`)}static getStubConfig(){return{type:`custom:${Qi}`,faceplate:"schneider-pm2200"}}_onAction(e){const t=Ni(Qi,this._config?.faceplate).pages??[];if(!t.length)return;if("page"===e.action&&e.target)return void(this._page=e.target);const i=t.indexOf(this._page),r="prev_page"===e.action?-1:1;this._page=t[(i+r+t.length)%t.length]}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Ki(this.hass,this._config,Ni(Qi,this._config.faceplate),this._config.device?Hi(this.hass,this._config.device):[],e=>[...new Set(e.flatMap(e=>Gi[e]??[e]))]),o=i.filter(e=>!t[e]),a=i.length-o.length,n=0===a&&!1!==this._config.hide_unbound,s=ji(this.hass,this._config);return B`
+  `}const Ji="bms-meter-card";class er extends le{constructor(){super(),this._page=""}setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e;const t=Ni(Ji,e.faceplate);this._page=e.page??t.pages?.[0]??""}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${Ji}-editor`)}static getStubConfig(){return{type:`custom:${Ji}`,faceplate:"schneider-pm2200"}}_onAction(e){const t=Ni(Ji,this._config?.faceplate).pages??[];if(!t.length)return;if("page"===e.action&&e.target)return void(this._page=e.target);const i=t.indexOf(this._page),r="prev_page"===e.action?-1:1;this._page=t[(i+r+t.length)%t.length]}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Yi(this.hass,this._config,Ni(Ji,this._config.faceplate),this._config.device?Hi(this.hass,this._config.device):[],e=>[...new Set(e.flatMap(e=>Gi[e]??[e]))]),o=i.filter(e=>!t[e]),a=i.length-o.length,n=0===a&&!1!==this._config.hide_unbound,s=Vi(this.hass,this._config);return B`
       <ha-card>
         ${s?B`<div class="title">${s}</div>`:q}
-        ${r&&a>0?B`<div class="hint muted">${Zi(r)}</div>`:q}
+        ${r&&a>0?B`<div class="hint muted">${Qi(r)}</div>`:q}
         ${n?B`<div class="hint">
               Nothing bound. Set a device, or map roles such as
               <code>volts_l1</code> and <code>energy_total</code>.
             </div>`:B`<div class="frame">
-          ${Yi({hass:this.hass,faceplate:e,bindings:t,page:this._page,onAction:e=>this._onAction(e)})}
+          ${Xi({hass:this.hass,faceplate:e,bindings:t,page:this._page,onAction:e=>this._onAction(e)})}
         </div>`}
         ${o.length===i.length?B`<div class="hint">
               No entities bound. Set them in the card editor, or point the card
               at a device.
             </div>`:q}
       </ha-card>
-    `}}Xi.properties={hass:{attribute:!1},_config:{state:!0},_page:{state:!0}},Xi.styles=a`
+    `}}er.properties={hass:{attribute:!1},_config:{state:!0},_page:{state:!0}},er.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -1419,19 +1419,19 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(Qi,Xi),Ii(Qi,{expandRoles:e=>[...new Set(e.flatMap(e=>Gi[e]??[e]))]}),window.customCards??=[],window.customCards.push({type:Qi,name:"BMS Meter Card",description:"A power meter that looks like a power meter.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-Cards"});const Ji="hvac-controller-card",er=["off","cool","heat","dry","fan_only","auto"];class tr extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${Ji}-editor`)}static getStubConfig(){return{type:`custom:${Ji}`,faceplate:"daikin-brc1e63"}}_setpoint(){if(!this.hass||!this._config)return;if(this._config.climate)return Bi(this.hass,this._config.climate,"setpoint").value;const e=this._config.entities?.setpoint;return e?Number(this.hass.states[e]?.state):void 0}async _onAction(e){if(!this.hass||!this._config)return;const t=this._config.climate;if(!t)return void this._notify("This controller is read-only — no climate entity is set.");const i=this._setpoint();switch(e.action){case"temp_up":case"temp_down":{if(void 0===i)return;const r="temp_up"===e.action?.5:-.5;return void await this.hass.callService("climate","set_temperature",{entity_id:t,temperature:Math.round(2*(i+r))/2})}case"power_toggle":{const e="off"!==this.hass.states[t]?.state;return void await this.hass.callService("climate",e?"turn_off":"turn_on",{entity_id:t})}case"fan_cycle":{const e=this.hass.states[t]?.attributes.fan_modes??[];if(!e.length)return;const i=this.hass.states[t]?.attributes.fan_mode,r=e[(e.indexOf(i)+1)%e.length];return void await this.hass.callService("climate","set_fan_mode",{entity_id:t,fan_mode:r})}case"mode_cycle":{const e=this.hass.states[t]?.attributes.hvac_modes??er,i=this.hass.states[t]?.state??e[0],r=e[(e.indexOf(i)+1)%e.length];return void await this.hass.callService("climate","set_hvac_mode",{entity_id:t,hvac_mode:r})}default:return}}_notify(e){this.dispatchEvent(new CustomEvent("hass-notification",{detail:{message:e},bubbles:!0,composed:!0}))}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Ki(this.hass,this._config.climate?{...this._config,hide_unbound:!1}:this._config,Ni(Ji,this._config.faceplate),this._config.device?Hi(this.hass,this._config.device):[]),o=this._config.climate?i.length:i.filter(e=>t[e]).length,a=0===o&&!1!==this._config.hide_unbound,n=ji(this.hass,this._config);return B`
+  `,customElements.define(Ji,er),Ii(Ji,{expandRoles:e=>[...new Set(e.flatMap(e=>Gi[e]??[e]))]}),window.customCards??=[],window.customCards.push({type:Ji,name:"BMS Meter Card",description:"A power meter that looks like a power meter.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-Cards"});const tr="hvac-controller-card",ir=["off","cool","heat","dry","fan_only","auto"];class rr extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${tr}-editor`)}static getStubConfig(){return{type:`custom:${tr}`,faceplate:"daikin-brc1e63"}}_setpoint(){if(!this.hass||!this._config)return;if(this._config.climate)return ji(this.hass,this._config.climate,"setpoint").value;const e=this._config.entities?.setpoint;return e?Number(this.hass.states[e]?.state):void 0}async _onAction(e){if(!this.hass||!this._config)return;const t=this._config.climate;if(!t)return void this._notify("This controller is read-only — no climate entity is set.");const i=this._setpoint();switch(e.action){case"temp_up":case"temp_down":{if(void 0===i)return;const r="temp_up"===e.action?.5:-.5;return void await this.hass.callService("climate","set_temperature",{entity_id:t,temperature:Math.round(2*(i+r))/2})}case"power_toggle":{const e="off"!==this.hass.states[t]?.state;return void await this.hass.callService("climate",e?"turn_off":"turn_on",{entity_id:t})}case"fan_cycle":{const e=this.hass.states[t]?.attributes.fan_modes??[];if(!e.length)return;const i=this.hass.states[t]?.attributes.fan_mode,r=e[(e.indexOf(i)+1)%e.length];return void await this.hass.callService("climate","set_fan_mode",{entity_id:t,fan_mode:r})}case"mode_cycle":{const e=this.hass.states[t]?.attributes.hvac_modes??ir,i=this.hass.states[t]?.state??e[0],r=e[(e.indexOf(i)+1)%e.length];return void await this.hass.callService("climate","set_hvac_mode",{entity_id:t,hvac_mode:r})}default:return}}_notify(e){this.dispatchEvent(new CustomEvent("hass-notification",{detail:{message:e},bubbles:!0,composed:!0}))}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Yi(this.hass,this._config.climate?{...this._config,hide_unbound:!1}:this._config,Ni(tr,this._config.faceplate),this._config.device?Hi(this.hass,this._config.device):[]),o=this._config.climate?i.length:i.filter(e=>t[e]).length,a=0===o&&!1!==this._config.hide_unbound,n=Vi(this.hass,this._config);return B`
       <ha-card>
         ${n?B`<div class="title">${n}</div>`:q}
         ${this._config.climate||this._config.entities?q:B`<div class="hint">
               Nothing bound yet. Choose a climate entity in the editor, or map
               entities per role in YAML.
             </div>`}
-        ${r&&o>0?B`<div class="hint muted">${Zi(r)}</div>`:q}
+        ${r&&o>0?B`<div class="hint muted">${Qi(r)}</div>`:q}
         ${a?q:B`<div class="frame">
-          ${Yi({hass:this.hass,climate:this._config.climate,faceplate:e,bindings:t,page:"",onAction:e=>{this._onAction(e)}})}
+          ${Xi({hass:this.hass,climate:this._config.climate,faceplate:e,bindings:t,page:"",onAction:e=>{this._onAction(e)}})}
         </div>`}
       </ha-card>
-    `}}tr.properties={hass:{attribute:!1},_config:{state:!0}},tr.styles=a`
+    `}}rr.properties={hass:{attribute:!1},_config:{state:!0}},rr.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -1565,20 +1565,20 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(Ji,tr),Ii(Ji),window.customCards??=[],window.customCards.push({type:Ji,name:"HVAC Controller Card",description:"A wall controller that looks and behaves like the real one.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-Cards"});const ir="pump-system-card";class rr extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${ir}-editor`)}static getStubConfig(){return{type:`custom:${ir}`,faceplate:"vertical-pumpset",options:{pumps:3}}}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Ki(this.hass,this._config,Ni(ir,this._config.faceplate),this._config.device?Hi(this.hass,this._config.device):[]),o=e,a=i.filter(e=>t[e]).length,n=0===a&&!1!==this._config.hide_unbound,s=ji(this.hass,this._config);return B`
+  `,customElements.define(tr,rr),Ii(tr),window.customCards??=[],window.customCards.push({type:tr,name:"HVAC Controller Card",description:"A wall controller that looks and behaves like the real one.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-Cards"});const or="pump-system-card";class ar extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${or}-editor`)}static getStubConfig(){return{type:`custom:${or}`,faceplate:"vertical-pumpset",options:{pumps:3}}}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Yi(this.hass,this._config,Ni(or,this._config.faceplate),this._config.device?Hi(this.hass,this._config.device):[]),o=e,a=i.filter(e=>t[e]).length,n=0===a&&!1!==this._config.hide_unbound,s=Vi(this.hass,this._config);return B`
       <ha-card>
         ${s?B`<div class="title">${s}</div>`:q}
         ${n?q:B`<div class="frame">
-          ${Yi({hass:this.hass,faceplate:o,bindings:t,page:"",onAction:()=>{}})}
+          ${Xi({hass:this.hass,faceplate:o,bindings:t,page:"",onAction:()=>{}})}
         </div>`}
-        ${r&&a>0?B`<div class="hint muted">${Zi(r)}</div>`:q}
+        ${r&&a>0?B`<div class="hint muted">${Qi(r)}</div>`:q}
         ${0===a?B`<div class="hint">
               Nothing bound. Map <code>pump1_run</code>,
               <code>system_pressure</code> and the rest in YAML, or point the
               card at a device typed as a pump set.
             </div>`:q}
       </ha-card>
-    `}}rr.properties={hass:{attribute:!1},_config:{state:!0}},rr.styles=a`
+    `}}ar.properties={hass:{attribute:!1},_config:{state:!0}},ar.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -1646,21 +1646,21 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(ir,rr),Ii(ir),window.customCards??=[],window.customCards.push({type:ir,name:"Pump System Card",description:"A booster set from one pump to ten, drawn to suit.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const or="audio-zone-card";class ar extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${or}-editor`)}static getStubConfig(){return{type:`custom:${or}`,faceplate:"qsys-zone-rack",options:{zones:4}}}_notify(e){this._error=e,setTimeout(()=>{this._error=void 0},4e3)}async _onAction(e,t){this.hass&&this._config&&await Wi(this.hass,this._config.entities,e,e=>this._notify(e),Number(this._config.step??1),t)}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Ki(this.hass,this._config,Ni(or,this._config.faceplate),this._config.device?Hi(this.hass,this._config.device):[]),o=function(e,t,i){return t?{...e,regions:e.regions.map(e=>{const r=/^name(\d+)$/.exec(e.id),o=r?t[`${i}${r[1]}`]:void 0;return o?{...e,text:o}:e})}:e}(e,this._config.labels,e.labelPrefix??"zone"),a=i.filter(e=>t[e]).length,n=0===a&&!1!==this._config.hide_unbound,s=ji(this.hass,this._config);return B`
+  `,customElements.define(or,ar),Ii(or),window.customCards??=[],window.customCards.push({type:or,name:"Pump System Card",description:"A booster set from one pump to ten, drawn to suit.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const nr="audio-zone-card";class sr extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${nr}-editor`)}static getStubConfig(){return{type:`custom:${nr}`,faceplate:"qsys-zone-rack",options:{zones:4}}}_notify(e){this._error=e,setTimeout(()=>{this._error=void 0},4e3)}async _onAction(e,t){this.hass&&this._config&&await qi(this.hass,this._config.entities,e,e=>this._notify(e),Number(this._config.step??1),t)}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Yi(this.hass,this._config,Ni(nr,this._config.faceplate),this._config.device?Hi(this.hass,this._config.device):[]),o=function(e,t,i){return t?{...e,regions:e.regions.map(e=>{const r=/^name(\d+)$/.exec(e.id),o=r?t[`${i}${r[1]}`]:void 0;return o?{...e,text:o}:e})}:e}(e,this._config.labels,e.labelPrefix??"zone"),a=i.filter(e=>t[e]).length,n=0===a&&!1!==this._config.hide_unbound,s=Vi(this.hass,this._config);return B`
       <ha-card>
         ${s?B`<div class="title">${s}</div>`:q}
         ${n?q:B`<div class="frame">
-          ${Yi({hass:this.hass,faceplate:o,bindings:t,page:"",onAction:(e,t)=>{this._onAction(e,t)}})}
+          ${Xi({hass:this.hass,faceplate:o,bindings:t,page:"",onAction:(e,t)=>{this._onAction(e,t)}})}
         </div>`}
         ${this._error?B`<div class="hint">${this._error}</div>`:q}
-        ${r&&a>0?B`<div class="hint muted">${Zi(r)}</div>`:q}
+        ${r&&a>0?B`<div class="hint muted">${Qi(r)}</div>`:q}
         ${0===a?B`<div class="hint">
               Nothing bound. Map <code>zone1_volume</code> and
               <code>zone1_mute</code> in YAML, or generate the card from the
               Q-SYS add-on.
             </div>`:q}
       </ha-card>
-    `}}ar.properties={hass:{attribute:!1},_config:{state:!0},_error:{state:!0}},ar.styles=a`
+    `}}sr.properties={hass:{attribute:!1},_config:{state:!0},_error:{state:!0}},sr.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -1781,21 +1781,21 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(or,ar),Ii(or,{numbers:[{key:"step",label:"Trim step (dB)",min:.5,max:12,step:.5}]}),window.customCards??=[],window.customCards.push({type:or,name:"Audio Zone Card",description:"Level, mute and trim for one to sixteen audio zones.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const nr="room-controller-card";class sr extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${nr}-editor`)}static getStubConfig(){return{type:`custom:${nr}`,faceplate:"av-room-controller"}}_notify(e){this._error=e,setTimeout(()=>{this._error=void 0},4e3)}async _onAction(e,t){this.hass&&this._config&&await Wi(this.hass,this._config.entities,e,e=>this._notify(e),Number(this._config.step??1),t)}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Ki(this.hass,this._config,Ni(nr,this._config.faceplate),this._config.device?Hi(this.hass,this._config.device):[]),o=e,a=i.filter(e=>t[e]).length,n=0===a&&!1!==this._config.hide_unbound,s=ji(this.hass,this._config);return B`
+  `,customElements.define(nr,sr),Ii(nr,{numbers:[{key:"step",label:"Trim step (dB)",min:.5,max:12,step:.5}]}),window.customCards??=[],window.customCards.push({type:nr,name:"Audio Zone Card",description:"Level, mute and trim for one to sixteen audio zones.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const lr="room-controller-card";class dr extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${lr}-editor`)}static getStubConfig(){return{type:`custom:${lr}`,faceplate:"av-room-controller"}}_notify(e){this._error=e,setTimeout(()=>{this._error=void 0},4e3)}async _onAction(e,t){this.hass&&this._config&&await qi(this.hass,this._config.entities,e,e=>this._notify(e),Number(this._config.step??1),t)}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Yi(this.hass,this._config,Ni(lr,this._config.faceplate),this._config.device?Hi(this.hass,this._config.device):[]),o=e,a=i.filter(e=>t[e]).length,n=0===a&&!1!==this._config.hide_unbound,s=Vi(this.hass,this._config);return B`
       <ha-card>
         ${s?B`<div class="title">${s}</div>`:q}
         ${n?q:B`<div class="frame">
-          ${Yi({hass:this.hass,faceplate:o,bindings:t,page:"",onAction:(e,t)=>{this._onAction(e,t)}})}
+          ${Xi({hass:this.hass,faceplate:o,bindings:t,page:"",onAction:(e,t)=>{this._onAction(e,t)}})}
         </div>`}
         ${this._error?B`<div class="hint">${this._error}</div>`:q}
-        ${r&&a>0?B`<div class="hint muted">${Zi(r)}</div>`:q}
+        ${r&&a>0?B`<div class="hint muted">${Qi(r)}</div>`:q}
         ${0===a?B`<div class="hint">
               Nothing bound. Map <code>volume</code>, <code>mute</code>,
               <code>source</code> and <code>display_power</code> in YAML, or
               generate the card from the Crestron add-on.
             </div>`:q}
       </ha-card>
-    `}}sr.properties={hass:{attribute:!1},_config:{state:!0},_error:{state:!0}},sr.styles=a`
+    `}}dr.properties={hass:{attribute:!1},_config:{state:!0},_error:{state:!0}},dr.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -1879,19 +1879,19 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(nr,sr),Ii(nr,{numbers:[{key:"step",label:"Trim step",min:.5,max:25,step:.5}]}),window.customCards??=[],window.customCards.push({type:nr,name:"Room Controller Card",description:"One AV room: source, display, volume, mute and status.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const lr="plant-equipment-card";class dr extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${lr}-editor`)}static getStubConfig(){return{type:`custom:${lr}`,faceplate:"supply-fan-top"}}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Ki(this.hass,this._config,Ni(lr,this._config.faceplate),this._config.device?Hi(this.hass,this._config.device):[]),o=e,a=i.filter(e=>t[e]).length,n=0===a&&!1!==this._config.hide_unbound,s=ji(this.hass,this._config);return B`
+  `,customElements.define(lr,dr),Ii(lr,{numbers:[{key:"step",label:"Trim step",min:.5,max:25,step:.5}]}),window.customCards??=[],window.customCards.push({type:lr,name:"Room Controller Card",description:"One AV room: source, display, volume, mute and status.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const cr="plant-equipment-card";class hr extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${cr}-editor`)}static getStubConfig(){return{type:`custom:${cr}`,faceplate:"supply-fan-top"}}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Yi(this.hass,this._config,Ni(cr,this._config.faceplate),this._config.device?Hi(this.hass,this._config.device):[]),o=e,a=i.filter(e=>t[e]).length,n=0===a&&!1!==this._config.hide_unbound,s=Vi(this.hass,this._config);return B`
       <ha-card>
         ${s?B`<div class="title">${s}</div>`:q}
         ${n?q:B`<div class="frame">
-          ${Yi({hass:this.hass,faceplate:o,bindings:t,page:"",onAction:()=>{}})}
+          ${Xi({hass:this.hass,faceplate:o,bindings:t,page:"",onAction:()=>{}})}
         </div>`}
-        ${r&&a>0?B`<div class="hint muted">${Zi(r)}</div>`:q}
+        ${r&&a>0?B`<div class="hint muted">${Qi(r)}</div>`:q}
         ${0===a?B`<div class="hint">
               Nothing bound. Map the roles this faceplate names in YAML,
               or point the card at a device with <code>device:</code>.
             </div>`:q}
       </ha-card>
-    `}}dr.properties={hass:{attribute:!1},_config:{state:!0}},dr.styles=a`
+    `}}hr.properties={hass:{attribute:!1},_config:{state:!0}},hr.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -1959,7 +1959,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(lr,dr),Ii(lr),window.customCards??=[],window.customCards.push({type:lr,name:"Plant Equipment Card",description:"Supply and exhaust fans, hot water units and circulators.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const cr="fire-panel-card",hr=["fire_alarm","fault","isolate","brigade_signal","power"];class pr extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${cr}-editor`)}static getStubConfig(){return{type:`custom:${cr}`,faceplate:"generic-fip",options:{zones:8}}}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Ki(this.hass,this._config,Ni(cr,this._config.faceplate),this._config.device?Hi(this.hass,this._config.device):[]),o=e,a=i.filter(e=>t[e]).length,n=hr.filter(e=>!t[e]),s=0===a&&!1!==this._config.hide_unbound,l=ji(this.hass,this._config);return B`
+  `,customElements.define(cr,hr),Ii(cr),window.customCards??=[],window.customCards.push({type:cr,name:"Plant Equipment Card",description:"Supply and exhaust fans, hot water units and circulators.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const pr="fire-panel-card",fr=["fire_alarm","fault","isolate","brigade_signal","power"];class ur extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 5}static getConfigElement(){return document.createElement(`${pr}-editor`)}static getStubConfig(){return{type:`custom:${pr}`,faceplate:"generic-fip",options:{zones:8}}}render(){if(!this._config||!this.hass)return q;const{faceplate:e,bindings:t,roles:i,hidden:r}=Yi(this.hass,this._config,Ni(pr,this._config.faceplate),this._config.device?Hi(this.hass,this._config.device):[]),o=e,a=i.filter(e=>t[e]).length,n=fr.filter(e=>!t[e]),s=0===a&&!1!==this._config.hide_unbound,l=Vi(this.hass,this._config);return B`
       <ha-card>
         ${l?B`<div class="title">${l}</div>`:q}
         <div class="banner">BMS MONITORING — NOT THE FIRE PANEL</div>
@@ -1968,16 +1968,16 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
               ${n.map(e=>e.replace(/_/g," ").toUpperCase()).join(", ")}
             </div>`:q}
         ${s?q:B`<div class="frame">
-          ${Yi({hass:this.hass,faceplate:o,bindings:t,page:"",onAction:()=>{}})}
+          ${Xi({hass:this.hass,faceplate:o,bindings:t,page:"",onAction:()=>{}})}
         </div>`}
-        ${r&&a>0?B`<div class="hint muted">${Zi(r)}</div>`:q}
+        ${r&&a>0?B`<div class="hint muted">${Qi(r)}</div>`:q}
         ${0===a?B`<div class="hint">
               Nothing bound. Map <code>fire_alarm</code>,
               <code>zone1_alarm</code> and the rest, or point the card at a
               device with <code>device:</code>.
             </div>`:q}
       </ha-card>
-    `}}pr.properties={hass:{attribute:!1},_config:{state:!0}},pr.styles=a`
+    `}}ur.properties={hass:{attribute:!1},_config:{state:!0}},ur.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -2066,13 +2066,13 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(cr,pr),Ii(cr),window.customCards??=[],window.customCards.push({type:cr,name:"Fire Panel Card",description:"Zone and status mimic. Monitoring only — never the panel.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const fr="crestron-panel-card";class ur extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${fr}-editor`)}static getStubConfig(){return{type:`custom:${fr}`,faceplate:""}}_notify(e){this._error=e,setTimeout(()=>{this._error=void 0},4e3)}_currentPage(e){return e?.length?this._page&&e.includes(this._page)?this._page:e[0]:""}async _onAction(e,t){this.hass&&this._config&&("page"===e.action&&e.target?this._page=e.target:await Wi(this.hass,this._config.entities,e,e=>this._notify(e),Number(this._config.step??1),t))}render(){if(!this._config||!this.hass)return q;const e=ji(this.hass,this._config),t=this._config.panel;if(!t)return B`<ha-card>
+  `,customElements.define(pr,ur),Ii(pr),window.customCards??=[],window.customCards.push({type:pr,name:"Fire Panel Card",description:"Zone and status mimic. Monitoring only — never the panel.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});const xr="crestron-panel-card";class mr extends le{setConfig(e){if(!e)throw new Error("Invalid configuration");this._config=e}getCardSize(){return 4}static getConfigElement(){return document.createElement(`${xr}-editor`)}static getStubConfig(){return{type:`custom:${xr}`,faceplate:""}}_notify(e){this._error=e,setTimeout(()=>{this._error=void 0},4e3)}_currentPage(e){return e?.length?this._page&&e.includes(this._page)?this._page:e[0]:""}async _onAction(e,t){this.hass&&this._config&&("page"===e.action&&e.target?this._page=e.target:await qi(this.hass,this._config.entities,e,e=>this._notify(e),Number(this._config.step??1),t))}render(){if(!this._config||!this.hass)return q;const e=Vi(this.hass,this._config),t=this._config.panel;if(!t)return B`<ha-card>
         ${e?B`<div class="title">${e}</div>`:q}
         <div class="hint">
           No panel loaded. Import a .c3p or .vtz in the Crestron add-on
           and build the card from there.
         </div>
-      </ha-card>`;const{faceplate:i,bindings:r,roles:o,hidden:a}=Ki(this.hass,this._config,t,this._config.device?Hi(this.hass,this._config.device):[]),n=i,s=o.filter(e=>r[e]).length,l=0===s&&!1!==this._config.hide_unbound,d=n.pages,c=this._currentPage(d);return B`
+      </ha-card>`;const{faceplate:i,bindings:r,roles:o,hidden:a}=Yi(this.hass,this._config,t,this._config.device?Hi(this.hass,this._config.device):[]),n=i,s=o.filter(e=>r[e]).length,l=0===s&&!1!==this._config.hide_unbound,d=n.pages,c=this._currentPage(d);return B`
       <ha-card>
         ${e?B`<div class="title">${e}</div>`:q}
         ${d&&d.length>1&&!l?B`<div class="pages">
@@ -2084,16 +2084,16 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
                 </button>`)}
             </div>`:q}
         ${l?q:B`<div class="frame">
-          ${Yi({hass:this.hass,faceplate:n,bindings:r,page:c,onAction:(e,t)=>{this._onAction(e,t)}})}
+          ${Xi({hass:this.hass,faceplate:n,bindings:r,page:c,onAction:(e,t)=>{this._onAction(e,t)}})}
         </div>`}
         ${this._error?B`<div class="hint">${this._error}</div>`:q}
-        ${a&&s>0?B`<div class="hint muted">${Zi(a)}</div>`:q}
+        ${a&&s>0?B`<div class="hint muted">${Qi(a)}</div>`:q}
         ${0===s?B`<div class="hint">
               No panel loaded. Import a .c3p or .vtz in the Crestron
               add-on and build the card from there.
             </div>`:q}
       </ha-card>
-    `}}ur.properties={hass:{attribute:!1},_config:{state:!0},_error:{state:!0},_page:{state:!0}},ur.styles=a`
+    `}}mr.properties={hass:{attribute:!1},_config:{state:!0},_error:{state:!0},_page:{state:!0}},mr.styles=a`
     ha-card {
       padding: 12px;
       overflow: hidden;
@@ -2250,4 +2250,4 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       color: var(--secondary-text-color);
       font-size: 13px;
     }
-  `,customElements.define(fr,ur),Ii(fr,{numbers:[{key:"step",label:"Trim step (dB)",min:.5,max:12,step:.5}]}),window.customCards??=[],window.customCards.push({type:fr,name:"Crestron Panel Card",description:"Your own XPanel project, imported and rendered as a card.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});
+  `,customElements.define(xr,mr),Ii(xr,{numbers:[{key:"step",label:"Trim step (dB)",min:.5,max:12,step:.5}]}),window.customCards??=[],window.customCards.push({type:xr,name:"Crestron Panel Card",description:"Your own XPanel project, imported and rendered as a card.",preview:!0,documentationURL:"https://github.com/rellis-erigon/HA-rellis-erigon-Cards"});

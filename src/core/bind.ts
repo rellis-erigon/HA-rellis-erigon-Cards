@@ -142,6 +142,36 @@ export function deviceDisplayName(
   return name ?? undefined;
 }
 
+/**
+ * Which bus a generated role sits on.
+ *
+ * Faceplates generated from a Crestron project name their roles after the
+ * join behind them — `button_101`, `level_211`, `text_1` — because the role
+ * is what the card editor shows whoever is binding entities. The bus has to
+ * be recoverable from the name, so the prefix carries it. This mirrors
+ * ROLE_SIGNAL in the add-on's panel_apply.py; the two have to agree.
+ */
+const ROLE_BUS: Record<string, string> = {
+  button: "d",
+  lamp: "d",
+  level: "a",
+  fader: "a",
+  text: "s",
+};
+
+/** The join key a generated role refers to, or undefined if it names none. */
+export function joinOfRole(role: string): string | undefined {
+  const cut = role.lastIndexOf("_");
+  if (cut <= 0) return undefined;
+  const bus = ROLE_BUS[role.slice(0, cut)];
+  const number = role.slice(cut + 1);
+  // A role ending `_x7` is a control with no join at all — positional and
+  // deliberately unbindable. Join 0 means "none" throughout Crestron's
+  // tooling, never join zero.
+  if (!bus || !/^\d+$/.test(number) || Number(number) < 1) return undefined;
+  return `${bus}${number}`;
+}
+
 /** Build the role → entity id map for a card. */
 export function resolveRoles(
   hass: HomeAssistant,
@@ -163,9 +193,25 @@ export function resolveRoles(
       ? deviceEntities
       : Object.keys(hass.states);
     const pattern = ROLE_PATTERNS[role];
-    if (!pattern) continue;
-    const hit = candidates.find((id) => pattern.test(id));
-    if (hit) map[role] = hit;
+    if (pattern) {
+      const hit = candidates.find((id) => pattern.test(id));
+      if (hit) {
+        map[role] = hit;
+        continue;
+      }
+    }
+    // 3. A role generated from a panel project names the join it came
+    //    from, and the CIP bridge publishes that join on every entity it
+    //    creates. Matching on it is what lets an imported panel bind by
+    //    pointing the card at the processor's device: 29 controls bind at
+    //    once, and a join exposed later is picked up without anybody
+    //    editing the dashboard.
+    const join = joinOfRole(role);
+    if (!join) continue;
+    const found = candidates.find(
+      (id) => hass.states[id]?.attributes?.join === join
+    );
+    if (found) map[role] = found;
   }
   return map;
 }
