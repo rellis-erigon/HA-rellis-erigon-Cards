@@ -59,16 +59,22 @@ function build(values: Record<string, number>) {
       id: `lvl${n}`, role: `tank${n}_level`, kind: "bar",
       x: x + 6, y: TOP + 20, w: TANK_W - 12, h: TANK_H - 26,
       min: 0, max: 100,
+      // A tank fills from the bottom. Drawn as a horizontal bar it read
+      // as a level rising to the right, and with nothing bound it was a
+      // flat dark slab covering the quarter marks.
+      vertical: true,
     });
     regions.push({
       id: `lvlt${n}`, role: `tank${n}_level`, kind: "text",
       x, y: TOP + TANK_H - 16, w: TANK_W, align: "middle",
       decimals: 0, unit: "%", size: 22, placeholder: "--",
     });
-    // At the top of the tank, where the float switch is.
+    // At the top of the tank, where the float switch is. Clear of the
+    // body by the height of its own label, which is drawn beneath it —
+    // at 22px the words landed inside the tank.
     regions.push({
       id: `hi${n}`, role: `tank${n}_high_alarm`, kind: "lamp", label: "HIGH",
-      x: x + TANK_W / 2 - 7, y: TOP - 22, w: 14,
+      x: x + TANK_W / 2 - 7, y: TOP - 42, w: 14,
       on: "#ef4444", off: "#2a1717",
     });
     regions.push({

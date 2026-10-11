@@ -2016,7 +2016,9 @@ function build$4(values) {
         });
         regions.push({
             id: `amp${n}`, role: `pump${n}_current`, kind: "text",
-            x: x - 40, y: TOP$4 + 196, w: 80, align: "middle",
+            // A text region's y is the top of its glyphs, so this has to clear
+            // the bottom edge by a whole font size and not by a baseline.
+            x: x - 40, y: TOP$4 + 182, w: 80, align: "middle",
             unit: "A", decimals: 1, size: 13, placeholder: "",
         });
     }
@@ -2492,7 +2494,8 @@ function build$1(values, ctx) {
         });
         regions.push({
             id: `panlbl${n}`, role: "", kind: "text", text: "PAN", group: `pan${n}`,
-            x: x + 8, y: panTop + 12, w: 40, align: "start", size: 9,
+            // Above the bar, not across its left end.
+            x: x + 8, y: panTop + 2, w: 40, align: "start", size: 9,
         });
         // -- Fader -------------------------------------------------------------
         regions.push({
@@ -2713,16 +2716,22 @@ function build(values) {
             id: `lvl${n}`, role: `tank${n}_level`, kind: "bar",
             x: x + 6, y: TOP + 20, w: TANK_W - 12, h: TANK_H - 26,
             min: 0, max: 100,
+            // A tank fills from the bottom. Drawn as a horizontal bar it read
+            // as a level rising to the right, and with nothing bound it was a
+            // flat dark slab covering the quarter marks.
+            vertical: true,
         });
         regions.push({
             id: `lvlt${n}`, role: `tank${n}_level`, kind: "text",
             x, y: TOP + TANK_H - 16, w: TANK_W, align: "middle",
             decimals: 0, unit: "%", size: 22, placeholder: "--",
         });
-        // At the top of the tank, where the float switch is.
+        // At the top of the tank, where the float switch is. Clear of the
+        // body by the height of its own label, which is drawn beneath it —
+        // at 22px the words landed inside the tank.
         regions.push({
             id: `hi${n}`, role: `tank${n}_high_alarm`, kind: "lamp", label: "HIGH",
-            x: x + TANK_W / 2 - 7, y: TOP - 22, w: 14,
+            x: x + TANK_W / 2 - 7, y: TOP - 42, w: 14,
             on: "#ef4444", off: "#2a1717",
         });
         regions.push({
@@ -2871,7 +2880,7 @@ const regions = [
     { id: "mode_l", role: "", kind: "text", text: "POOL MODE",
         x: 262, y: 262, w: 142, align: "start", size: 9, group: "pool_mode" },
     { id: "fault", role: "fault", kind: "lamp", label: "FAULT",
-        x: 20, y: H - 26, w: 14, on: "#ef4444", off: "#2a1717" },
+        x: 20, y: H - 44, w: 14, on: "#ef4444", off: "#2a1717" },
 ];
 const POOL_PLANT = {
     id: "pool-plant",
@@ -2920,23 +2929,35 @@ function readout(x, y, w, p) {
     // The unit is never painted on: it comes from whatever entity is bound,
     // so a station commissioned in Fahrenheit reads in Fahrenheit instead of
     // having °C drawn over the top of it.
+    // A text region's y is the top of its glyphs; the renderer puts the
+    // baseline a full font size below it. Laying the block out by baseline
+    // instead drew the band straight through the number and sat the unit
+    // on top of it, which is what every cabinet card looked like.
+    const TEMP = 34; // size of the reading
+    const UNIT = 14;
+    const bandY = y + TEMP + 10;
     return [
         { id: "temp", role: "temperature", kind: "text",
-            x, y: y + 34, w: w - 26, align: "end", decimals: 1, size: 34,
+            x, y, w: w - 26, align: "end", decimals: 1, size: TEMP,
             unit: "", placeholder: "--" },
+        // Sat on the same baseline as the number, not the same top edge.
         { id: "temp_u", role: "temperature", kind: "text", show: "unit",
-            x: x + w - 24, y: y + 34, w: 24, align: "start", size: 14 },
+            x: x + w - 24, y: y + TEMP - UNIT, w: 24, align: "start", size: UNIT },
         { id: "band", role: "temperature", kind: "bar",
-            x, y: y + 44, w, h: 6, min: p.band[0], max: p.band[1] },
+            x, y: bandY, w, h: 6, min: p.band[0], max: p.band[1] },
         { id: "sp", role: "setpoint", kind: "text",
-            x, y: y + 66, w, align: "middle", decimals: 1, size: 12,
+            x, y: bandY + 12, w, align: "middle", decimals: 1, size: 12,
             unit: "", placeholder: "", group: "setpoint" },
         { id: "sp_lbl", role: "", kind: "text", text: "SETPOINT",
-            x, y: y + 78, w, align: "middle", size: 9, group: "setpoint" },
+            x, y: bandY + 28, w, align: "middle", size: 9, group: "setpoint" },
     ];
 }
+// A lamp's label is centred under it, so the gap between lamps has to
+// clear the widest label and not the widest lamp. "ALARM" at the label
+// size is about 40px, and a 46px gap ran "COMP" and "ALARM" together.
+const LAMP_GAP = 62;
 /** Door, compressor and alarm, laid out along a row. */
-function lamps(x, y, gap) {
+function lamps(x, y, gap = LAMP_GAP) {
     return [
         // Amber, not red: a door standing open is the common case and the one
         // worth noticing, but it is not yet a fault.
@@ -3009,7 +3030,7 @@ function buildUnderbench(p) {
             artNode,
             regions: [
                 ...readout(width - 150, 20, 134, p),
-                ...lamps(pad, height - 30, 74),
+                ...lamps(pad, height - 44, 74),
             ],
         };
     };
@@ -3042,7 +3063,7 @@ function buildWalkin(p) {
             artNode,
             regions: [
                 ...readout(WALKIN_W - 140, 14, 124, p),
-                ...lamps(28, WALKIN_H - 30, 80),
+                ...lamps(28, WALKIN_H - 44, 80),
             ],
         };
     };
@@ -3080,7 +3101,7 @@ function buildUpright(p) {
             artNode,
             regions: [
                 ...readout(width - 146, 56, 130, p),
-                ...lamps(width - 146, UPRIGHT_H - 54, 46),
+                ...lamps(width - 2 * LAMP_GAP - 34, UPRIGHT_H - 48),
             ],
         };
     };

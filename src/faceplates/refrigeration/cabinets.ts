@@ -41,24 +41,37 @@ function readout(x: number, y: number, w: number, p: Palette): Region[] {
   // The unit is never painted on: it comes from whatever entity is bound,
   // so a station commissioned in Fahrenheit reads in Fahrenheit instead of
   // having °C drawn over the top of it.
+  // A text region's y is the top of its glyphs; the renderer puts the
+  // baseline a full font size below it. Laying the block out by baseline
+  // instead drew the band straight through the number and sat the unit
+  // on top of it, which is what every cabinet card looked like.
+  const TEMP = 34;      // size of the reading
+  const UNIT = 14;
+  const bandY = y + TEMP + 10;
   return [
     { id: "temp", role: "temperature", kind: "text",
-      x, y: y + 34, w: w - 26, align: "end", decimals: 1, size: 34,
+      x, y, w: w - 26, align: "end", decimals: 1, size: TEMP,
       unit: "", placeholder: "--" },
+    // Sat on the same baseline as the number, not the same top edge.
     { id: "temp_u", role: "temperature", kind: "text", show: "unit",
-      x: x + w - 24, y: y + 34, w: 24, align: "start", size: 14 },
+      x: x + w - 24, y: y + TEMP - UNIT, w: 24, align: "start", size: UNIT },
     { id: "band", role: "temperature", kind: "bar",
-      x, y: y + 44, w, h: 6, min: p.band[0], max: p.band[1] },
+      x, y: bandY, w, h: 6, min: p.band[0], max: p.band[1] },
     { id: "sp", role: "setpoint", kind: "text",
-      x, y: y + 66, w, align: "middle", decimals: 1, size: 12,
+      x, y: bandY + 12, w, align: "middle", decimals: 1, size: 12,
       unit: "", placeholder: "", group: "setpoint" },
     { id: "sp_lbl", role: "", kind: "text", text: "SETPOINT",
-      x, y: y + 78, w, align: "middle", size: 9, group: "setpoint" },
+      x, y: bandY + 28, w, align: "middle", size: 9, group: "setpoint" },
   ] as Region[];
 }
 
+// A lamp's label is centred under it, so the gap between lamps has to
+// clear the widest label and not the widest lamp. "ALARM" at the label
+// size is about 40px, and a 46px gap ran "COMP" and "ALARM" together.
+const LAMP_GAP = 62;
+
 /** Door, compressor and alarm, laid out along a row. */
-function lamps(x: number, y: number, gap: number): Region[] {
+function lamps(x: number, y: number, gap: number = LAMP_GAP): Region[] {
   return [
     // Amber, not red: a door standing open is the common case and the one
     // worth noticing, but it is not yet a fault.
@@ -139,7 +152,7 @@ function buildUnderbench(p: Palette) {
       artNode,
       regions: [
         ...readout(width - 150, 20, 134, p),
-        ...lamps(pad, height - 30, 74),
+        ...lamps(pad, height - 44, 74),
       ],
     };
   };
@@ -176,7 +189,7 @@ function buildWalkin(p: Palette) {
       artNode,
       regions: [
         ...readout(WALKIN_W - 140, 14, 124, p),
-        ...lamps(28, WALKIN_H - 30, 80),
+        ...lamps(28, WALKIN_H - 44, 80),
       ],
     };
   };
@@ -220,7 +233,7 @@ function buildUpright(p: Palette) {
       artNode,
       regions: [
         ...readout(width - 146, 56, 130, p),
-        ...lamps(width - 146, UPRIGHT_H - 54, 46),
+        ...lamps(width - 2 * LAMP_GAP - 34, UPRIGHT_H - 48),
       ],
     };
   };

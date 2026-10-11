@@ -155,7 +155,8 @@ function build(values: Record<string, number>, ctx?: BuildContext) {
     });
     regions.push({
       id: `panlbl${n}`, role: "", kind: "text", text: "PAN", group: `pan${n}`,
-      x: x + 8, y: panTop + 12, w: 40, align: "start", size: 9,
+      // Above the bar, not across its left end.
+      x: x + 8, y: panTop + 2, w: 40, align: "start", size: 9,
     });
 
     // -- Fader -------------------------------------------------------------

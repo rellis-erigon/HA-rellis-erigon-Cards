@@ -65,7 +65,9 @@ function build(values: Record<string, number>) {
     });
     regions.push({
       id: `amp${n}`, role: `pump${n}_current`, kind: "text",
-      x: x - 40, y: TOP + 196, w: 80, align: "middle",
+      // A text region's y is the top of its glyphs, so this has to clear
+      // the bottom edge by a whole font size and not by a baseline.
+      x: x - 40, y: TOP + 182, w: 80, align: "middle",
       unit: "A", decimals: 1, size: 13, placeholder: "",
     });
   }

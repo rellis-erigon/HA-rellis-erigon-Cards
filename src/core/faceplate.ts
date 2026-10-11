@@ -260,19 +260,33 @@ function barRegion(
   const seek = (event: MouseEvent) => {
     const target = event.currentTarget as SVGGraphicsElement;
     const box = target.getBoundingClientRect();
+    if (region.vertical) {
+      if (!box.height) return;
+      // Up is more, so the fraction is measured from the bottom.
+      const at = Math.min(1, Math.max(0,
+        (box.bottom - event.clientY) / box.height));
+      ctx.onAction(region, min + at * span);
+      return;
+    }
     if (!box.width) return;
     const at = Math.min(1, Math.max(0, (event.clientX - box.left) / box.width));
     ctx.onAction(region, min + at * span);
   };
 
+  // A vertical bar fills from the bottom, because that is what the thing
+  // it is drawn inside does.
+  const filled = region.vertical
+    ? { x: region.x, y: region.y + height * (1 - fraction),
+        width, height: height * fraction }
+    : { x: region.x, y: region.y, width: width * fraction, height };
   return svg`
     <rect class="bar-track" x=${region.x} y=${region.y} width=${width} height=${height} rx="2" />
     <rect
       class="bar-fill"
-      x=${region.x}
-      y=${region.y}
-      width=${width * fraction}
-      height=${height}
+      x=${filled.x}
+      y=${filled.y}
+      width=${filled.width}
+      height=${filled.height}
       rx="2"
     />
     ${settable

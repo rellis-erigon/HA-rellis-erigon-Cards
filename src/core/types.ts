@@ -137,6 +137,14 @@ export interface Region {
    * leave this off: their ranges are chosen, not assumed.
    */
   auto_range?: boolean;
+  /**
+   * Fill upwards instead of rightwards.
+   *
+   * A tank is taller than it is wide and fills from the bottom. Drawn as
+   * a horizontal bar inside a tank body it reads as a level that rises
+   * to the right, which is not a thing any tank does.
+   */
+  vertical?: boolean;
   /** ring only: stroke width, and the radius measured from x,y as centre. */
   r?: number;
   stroke?: number;

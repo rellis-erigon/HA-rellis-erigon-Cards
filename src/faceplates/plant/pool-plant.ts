@@ -96,7 +96,7 @@ const regions: Region[] = [
     x: 262, y: 262, w: 142, align: "start", size: 9, group: "pool_mode" },
 
   { id: "fault", role: "fault", kind: "lamp", label: "FAULT",
-    x: 20, y: H - 26, w: 14, on: "#ef4444", off: "#2a1717" },
+    x: 20, y: H - 44, w: 14, on: "#ef4444", off: "#2a1717" },
 ];
 
 export const POOL_PLANT: Faceplate = {
