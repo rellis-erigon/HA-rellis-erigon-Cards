@@ -77,7 +77,21 @@ export function prepare(
       ),
     ].filter(Boolean)
   );
-  const bindings = resolveRoles(hass, roles, config.entities ?? {}, deviceEntities);
+  // What an import worked out sits behind each control, gathered off the
+  // regions so the resolver can finish a job the add-on could not: it
+  // has Home Assistant in front of it and the add-on may not.
+  const controls: Record<string, { control: string; kind: string }> = {};
+  for (const region of full.regions) {
+    if (region.role && region.control) {
+      controls[region.role] = {
+        control: region.control,
+        kind: region.control_kind ?? "",
+      };
+    }
+  }
+  const bindings = resolveRoles(
+    hass, roles, config.entities ?? {}, deviceEntities, controls,
+  );
 
   // A derived role has no entity of its own — an average is bound when
   // every phase it is averaged from is bound.

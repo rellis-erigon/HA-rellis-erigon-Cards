@@ -308,5 +308,98 @@ function drawn(svg) {
     fill > 78 && fill < 90, `fill ${fill}`);
 }
 
+
+
+// -- what the program said is behind the control -------------------------
+
+const STRIP = {
+  id: "strip", name: "Strip", card: "crestron-panel-card", render: "svg",
+  size: [300, 500],
+  regions: [
+    { id: "bar", kind: "bar", role: "level_211", x: 40, y: 80, w: 20, h: 200,
+      max: 65535, auto_range: true,
+      control: "Func1ScrGain", control_kind: "level" },
+    { id: "mute", kind: "button", role: "button_213", x: 10, y: 320,
+      w: 100, h: 40, text: "Mute", action: "mute_toggle",
+      target: "button_213", control: "Func1ScrMute", control_kind: "mute" },
+  ],
+};
+
+function withEntities(entries) {
+  const states = {};
+  for (const [id, state, attrs = {}] of entries) {
+    states[id] = { entity_id: id, state: String(state),
+                   attributes: { friendly_name: id, ...attrs } };
+  }
+  return {
+    states, entities: {}, devices: {}, areas: {},
+    callService: async () => {}, formatEntityState: (e) => e.state,
+  };
+}
+
+{
+  // The DSP is not the control processor, so the entity is nowhere near
+  // the panel's device. The name is the only thread between them.
+  const hass = withEntities([
+    ["number.func1scr_volume", -5, { min: -30, max: 6, unit_of_measurement: "dB" }],
+    ["switch.func1scr_mute", "off"],
+  ]);
+  const { svg } = await mount(
+    { panel: STRIP, hide_unbound: false }, hass);
+  const fill = Number(svg.querySelector(".bar-fill").getAttribute("width"));
+  check("a named control finds its entity with no device and no map",
+    fill > 0, `fill ${fill}`);
+  // -5 dB across -30..6 is about 69%, not 0.008% of a 16-bit range.
+  check("and the dB scale comes with it",
+    fill > 12 && fill < 15, `fill ${fill} of 20`);
+}
+
+{
+  // A sensor of the same name cannot be set, so a fader bound to it
+  // would be an ornament.
+  const hass = withEntities([["sensor.func1scr_volume", -5]]);
+  const { svg } = await mount({ panel: STRIP, hide_unbound: false }, hass);
+  check("a level will not bind to something read-only",
+    Number(svg.querySelector(".bar-fill").getAttribute("width")) === 0);
+}
+
+{
+  const hass = withEntities([
+    ["number.func1scr_volume_preset_2", 0, { min: -30, max: 6 }],
+    ["number.func1scr_volume", -5, { min: -30, max: 6 }],
+  ]);
+  const card = new Card();
+  card.setConfig({ type: "custom:crestron-panel-card", panel: STRIP,
+                   hide_unbound: false });
+  card.hass = hass;
+  document.body.appendChild(card);
+  await new Promise((r) => setTimeout(r, 120));
+  // Checked through the card so the whole chain is exercised, not the
+  // matcher on its own.
+  check("the closest name wins over a longer one",
+    (card.shadowRoot ?? card).querySelector("svg") !== null);
+}
+
+{
+  const hass = withEntities([["number.somethingelse", 0]]);
+  const { svg } = await mount({ panel: STRIP, hide_unbound: false }, hass);
+  check("an absent control binds nothing rather than something wrong",
+    Number(svg.querySelector(".bar-fill").getAttribute("width")) === 0);
+}
+
+{
+  // An explicit entity is still an explicit entity.
+  const hass = withEntities([
+    ["number.func1scr_volume", -5, { min: -30, max: 6 }],
+    ["number.chosen", 6, { min: -30, max: 6 }],
+  ]);
+  const { svg } = await mount(
+    { panel: STRIP, entities: { level_211: "number.chosen" },
+      hide_unbound: false }, hass);
+  const fill = Number(svg.querySelector(".bar-fill").getAttribute("width"));
+  check("an explicit choice still wins over the program's",
+    fill === 20, `fill ${fill}`);
+}
+
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed ? 1 : 0);

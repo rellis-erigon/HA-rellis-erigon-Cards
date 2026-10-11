@@ -159,6 +159,67 @@ const ROLE_BUS: Record<string, string> = {
   text: "s",
 };
 
+/**
+ * Which Home Assistant domain a named control should land in.
+ *
+ * A level has to be settable or the strip is an ornament, so a sensor
+ * carrying the same name is not a match.
+ */
+const DOMAIN_FOR_CONTROL: Record<string, string[]> = {
+  level: ["number", "input_number"],
+  mute: ["switch", "input_boolean"],
+};
+
+/** The role word at the end of a control's name, and the name without it. */
+const CONTROL_WORDS: Record<string, string> = {
+  gain: "level",
+  level: "level",
+  volume: "level",
+  vol: "level",
+  mute: "mute",
+};
+
+function controlBase(name: string): string {
+  const flat = name.toLowerCase().replace(/[^a-z0-9]/g, "");
+  for (const word of Object.keys(CONTROL_WORDS)) {
+    if (flat.endsWith(word)) return flat.slice(0, -word.length);
+  }
+  return flat;
+}
+
+/**
+ * The entity a named control became, or "".
+ *
+ * A bridge names its entities after the control, but the role word
+ * differs between the two — a DSP calls it gain where Home Assistant
+ * calls it volume — so the base is matched and the domain settles the
+ * rest. The closest remaining name wins, so `func1mic_volume` beats
+ * `func1mic_volume_preset_2`.
+ */
+export function entityForControl(
+  hass: HomeAssistant,
+  control: string,
+  kind: string,
+  candidates: string[],
+): string {
+  const base = controlBase(control);
+  if (!base) return "";
+  const domains = DOMAIN_FOR_CONTROL[kind] ?? [];
+  let best = "";
+  let bestLength = Infinity;
+  for (const id of candidates) {
+    const [domain, objectId = ""] = id.split(".");
+    if (domains.length && !domains.includes(domain)) continue;
+    const flat = objectId.replace(/[^a-z0-9]/g, "");
+    if (!flat.startsWith(base)) continue;
+    if (flat.length < bestLength) {
+      best = id;
+      bestLength = flat.length;
+    }
+  }
+  return best;
+}
+
 /** The join key a generated role refers to, or undefined if it names none. */
 export function joinOfRole(role: string): string | undefined {
   const cut = role.lastIndexOf("_");
@@ -177,7 +238,9 @@ export function resolveRoles(
   hass: HomeAssistant,
   roles: string[],
   explicit: Record<string, string> = {},
-  deviceEntities: string[] = []
+  deviceEntities: string[] = [],
+  /** role -> the control an import worked out sits behind it. */
+  controls: Record<string, { control: string; kind: string }> = {}
 ): Record<string, string> {
   const map: Record<string, string> = {};
 
@@ -207,11 +270,25 @@ export function resolveRoles(
     //    once, and a join exposed later is picked up without anybody
     //    editing the dashboard.
     const join = joinOfRole(role);
-    if (!join) continue;
-    const found = candidates.find(
-      (id) => hass.states[id]?.attributes?.join === join
+    if (join) {
+      const found = candidates.find(
+        (id) => hass.states[id]?.attributes?.join === join
+      );
+      if (found) {
+        map[role] = found;
+        continue;
+      }
+    }
+    // 4. What the processor's own program says is behind this control.
+    //    Searched across everything rather than within the panel's
+    //    device, because the thing a fader moves usually lives on
+    //    another system entirely — the DSP, not the control processor.
+    const hint = controls[role];
+    if (!hint?.control) continue;
+    const resolved = entityForControl(
+      hass, hint.control, hint.kind, Object.keys(hass.states)
     );
-    if (found) map[role] = found;
+    if (resolved) map[role] = resolved;
   }
   return map;
 }

@@ -52,6 +52,21 @@ export interface Region {
    * panel imported before its joins were exposed still draws.
    */
   visible_role?: string;
+  /**
+   * The name of the control on the system behind the panel, where an
+   * import could work it out — `Func1MicGain`.
+   *
+   * A Crestron join number is meaningless on its own, and the analog
+   * join a fader shows is usually feedback only. The processor's program
+   * says what the fader really moves, and a bridge for that system has
+   * already made an entity per control. Carrying the name lets the card
+   * find it, which is better than resolving it at import: the card
+   * re-resolves whenever entities change, so a control exposed next week
+   * binds without importing again.
+   */
+  control?: string;
+  /** What the control does: "level" or "mute". */
+  control_kind?: string;
   /** printf-ish hint: decimals and a unit suffix. */
   decimals?: number;
   unit?: string;
