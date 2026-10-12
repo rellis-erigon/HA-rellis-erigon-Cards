@@ -224,8 +224,10 @@ function lampRegion(region: Region, reading: Reading): SVGTemplateResult {
       fill=${lit ? region.on ?? "#e34" : region.off ?? "#3a1418"}
     />
     ${region.label
-      ? svg`<text class="lamp-label" x=${region.x + radius} y=${region.y + radius * 2 + 12}
-              text-anchor="middle">${region.label}</text>`
+      ? svg`<text class="lamp-label" x=${region.x + radius}
+              y=${region.y + radius * 2 + 13} text-anchor="middle"
+              font-size="11" letter-spacing="0.6" fill="#b8c2cf"
+            >${region.label}</text>`
       : ""}
   `;
 }

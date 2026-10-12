@@ -34,7 +34,7 @@ function build(values: Record<string, number>) {
       <rect x=${x + 14} y=${TOP + 18} width=${UNIT_W - 28} height="46" rx="6"
             fill="#1a1f25" />
       <text x=${x + UNIT_W / 2} y=${TOP + 138} text-anchor="middle"
-            fill="#8b93a1" font-size="11" letter-spacing="1.4"
+            fill="#a7b2c0" font-size="11" letter-spacing="1.4"
             font-family="inherit">UNIT ${n}</text>
     `);
 
@@ -57,11 +57,11 @@ function build(values: Record<string, number>) {
     <defs>
       <marker id="hw-arrow" viewBox="0 0 10 10" refX="8" refY="5"
               markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-        <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b93a1" />
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#a7b2c0" />
       </marker>
     </defs>
     <rect x="0" y="0" width=${width} height=${H} rx="10" fill="#101216" />
-    <text x="16" y="26" fill="#8b93a1" font-size="12" letter-spacing="1.6"
+    <text x="16" y="26" fill="#a7b2c0" font-size="12" letter-spacing="1.6"
           font-family="inherit">HOT WATER</text>
 
     <!-- Secondary flow along the top, return along the bottom -->

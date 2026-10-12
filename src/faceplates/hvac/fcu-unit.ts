@@ -27,7 +27,7 @@ const artNode = svg`
   <rect x="0" y="0" width=${W} height=${H} rx="8" fill="url(#fcu-case)" />
   <rect x="0" y="0" width=${W} height="24" rx="8" fill="#232a32" />
   <rect x="0" y="16" width=${W} height="8" fill="#232a32" />
-  <text x="12" y="17" fill="#8b93a1" font-size="10" letter-spacing="1.6"
+  <text x="12" y="17" fill="#a7b2c0" font-size="11" letter-spacing="1.6"
         font-family="inherit">FAN COIL UNIT</text>
 
   <!-- A coil and a fan, so the tile reads as plant and not a thermostat -->

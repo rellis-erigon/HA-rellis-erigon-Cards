@@ -690,7 +690,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
         x2=${zt+44*Math.cos(t)}
         y2=${At+44*Math.sin(t)}
         stroke="#6f7886" stroke-width="3" stroke-linecap="round" />`})}
-    <circle cx=${zt} cy=${At} r="10" fill="#8b93a1" />
+    <circle cx=${zt} cy=${At} r="10" fill="#a7b2c0" />
 
     ${t?a:o}
     ${t?"":a}
@@ -700,17 +700,17 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       <rect x=${i+14} y=${96} width=${162} height="46" rx="6"
             fill="#1a1f25" />
       <text x=${i+95} y=${216} text-anchor="middle"
-            fill="#8b93a1" font-size="11" letter-spacing="1.4"
+            fill="#a7b2c0" font-size="11" letter-spacing="1.4"
             font-family="inherit">UNIT ${t}</text>
     `),r.push({id:`run${t}`,role:`unit${t}_run`,kind:"lamp",x:i+18,y:162,w:14,on:"#3ddc84",off:"#16281d"}),r.push({id:`flt${t}`,role:`unit${t}_fault`,kind:"lamp",x:i+44,y:162,w:14,on:"#ef4444",off:"#2a1717"}),r.push({id:`tank${t}`,role:`unit${t}_tank_temp`,kind:"text",x:i+14,y:128,w:162,align:"middle",decimals:1,size:24,placeholder:""})}const l=B`
     <defs>
       <marker id="hw-arrow" viewBox="0 0 10 10" refX="8" refY="5"
               markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-        <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b93a1" />
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#a7b2c0" />
       </marker>
     </defs>
     <rect x="0" y="0" width=${i} height=${Ut} rx="10" fill="#101216" />
-    <text x="16" y="26" fill="#8b93a1" font-size="12" letter-spacing="1.6"
+    <text x="16" y="26" fill="#a7b2c0" font-size="12" letter-spacing="1.6"
           font-family="inherit">HOT WATER</text>
 
     <!-- Secondary flow along the top, return along the bottom -->
@@ -732,12 +732,12 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       ${[...Array(6).keys()].map(e=>{const t=e/6*Math.PI*2;return B`<line
           x1=${i+10*Math.cos(t)} y1=${174+10*Math.sin(t)}
           x2=${i+22*Math.cos(t)} y2=${174+22*Math.sin(t)}
-          stroke="#8b93a1" stroke-width="2.5" stroke-linecap="round" />`})}
-      <text x=${i} y=${270} text-anchor="middle" fill="#8b93a1"
+          stroke="#a7b2c0" stroke-width="2.5" stroke-linecap="round" />`})}
+      <text x=${i} y=${270} text-anchor="middle" fill="#a7b2c0"
             font-size="12" font-family="inherit">P${t}</text>
     `),o.push({id:`run${t}`,role:`pump${t}_run`,kind:"lamp",x:i-22,y:126,w:14,on:"#3ddc84",off:"#16281d"}),o.push({id:`flt${t}`,role:`pump${t}_fault`,kind:"lamp",x:i+8,y:126,w:14,on:"#ef4444",off:"#2a1717"}),o.push({id:`amp${t}`,role:`pump${t}_current`,kind:"text",x:i-40,y:274,w:80,align:"middle",unit:"A",decimals:1,size:13,placeholder:""})}const a=[{id:"flow_t",role:"flow_temp",kind:"text",x:16,y:102,w:88,align:"start",decimals:1,size:20,placeholder:""},{id:"flow_lbl",role:"",kind:"text",text:"FLOW",x:16,y:120,w:88,align:"start",size:10},{id:"ret_t",role:"return_temp",kind:"text",x:16,y:230,w:88,align:"start",decimals:1,size:20,placeholder:""},{id:"ret_lbl",role:"",kind:"text",text:"RETURN",x:16,y:248,w:88,align:"start",size:10},{id:"fault",role:"common_fault",kind:"lamp",label:"FAULT",x:r-44,y:18,w:16,on:"#ef4444",off:"#2a1717"}];return{size:[r,300],artNode:B`
     <rect x="0" y="0" width=${r} height=${300} rx="10" fill="#101216" />
-    <text x="16" y="26" fill="#8b93a1" font-size="12" letter-spacing="1.6"
+    <text x="16" y="26" fill="#a7b2c0" font-size="12" letter-spacing="1.6"
           font-family="inherit">${i.label}</text>
 
     <!-- Flow header above the pumps, return header below -->
@@ -757,7 +757,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
   <rect x="0" y="0" width=${Ht} height=${Ft} rx="8" fill="url(#fcu-case)" />
   <rect x="0" y="0" width=${Ht} height="24" rx="8" fill="#232a32" />
   <rect x="0" y="16" width=${Ht} height="8" fill="#232a32" />
-  <text x="12" y="17" fill="#8b93a1" font-size="10" letter-spacing="1.6"
+  <text x="12" y="17" fill="#a7b2c0" font-size="11" letter-spacing="1.6"
         font-family="inherit">FAN COIL UNIT</text>
 
   <!-- A coil and a fan, so the tile reads as plant and not a thermostat -->
@@ -776,7 +776,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
 `,jt=460;const qt={id:"generic-fip",name:"Fire Indicator Panel (schematic)",card:"fire-panel-card",render:"svg",display:"negative",size:[jt,400],regions:[],description:"Zone and status mimic of a fire panel as the BMS sees it. Schematic on purpose — it must never be mistaken for the panel itself.",emulates:"Generic fire indicator panel (not a specific make)",options:[{key:"zones",label:"Zones",type:"number",min:0,max:24,default:8,help:"Roles are zone1_alarm through zoneN_alarm; two columns above 12."}],build:function(e){const t=Math.max(0,Math.min(24,Math.round(e.zones??8))),i=t>12?2:1,r=Math.ceil(t/i)||1,o=132+30*r+28,l=[],a=[];for(let e=0;e<t;e++){const t=e+1,o=22+Math.floor(e/r)*(416/i),n=132+30*(e%r),s=416/i-12;a.push(B`
       <rect x=${o} y=${n} width=${s} height=${24} rx="4"
             fill="#14181d" stroke="#232930" />
-      <text x=${o+34} y=${n+17} fill="#8b93a1" font-size="12"
+      <text x=${o+34} y=${n+17} fill="#a7b2c0" font-size="12"
             font-family="inherit">ZONE ${t}</text>
     `),l.push({id:`z${t}`,role:`zone${t}_alarm`,kind:"lamp",x:o+10,y:n+5,w:13,on:"#ef4444",off:"#2a1717"})}const n=B`
     <rect x="0" y="0" width=${jt} height=${o} rx="10" fill="#0e1013" />
@@ -784,7 +784,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
     <!-- Status row -->
     <rect x="16" y="46" width=${428} height="68" rx="8"
           fill="#14181d" stroke="#232930" />
-    <text x="30" y="70" fill="#8b93a1" font-size="11" letter-spacing="1.5"
+    <text x="30" y="70" fill="#a7b2c0" font-size="11" letter-spacing="1.5"
           font-family="inherit">PANEL STATUS</text>
     ${a}
   `;return{size:[jt,o],artNode:n,regions:[{id:"alarm",role:"fire_alarm",kind:"lamp",label:"FIRE",x:30,y:82,w:18,on:"#ef4444",off:"#2a1717"},{id:"fault",role:"fault",kind:"lamp",label:"FAULT",x:118,y:82,w:18,on:"#f59e0b",off:"#2a2317"},{id:"isolate",role:"isolate",kind:"lamp",label:"ISOLATED",x:216,y:82,w:18,on:"#eab308",off:"#2a2617"},{id:"brigade",role:"brigade_signal",kind:"lamp",label:"BRIGADE",x:322,y:82,w:18,on:"#ef4444",off:"#2a1717"},{id:"power",role:"power",kind:"lamp",label:"POWER",x:412,y:82,w:18,on:"#3ddc84",off:"#16281d"},...l]}}},Vt=500;const Kt={id:"qsys-zone-rack",name:"Q-SYS Zone Rack",card:"audio-zone-card",render:"svg",display:"negative",size:[Vt,270],regions:[],description:"One strip per audio zone: level bar in dB, mute with an indicator, and trim keys. Widens to the number of zones you set.",emulates:"Q-SYS zone outputs",labelPrefix:"zone",options:[{key:"zones",label:"Zones",type:"number",min:1,max:16,default:4,help:"One strip per zone; roles are zone1_… through zoneN_…"}],build:function(e){const t=Math.max(1,Math.min(16,Math.round(e.zones??4))),i=34+56*t+12,r=[],o=[];for(let e=0;e<t;e++){const t=e+1,i=34+56*e;o.push(B`
@@ -796,7 +796,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
     <rect x="0" y="0" width=${Vt} height=${i} rx="8" fill="#0e1013" />
     <rect x="0" y="0" width=${Vt} height="26" rx="8" fill="#171a1f" />
     <rect x="0" y="18" width=${Vt} height="8" fill="#171a1f" />
-    <text x="14" y="18" fill="#8b93a1" font-size="12"
+    <text x="14" y="18" fill="#a7b2c0" font-size="12"
           font-family="inherit" letter-spacing="1.5">ZONE OUTPUTS</text>
     ${o}
   `;return{size:[Vt,i],artNode:l,regions:r}}},Zt=104,Yt=210;const Qt={id:"zone-mixer",name:"Zone Mixer (console)",card:"audio-zone-card",render:"svg",display:"negative",size:[462,600],regions:[],labelPrefix:"zone",description:"Channel strips side by side with vertical faders: source, optional EQ, pan, fader, mute and a scribble strip. Click a fader to move it.",emulates:"Audio mixing console channel strip",options:[{key:"zones",label:"Channels",type:"number",min:1,max:16,default:4,help:"One strip per zone; roles are zone1_… through zoneN_…"},{key:"per_row",label:"Strips per row",type:"number",min:1,max:16,default:8,help:"The console wraps past this, so sixteen channels stay legible."},{key:"eq",label:"Three-band EQ (0 off, 1 on)",type:"number",min:0,max:1,default:0,help:"Adds high/mid/low per strip, above the pan."}],build:function(e,t){const i=Math.max(1,Math.min(16,Math.round(e.zones??4))),r=1===Math.round(e.eq??0),o=t?.bound??(()=>!0),l=Array.from({length:i},(e,t)=>t+1),a=t?.filtering?l.filter(e=>(e=>[`zone${e}_volume`,`zone${e}_mute`,`zone${e}_balance`,`zone${e}_source`,`zone${e}_eq_low`,`zone${e}_eq_mid`,`zone${e}_eq_high`])(e).some(o)):l,n=a.length?a:[l[0]],s=r&&(!t?.filtering||n.some(e=>["low","mid","high"].some(t=>o(`zone${e}_eq_${t}`)))),d=n.length,c=Math.max(1,Math.min(d,Math.round(e.per_row??8))),h=Math.ceil(d/c),p=46+(s?96:0),f=p+44,x=f+Yt+118-36,u=28+c*Zt+6*(c-1),m=36+h*x+14*(h-1)+12,y=[],g=[];for(const[e,t]of n.entries()){const i=e%c,r=Math.floor(e/c),o=14+110*i,l=36+r*(x+14),a=l+46,n=l+p,d=l+f,h=o+52;g.push(B`
@@ -815,14 +815,14 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
     <rect x="0" y="0" width=${u} height=${m} rx="8" fill="#0e1013" />
     <rect x="0" y="0" width=${u} height="26" rx="8" fill="#171a1f" />
     <rect x="0" y="18" width=${u} height="8" fill="#171a1f" />
-    <text x="14" y="18" fill="#8b93a1" font-size="12" letter-spacing="1.5"
+    <text x="14" y="18" fill="#a7b2c0" font-size="12" letter-spacing="1.5"
           font-family="inherit">ZONE MIXER</text>
     ${g}
   `,regions:y}}},Xt=420,Jt=B`
   <rect x="0" y="0" width=${Xt} height=${300} rx="10" fill="#101216" />
   <rect x="0" y="0" width=${Xt} height="34" rx="10" fill="#1a1e24" />
   <rect x="0" y="24" width=${Xt} height="10" fill="#1a1e24" />
-  <text x="16" y="23" fill="#8b93a1" font-size="12" letter-spacing="1.5"
+  <text x="16" y="23" fill="#a7b2c0" font-size="12" letter-spacing="1.5"
         font-family="inherit">ROOM CONTROL</text>
 
   <!-- Source display: the big pane, as on a panel's home page. -->
@@ -832,13 +832,13 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
   <!-- Level meter well -->
   <rect x="16" y="126" width=${388} height="58" rx="6"
         fill="#14171c" stroke="#252a31" />
-  <text x="28" y="146" fill="#8b93a1" font-size="11" letter-spacing="1.2"
+  <text x="28" y="146" fill="#a7b2c0" font-size="11" letter-spacing="1.2"
         font-family="inherit">VOLUME</text>
 
   <!-- Status row -->
   <rect x="16" y="196" width=${388} height="46" rx="6"
         fill="#14171c" stroke="#252a31" />
-`,ei=108,ti="#3d4551",ii="#8b93a1";const ri={id:"storage-tanks",name:"Water Storage Tanks",card:"plant-equipment-card",render:"svg",display:"negative",size:[444,358],regions:[],description:"One to four storage tanks side by side against a shared scale, because a tank farm is read by comparing tanks. High-level alarms sit at the top of each tank where the float is. Roles are tank1_level, tank1_high_alarm, tank1_low_alarm and so on, plus a shared pressure.",emulates:"Cold water storage tank set",options:[{key:"tanks",label:"Tanks",type:"number",min:1,max:4,default:2,help:"The drawing widens to suit. Unbound tanks hide themselves."}],build:function(e){const t=Math.max(1,Math.min(4,Math.round(e.tanks??2))),i=52+t*ei+26*(t-1)+150,r=[],o=[];for(let e=0;e<t;e++){const t=e+1,i=26+134*e;o.push(B`
+`,ei=108,ti="#3d4551",ii="#a7b2c0";const ri={id:"storage-tanks",name:"Water Storage Tanks",card:"plant-equipment-card",render:"svg",display:"negative",size:[444,358],regions:[],description:"One to four storage tanks side by side against a shared scale, because a tank farm is read by comparing tanks. High-level alarms sit at the top of each tank where the float is. Roles are tank1_level, tank1_high_alarm, tank1_low_alarm and so on, plus a shared pressure.",emulates:"Cold water storage tank set",options:[{key:"tanks",label:"Tanks",type:"number",min:1,max:4,default:2,help:"The drawing widens to suit. Unbound tanks hide themselves."}],build:function(e){const t=Math.max(1,Math.min(4,Math.round(e.tanks??2))),i=52+t*ei+26*(t-1)+150,r=[],o=[];for(let e=0;e<t;e++){const t=e+1,i=26+134*e;o.push(B`
       <!-- Shell, with a domed top so it reads as a tank and not a bar chart -->
       <path d=${`M ${i} 96\n                 Q ${i} 74 ${i+22} 74\n                 L ${i+ei-22} 74\n                 Q ${i+ei} 74 ${i+ei} 96\n                 L ${i+ei} 284\n                 L ${i} 284 Z`}
             fill=${"#20262e"} stroke=${ti} stroke-width="2" />
@@ -860,7 +860,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
     <line x1=${26} y1=${328} x2=${l-14}
           y2=${328}
           stroke="#2563eb" stroke-width="5" stroke-linecap="round" />
-  `,regions:[...r,...a]}}},oi="#8b93a1",li="#38bdf8",ai={id:"pool-plant",name:"Pool Plant",card:"plant-equipment-card",render:"svg",display:"negative",size:[420,290],artNode:B`
+  `,regions:[...r,...a]}}},oi="#a7b2c0",li="#38bdf8",ai={id:"pool-plant",name:"Pool Plant",card:"plant-equipment-card",render:"svg",display:"negative",size:[420,290],artNode:B`
   <defs>
     <linearGradient id="pool-water" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.55" />
@@ -883,11 +883,11 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
   <!-- Return and suction, so the pump lamp has something to belong to -->
   <line x1="24" y1="236" x2="232" y2="236" stroke="#2563eb"
         stroke-width="4" stroke-linecap="round" opacity="0.8" />
-  <text x="24" y="256" fill=${oi} font-size="9" letter-spacing="1.2"
+  <text x="24" y="256" fill=${oi} font-size="11" letter-spacing="1.2"
         font-family="inherit">CIRCULATION</text>
-`,regions:[{id:"wt",role:"water_temp",kind:"text",x:20,y:86,w:168,align:"start",decimals:1,size:52,unit:"",placeholder:"--"},{id:"wt_u",role:"water_temp",kind:"text",show:"unit",x:192,y:72,w:40,align:"start",size:16},{id:"wt_lbl",role:"",kind:"text",text:"WATER",x:20,y:46,w:168,align:"start",size:10},{id:"htr",role:"heater",kind:"lamp",label:"HEATER",x:262,y:58,w:16,on:"#f97316",off:"#2a1d11"},{id:"htr_sp",role:"heater_setpoint",kind:"text",x:324,y:70,w:80,align:"end",decimals:1,size:20,unit:"",placeholder:"",group:"heater_sp"},{id:"htr_sp_l",role:"",kind:"text",text:"HEATER SET",x:324,y:84,w:80,align:"end",size:9,group:"heater_sp"},{id:"solar",role:"solar",kind:"lamp",label:"SOLAR",x:262,y:110,w:16,on:"#fbbf24",off:"#2a2512"},{id:"solar_sp",role:"solar_setpoint",kind:"text",x:324,y:122,w:80,align:"end",decimals:1,size:20,unit:"",placeholder:"",group:"solar_sp"},{id:"solar_sp_l",role:"",kind:"text",text:"SOLAR SET",x:324,y:136,w:80,align:"end",size:9,group:"solar_sp"},{id:"pump",role:"filter_pump",kind:"lamp",label:"PUMP",x:262,y:162,w:16,on:"#3ddc84",off:"#16281d"},{id:"pmode",role:"pump_mode",kind:"text",x:262,y:206,w:142,align:"start",size:13,placeholder:"",group:"pump_mode"},{id:"pmode_l",role:"",kind:"text",text:"PUMP MODE",x:262,y:220,w:142,align:"start",size:9,group:"pump_mode"},{id:"mode",role:"pool_mode",kind:"text",x:262,y:248,w:142,align:"start",size:13,placeholder:"",group:"pool_mode"},{id:"mode_l",role:"",kind:"text",text:"POOL MODE",x:262,y:262,w:142,align:"start",size:9,group:"pool_mode"},{id:"fault",role:"fault",kind:"lamp",label:"FAULT",x:20,y:246,w:14,on:"#ef4444",off:"#2a1717"}],description:"Pool heating and circulation. Water temperature is the hero; heater, solar and filter pump explain why it is what it is. Read-only — stack the mode selects and setpoint numbers underneath, which Home Assistant's own rows do better than a drawing. Pair with a water meter faceplate for consumption.",emulates:"Pool chlorinator / heat pump controller"},ni={band:[0,8],label:"FRIDGE"},si={band:[-26,-12],label:"FREEZER"},di="#1d242c",ci="#39414d",hi="#2b323b",pi="#3d4551",fi="#8b93a1";function xi(e,t,i,r){const o=t+34+10;return[{id:"temp",role:"temperature",kind:"text",x:e,y:t,w:i-26,align:"end",decimals:1,size:34,unit:"",placeholder:"--"},{id:"temp_u",role:"temperature",kind:"text",show:"unit",x:e+i-24,y:t+34-14,w:24,align:"start",size:14},{id:"band",role:"temperature",kind:"bar",x:e,y:o,w:i,h:6,min:r.band[0],max:r.band[1]},{id:"sp",role:"setpoint",kind:"text",x:e,y:o+12,w:i,align:"middle",decimals:1,size:12,unit:"",placeholder:"",group:"setpoint"},{id:"sp_lbl",role:"",kind:"text",text:"SETPOINT",x:e,y:o+28,w:i,align:"middle",size:9,group:"setpoint"}]}function ui(e,t,i=62){return[{id:"door",role:"door",kind:"lamp",label:"DOOR",x:e,y:t,w:14,on:"#f59e0b",off:"#2a2317"},{id:"comp",role:"compressor",kind:"lamp",label:"COMP",x:e+i,y:t,w:14,on:"#3ddc84",off:"#16281d"},{id:"alarm",role:"alarm",kind:"lamp",label:"ALARM",x:e+2*i,y:t,w:14,on:"#ef4444",off:"#2a1717"}]}function mi(e,t,i){return B`
+`,regions:[{id:"wt",role:"water_temp",kind:"text",x:20,y:86,w:168,align:"start",decimals:1,size:52,unit:"",placeholder:"--"},{id:"wt_u",role:"water_temp",kind:"text",show:"unit",x:192,y:72,w:40,align:"start",size:16},{id:"wt_lbl",role:"",kind:"text",text:"WATER",x:20,y:46,w:168,align:"start",size:10},{id:"htr",role:"heater",kind:"lamp",label:"HEATER",x:262,y:58,w:16,on:"#f97316",off:"#2a1d11"},{id:"htr_sp",role:"heater_setpoint",kind:"text",x:324,y:70,w:80,align:"end",decimals:1,size:20,unit:"",placeholder:"",group:"heater_sp"},{id:"htr_sp_l",role:"",kind:"text",text:"HEATER SET",x:324,y:84,w:80,align:"end",size:9,group:"heater_sp"},{id:"solar",role:"solar",kind:"lamp",label:"SOLAR",x:262,y:110,w:16,on:"#fbbf24",off:"#2a2512"},{id:"solar_sp",role:"solar_setpoint",kind:"text",x:324,y:122,w:80,align:"end",decimals:1,size:20,unit:"",placeholder:"",group:"solar_sp"},{id:"solar_sp_l",role:"",kind:"text",text:"SOLAR SET",x:324,y:136,w:80,align:"end",size:9,group:"solar_sp"},{id:"pump",role:"filter_pump",kind:"lamp",label:"PUMP",x:262,y:162,w:16,on:"#3ddc84",off:"#16281d"},{id:"pmode",role:"pump_mode",kind:"text",x:262,y:206,w:142,align:"start",size:13,placeholder:"",group:"pump_mode"},{id:"pmode_l",role:"",kind:"text",text:"PUMP MODE",x:262,y:220,w:142,align:"start",size:9,group:"pump_mode"},{id:"mode",role:"pool_mode",kind:"text",x:262,y:248,w:142,align:"start",size:13,placeholder:"",group:"pool_mode"},{id:"mode_l",role:"",kind:"text",text:"POOL MODE",x:262,y:262,w:142,align:"start",size:9,group:"pool_mode"},{id:"fault",role:"fault",kind:"lamp",label:"FAULT",x:20,y:246,w:14,on:"#ef4444",off:"#2a1717"}],description:"Pool heating and circulation. Water temperature is the hero; heater, solar and filter pump explain why it is what it is. Read-only — stack the mode selects and setpoint numbers underneath, which Home Assistant's own rows do better than a drawing. Pair with a water meter faceplate for consumption.",emulates:"Pool chlorinator / heat pump controller"},ni={band:[0,8],label:"FRIDGE"},si={band:[-26,-12],label:"FREEZER"},di="#171d25",ci="#4a5462",hi="#323a45",pi="#4a5462",fi="#a7b2c0";function xi(e,t,i,r){const o=t+34+10;return[{id:"temp",role:"temperature",kind:"text",x:e,y:t,w:i-26,align:"end",decimals:1,size:34,unit:"",placeholder:"--"},{id:"temp_u",role:"temperature",kind:"text",show:"unit",x:e+i-24,y:t+34-14,w:24,align:"start",size:14},{id:"band",role:"temperature",kind:"bar",x:e,y:o,w:i,h:6,min:r.band[0],max:r.band[1]},{id:"sp",role:"setpoint",kind:"text",x:e,y:o+12,w:i,align:"middle",decimals:1,size:12,unit:"",placeholder:"",group:"setpoint"},{id:"sp_lbl",role:"",kind:"text",text:"SETPOINT",x:e,y:o+28,w:i,align:"middle",size:10,group:"setpoint"}]}function ui(e,t,i=62){return[{id:"door",role:"door",kind:"lamp",label:"DOOR",x:e,y:t,w:14,on:"#f59e0b",off:"#2a2317"},{id:"comp",role:"compressor",kind:"lamp",label:"COMP",x:e+i,y:t,w:14,on:"#3ddc84",off:"#16281d"},{id:"alarm",role:"alarm",kind:"lamp",label:"ALARM",x:e+2*i,y:t,w:14,on:"#ef4444",off:"#2a1717"}]}function mi(e,t,i){return B`
     <rect x="0" y="0" width=${e} height=${t} rx="10" fill="#101216" />
-    <text x="16" y="24" fill=${fi} font-size="11" letter-spacing="1.6"
+    <text x="16" y="25" fill=${fi} font-size="12" letter-spacing="1.6"
           font-family="inherit">${i}</text>
   `}const yi=96,gi=118;function $i(e){return t=>{const i=Math.max(0,Math.min(6,Math.round(t.doors??2))),r=Math.max(0,Math.min(8,Math.round(t.drawers??0))),o=i+(r>0?1:0)||1,l=78,a=20,n=Math.max(300,40+o*l+8*(o-1)),s=[];let d=a;for(let e=0;e<i;e++)s.push(B`
         <rect x=${d} y=${106} width=${l} height=${98}
@@ -918,7 +918,7 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
             height="44" rx="3.5" fill=${fi} opacity="0.75" />
       <rect x="48" y=${196} width=${184}
             height="22" rx="3" fill="#161b21" />
-      <text x="52" y=${266} fill=${fi} font-size="10"
+      <text x="52" y=${266} fill=${fi} font-size="11"
             letter-spacing="1.2" font-family="inherit">
         ${e===si?"FREEZER ROOM":"COLD ROOM"}
       </text>
@@ -961,8 +961,10 @@ const e=globalThis,t=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow
       r=${r}
       fill=${i?e.on??"#e34":e.off??"#3a1418"}
     />
-    ${e.label?B`<text class="lamp-label" x=${e.x+r} y=${e.y+2*r+12}
-              text-anchor="middle">${e.label}</text>`:""}
+    ${e.label?B`<text class="lamp-label" x=${e.x+r}
+              y=${e.y+2*r+13} text-anchor="middle"
+              font-size="11" letter-spacing="0.6" fill="#b8c2cf"
+            >${e.label}</text>`:""}
   `}(t,i);case"bar":return function(e,t,i){const r=t.w??100,o=t.h??10;let l=t.max??100,a=t.min??0;if(t.auto_range&&i.entityId){const t=e.hass.states[i.entityId]?.attributes;"number"==typeof t?.min&&"number"==typeof t?.max&&(a=t.min,l=t.max)}const n=l-a||1,s=i.dark||void 0===i.value?0:Math.max(0,Math.min(1,(i.value-a)/n)),d="set_level"===t.action,c=i=>{const r=i.currentTarget.getBoundingClientRect();if(t.vertical){if(!r.height)return;const o=Math.min(1,Math.max(0,(r.bottom-i.clientY)/r.height));return void e.onAction(t,a+o*n)}if(!r.width)return;const o=Math.min(1,Math.max(0,(i.clientX-r.left)/r.width));e.onAction(t,a+o*n)},h=t.vertical?{x:t.x,y:t.y+o*(1-s),width:r,height:o*s}:{x:t.x,y:t.y,width:r*s,height:o};return B`
     <rect class="bar-track" x=${t.x} y=${t.y} width=${r} height=${o} rx="2" />
     <rect

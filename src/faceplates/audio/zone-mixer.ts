@@ -204,7 +204,7 @@ function build(values: Record<string, number>, ctx?: BuildContext) {
     <rect x="0" y="0" width=${width} height=${height} rx="8" fill="#0e1013" />
     <rect x="0" y="0" width=${width} height="26" rx="8" fill="#171a1f" />
     <rect x="0" y="18" width=${width} height="8" fill="#171a1f" />
-    <text x="14" y="18" fill="#8b93a1" font-size="12" letter-spacing="1.5"
+    <text x="14" y="18" fill="#a7b2c0" font-size="12" letter-spacing="1.5"
           font-family="inherit">ZONE MIXER</text>
     ${strips}
   `;

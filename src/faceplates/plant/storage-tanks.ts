@@ -22,7 +22,7 @@ const FOOT = 74;
 
 const BODY_FILL = "#20262e";
 const BODY_EDGE = "#3d4551";
-const MUTED = "#8b93a1";
+const MUTED = "#a7b2c0";
 
 function build(values: Record<string, number>) {
   const count = Math.max(1, Math.min(4, Math.round(values.tanks ?? 2)));

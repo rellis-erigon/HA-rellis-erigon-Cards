@@ -21,7 +21,7 @@ const artNode = svg`
   <rect x="0" y="0" width=${W} height=${H} rx="10" fill="#101216" />
   <rect x="0" y="0" width=${W} height="34" rx="10" fill="#1a1e24" />
   <rect x="0" y="24" width=${W} height="10" fill="#1a1e24" />
-  <text x="16" y="23" fill="#8b93a1" font-size="12" letter-spacing="1.5"
+  <text x="16" y="23" fill="#a7b2c0" font-size="12" letter-spacing="1.5"
         font-family="inherit">ROOM CONTROL</text>
 
   <!-- Source display: the big pane, as on a panel's home page. -->
@@ -31,7 +31,7 @@ const artNode = svg`
   <!-- Level meter well -->
   <rect x="16" y="126" width=${W - 32} height="58" rx="6"
         fill="#14171c" stroke="#252a31" />
-  <text x="28" y="146" fill="#8b93a1" font-size="11" letter-spacing="1.2"
+  <text x="28" y="146" fill="#a7b2c0" font-size="11" letter-spacing="1.2"
         font-family="inherit">VOLUME</text>
 
   <!-- Status row -->

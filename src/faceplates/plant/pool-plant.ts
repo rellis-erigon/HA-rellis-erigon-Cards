@@ -19,7 +19,7 @@ import type { Faceplate, Region } from "../../core/types";
 
 const W = 420;
 const H = 290;
-const MUTED = "#8b93a1";
+const MUTED = "#a7b2c0";
 const WATER = "#38bdf8";
 const BODY_EDGE = "#3d4551";
 
@@ -46,7 +46,7 @@ const artNode = svg`
   <!-- Return and suction, so the pump lamp has something to belong to -->
   <line x1="24" y1="236" x2="232" y2="236" stroke="#2563eb"
         stroke-width="4" stroke-linecap="round" opacity="0.8" />
-  <text x="24" y="256" fill=${MUTED} font-size="9" letter-spacing="1.2"
+  <text x="24" y="256" fill=${MUTED} font-size="11" letter-spacing="1.2"
         font-family="inherit">CIRCULATION</text>
 `;
 

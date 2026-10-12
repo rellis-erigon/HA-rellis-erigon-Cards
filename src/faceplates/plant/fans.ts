@@ -85,7 +85,7 @@ function chassis(entry: Entry, exhaust: boolean) {
         y2=${CY + Math.sin(a) * (SCROLL_R - 18)}
         stroke="#6f7886" stroke-width="3" stroke-linecap="round" />`;
     })}
-    <circle cx=${CX} cy=${CY} r="10" fill="#8b93a1" />
+    <circle cx=${CX} cy=${CY} r="10" fill="#a7b2c0" />
 
     ${exhaust ? outletArrow : inletArrow}
     ${exhaust ? "" : outletArrow}

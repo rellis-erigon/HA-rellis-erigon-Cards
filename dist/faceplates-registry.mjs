@@ -1781,7 +1781,7 @@ function chassis(entry, exhaust) {
         y2=${CY + Math.sin(a) * (SCROLL_R - 18)}
         stroke="#6f7886" stroke-width="3" stroke-linecap="round" />`;
     })}
-    <circle cx=${CX} cy=${CY} r="10" fill="#8b93a1" />
+    <circle cx=${CX} cy=${CY} r="10" fill="#a7b2c0" />
 
     ${exhaust ? outletArrow : inletArrow}
     ${exhaust ? "" : outletArrow}
@@ -1876,7 +1876,7 @@ function build$5(values) {
       <rect x=${x + 14} y=${TOP$5 + 18} width=${UNIT_W - 28} height="46" rx="6"
             fill="#1a1f25" />
       <text x=${x + UNIT_W / 2} y=${TOP$5 + 138} text-anchor="middle"
-            fill="#8b93a1" font-size="11" letter-spacing="1.4"
+            fill="#a7b2c0" font-size="11" letter-spacing="1.4"
             font-family="inherit">UNIT ${n}</text>
     `);
         regions.push({
@@ -1897,11 +1897,11 @@ function build$5(values) {
     <defs>
       <marker id="hw-arrow" viewBox="0 0 10 10" refX="8" refY="5"
               markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-        <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b93a1" />
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#a7b2c0" />
       </marker>
     </defs>
     <rect x="0" y="0" width=${width} height=${H$4} rx="10" fill="#101216" />
-    <text x="16" y="26" fill="#8b93a1" font-size="12" letter-spacing="1.6"
+    <text x="16" y="26" fill="#a7b2c0" font-size="12" letter-spacing="1.6"
           font-family="inherit">HOT WATER</text>
 
     <!-- Secondary flow along the top, return along the bottom -->
@@ -2001,9 +2001,9 @@ function build$4(values) {
             return w `<line
           x1=${x + Math.cos(a) * 10} y1=${TOP$4 + 82 + Math.sin(a) * 10}
           x2=${x + Math.cos(a) * 22} y2=${TOP$4 + 82 + Math.sin(a) * 22}
-          stroke="#8b93a1" stroke-width="2.5" stroke-linecap="round" />`;
+          stroke="#a7b2c0" stroke-width="2.5" stroke-linecap="round" />`;
         })}
-      <text x=${x} y=${TOP$4 + 178} text-anchor="middle" fill="#8b93a1"
+      <text x=${x} y=${TOP$4 + 178} text-anchor="middle" fill="#a7b2c0"
             font-size="12" font-family="inherit">P${n}</text>
     `);
         regions.push({
@@ -2024,7 +2024,7 @@ function build$4(values) {
     }
     const artNode = w `
     <rect x="0" y="0" width=${width} height=${H$3} rx="10" fill="#101216" />
-    <text x="16" y="26" fill="#8b93a1" font-size="12" letter-spacing="1.6"
+    <text x="16" y="26" fill="#a7b2c0" font-size="12" letter-spacing="1.6"
           font-family="inherit">${service.label}</text>
 
     <!-- Flow header above the pumps, return header below -->
@@ -2105,7 +2105,7 @@ const artNode$2 = w `
   <rect x="0" y="0" width=${W$4} height=${H$2} rx="8" fill="url(#fcu-case)" />
   <rect x="0" y="0" width=${W$4} height="24" rx="8" fill="#232a32" />
   <rect x="0" y="16" width=${W$4} height="8" fill="#232a32" />
-  <text x="12" y="17" fill="#8b93a1" font-size="10" letter-spacing="1.6"
+  <text x="12" y="17" fill="#a7b2c0" font-size="11" letter-spacing="1.6"
         font-family="inherit">FAN COIL UNIT</text>
 
   <!-- A coil and a fan, so the tile reads as plant and not a thermostat -->
@@ -2198,7 +2198,7 @@ function build$3(values) {
         cells.push(w `
       <rect x=${x} y=${y} width=${cellW} height=${ZONE_H - 6} rx="4"
             fill="#14181d" stroke="#232930" />
-      <text x=${x + 34} y=${y + 17} fill="#8b93a1" font-size="12"
+      <text x=${x + 34} y=${y + 17} fill="#a7b2c0" font-size="12"
             font-family="inherit">ZONE ${n}</text>
     `);
         regions.push({
@@ -2212,7 +2212,7 @@ function build$3(values) {
     <!-- Status row -->
     <rect x="16" y="46" width=${W$3 - 32} height="68" rx="8"
           fill="#14181d" stroke="#232930" />
-    <text x="30" y="70" fill="#8b93a1" font-size="11" letter-spacing="1.5"
+    <text x="30" y="70" fill="#a7b2c0" font-size="11" letter-spacing="1.5"
           font-family="inherit">PANEL STATUS</text>
     ${cells}
   `;
@@ -2326,7 +2326,7 @@ function build$2(values) {
     <rect x="0" y="0" width=${W$2} height=${height} rx="8" fill="#0e1013" />
     <rect x="0" y="0" width=${W$2} height="26" rx="8" fill="#171a1f" />
     <rect x="0" y="18" width=${W$2} height="8" fill="#171a1f" />
-    <text x="14" y="18" fill="#8b93a1" font-size="12"
+    <text x="14" y="18" fill="#a7b2c0" font-size="12"
           font-family="inherit" letter-spacing="1.5">ZONE OUTPUTS</text>
     ${rows}
   `;
@@ -2540,7 +2540,7 @@ function build$1(values, ctx) {
     <rect x="0" y="0" width=${width} height=${height} rx="8" fill="#0e1013" />
     <rect x="0" y="0" width=${width} height="26" rx="8" fill="#171a1f" />
     <rect x="0" y="18" width=${width} height="8" fill="#171a1f" />
-    <text x="14" y="18" fill="#8b93a1" font-size="12" letter-spacing="1.5"
+    <text x="14" y="18" fill="#a7b2c0" font-size="12" letter-spacing="1.5"
           font-family="inherit">ZONE MIXER</text>
     ${strips}
   `;
@@ -2597,7 +2597,7 @@ const artNode$1 = w `
   <rect x="0" y="0" width=${W$1} height=${H$1} rx="10" fill="#101216" />
   <rect x="0" y="0" width=${W$1} height="34" rx="10" fill="#1a1e24" />
   <rect x="0" y="24" width=${W$1} height="10" fill="#1a1e24" />
-  <text x="16" y="23" fill="#8b93a1" font-size="12" letter-spacing="1.5"
+  <text x="16" y="23" fill="#a7b2c0" font-size="12" letter-spacing="1.5"
         font-family="inherit">ROOM CONTROL</text>
 
   <!-- Source display: the big pane, as on a panel's home page. -->
@@ -2607,7 +2607,7 @@ const artNode$1 = w `
   <!-- Level meter well -->
   <rect x="16" y="126" width=${W$1 - 32} height="58" rx="6"
         fill="#14171c" stroke="#252a31" />
-  <text x="28" y="146" fill="#8b93a1" font-size="11" letter-spacing="1.2"
+  <text x="28" y="146" fill="#a7b2c0" font-size="11" letter-spacing="1.2"
         font-family="inherit">VOLUME</text>
 
   <!-- Status row -->
@@ -2683,7 +2683,7 @@ const TANK_H = 210;
 const FOOT = 74;
 const BODY_FILL$1 = "#20262e";
 const BODY_EDGE$2 = "#3d4551";
-const MUTED$2 = "#8b93a1";
+const MUTED$2 = "#a7b2c0";
 function build(values) {
     const count = Math.max(1, Math.min(4, Math.round(values.tanks ?? 2)));
     const width = LEFT * 2 + count * TANK_W + (count - 1) * GAP + 150;
@@ -2811,7 +2811,7 @@ const STORAGE_TANKS = {
  */
 const W = 420;
 const H = 290;
-const MUTED$1 = "#8b93a1";
+const MUTED$1 = "#a7b2c0";
 const WATER = "#38bdf8";
 const BODY_EDGE$1 = "#3d4551";
 const artNode = w `
@@ -2837,7 +2837,7 @@ const artNode = w `
   <!-- Return and suction, so the pump lamp has something to belong to -->
   <line x1="24" y1="236" x2="232" y2="236" stroke="#2563eb"
         stroke-width="4" stroke-linecap="round" opacity="0.8" />
-  <text x="24" y="256" fill=${MUTED$1} font-size="9" letter-spacing="1.2"
+  <text x="24" y="256" fill=${MUTED$1} font-size="11" letter-spacing="1.2"
         font-family="inherit">CIRCULATION</text>
 `;
 const regions = [
@@ -2919,11 +2919,11 @@ const POOL_PLANT = {
  */
 const FRIDGE = { band: [0, 8], label: "FRIDGE" };
 const FREEZER = { band: [-26, -12], label: "FREEZER" };
-const DOOR_FILL = "#1d242c";
-const DOOR_EDGE = "#39414d";
-const BODY_FILL = "#2b323b";
-const BODY_EDGE = "#3d4551";
-const MUTED = "#8b93a1";
+const DOOR_FILL = "#171d25";
+const DOOR_EDGE = "#4a5462";
+const BODY_FILL = "#323a45";
+const BODY_EDGE = "#4a5462";
+const MUTED = "#a7b2c0";
 /** The readout block every cabinet carries, placed at a given origin. */
 function readout(x, y, w, p) {
     // The unit is never painted on: it comes from whatever entity is bound,
@@ -2949,7 +2949,7 @@ function readout(x, y, w, p) {
             x, y: bandY + 12, w, align: "middle", decimals: 1, size: 12,
             unit: "", placeholder: "", group: "setpoint" },
         { id: "sp_lbl", role: "", kind: "text", text: "SETPOINT",
-            x, y: bandY + 28, w, align: "middle", size: 9, group: "setpoint" },
+            x, y: bandY + 28, w, align: "middle", size: 10, group: "setpoint" },
     ];
 }
 // A lamp's label is centred under it, so the gap between lamps has to
@@ -2972,7 +2972,7 @@ function lamps(x, y, gap = LAMP_GAP) {
 function frame(width, height, title) {
     return w `
     <rect x="0" y="0" width=${width} height=${height} rx="10" fill="#101216" />
-    <text x="16" y="24" fill=${MUTED} font-size="11" letter-spacing="1.6"
+    <text x="16" y="25" fill=${MUTED} font-size="12" letter-spacing="1.6"
           font-family="inherit">${title}</text>
   `;
 }
@@ -3053,7 +3053,7 @@ function buildWalkin(p) {
             height="44" rx="3.5" fill=${MUTED} opacity="0.75" />
       <rect x="48" y=${bodyTop + bodyH - 46} width=${WALKIN_W - 176}
             height="22" rx="3" fill="#161b21" />
-      <text x="52" y=${bodyTop + bodyH + 24} fill=${MUTED} font-size="10"
+      <text x="52" y=${bodyTop + bodyH + 24} fill=${MUTED} font-size="11"
             letter-spacing="1.2" font-family="inherit">
         ${p === FREEZER ? "FREEZER ROOM" : "COLD ROOM"}
       </text>

@@ -37,7 +37,7 @@ function build(values: Record<string, number>) {
     cells.push(svg`
       <rect x=${x} y=${y} width=${cellW} height=${ZONE_H - 6} rx="4"
             fill="#14181d" stroke="#232930" />
-      <text x=${x + 34} y=${y + 17} fill="#8b93a1" font-size="12"
+      <text x=${x + 34} y=${y + 17} fill="#a7b2c0" font-size="12"
             font-family="inherit">ZONE ${n}</text>
     `);
     regions.push({
@@ -52,7 +52,7 @@ function build(values: Record<string, number>) {
     <!-- Status row -->
     <rect x="16" y="46" width=${W - 32} height="68" rx="8"
           fill="#14181d" stroke="#232930" />
-    <text x="30" y="70" fill="#8b93a1" font-size="11" letter-spacing="1.5"
+    <text x="30" y="70" fill="#a7b2c0" font-size="11" letter-spacing="1.5"
           font-family="inherit">PANEL STATUS</text>
     ${cells}
   `;

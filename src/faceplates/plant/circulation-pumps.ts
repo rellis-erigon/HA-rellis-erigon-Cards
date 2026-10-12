@@ -49,9 +49,9 @@ function build(values: Record<string, number>) {
         return svg`<line
           x1=${x + Math.cos(a) * 10} y1=${TOP + 82 + Math.sin(a) * 10}
           x2=${x + Math.cos(a) * 22} y2=${TOP + 82 + Math.sin(a) * 22}
-          stroke="#8b93a1" stroke-width="2.5" stroke-linecap="round" />`;
+          stroke="#a7b2c0" stroke-width="2.5" stroke-linecap="round" />`;
       })}
-      <text x=${x} y=${TOP + 178} text-anchor="middle" fill="#8b93a1"
+      <text x=${x} y=${TOP + 178} text-anchor="middle" fill="#a7b2c0"
             font-size="12" font-family="inherit">P${n}</text>
     `);
 
@@ -74,7 +74,7 @@ function build(values: Record<string, number>) {
 
   const artNode = svg`
     <rect x="0" y="0" width=${width} height=${H} rx="10" fill="#101216" />
-    <text x="16" y="26" fill="#8b93a1" font-size="12" letter-spacing="1.6"
+    <text x="16" y="26" fill="#a7b2c0" font-size="12" letter-spacing="1.6"
           font-family="inherit">${service.label}</text>
 
     <!-- Flow header above the pumps, return header below -->

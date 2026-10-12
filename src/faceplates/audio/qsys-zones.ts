@@ -80,7 +80,7 @@ function build(values: Record<string, number>) {
     <rect x="0" y="0" width=${W} height=${height} rx="8" fill="#0e1013" />
     <rect x="0" y="0" width=${W} height="26" rx="8" fill="#171a1f" />
     <rect x="0" y="18" width=${W} height="8" fill="#171a1f" />
-    <text x="14" y="18" fill="#8b93a1" font-size="12"
+    <text x="14" y="18" fill="#a7b2c0" font-size="12"
           font-family="inherit" letter-spacing="1.5">ZONE OUTPUTS</text>
     ${rows}
   `;

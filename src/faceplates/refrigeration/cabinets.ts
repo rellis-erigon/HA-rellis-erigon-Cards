@@ -30,11 +30,11 @@ interface Palette {
 const FRIDGE: Palette = { accent: "#7dd3fc", band: [0, 8], label: "FRIDGE" };
 const FREEZER: Palette = { accent: "#c7e9ff", band: [-26, -12], label: "FREEZER" };
 
-const DOOR_FILL = "#1d242c";
-const DOOR_EDGE = "#39414d";
-const BODY_FILL = "#2b323b";
-const BODY_EDGE = "#3d4551";
-const MUTED = "#8b93a1";
+const DOOR_FILL = "#171d25";
+const DOOR_EDGE = "#4a5462";
+const BODY_FILL = "#323a45";
+const BODY_EDGE = "#4a5462";
+const MUTED = "#a7b2c0";
 
 /** The readout block every cabinet carries, placed at a given origin. */
 function readout(x: number, y: number, w: number, p: Palette): Region[] {
@@ -61,7 +61,7 @@ function readout(x: number, y: number, w: number, p: Palette): Region[] {
       x, y: bandY + 12, w, align: "middle", decimals: 1, size: 12,
       unit: "", placeholder: "", group: "setpoint" },
     { id: "sp_lbl", role: "", kind: "text", text: "SETPOINT",
-      x, y: bandY + 28, w, align: "middle", size: 9, group: "setpoint" },
+      x, y: bandY + 28, w, align: "middle", size: 10, group: "setpoint" },
   ] as Region[];
 }
 
@@ -87,7 +87,7 @@ function lamps(x: number, y: number, gap: number = LAMP_GAP): Region[] {
 function frame(width: number, height: number, title: string) {
   return svg`
     <rect x="0" y="0" width=${width} height=${height} rx="10" fill="#101216" />
-    <text x="16" y="24" fill=${MUTED} font-size="11" letter-spacing="1.6"
+    <text x="16" y="25" fill=${MUTED} font-size="12" letter-spacing="1.6"
           font-family="inherit">${title}</text>
   `;
 }
@@ -178,7 +178,7 @@ function buildWalkin(p: Palette) {
             height="44" rx="3.5" fill=${MUTED} opacity="0.75" />
       <rect x="48" y=${bodyTop + bodyH - 46} width=${WALKIN_W - 176}
             height="22" rx="3" fill="#161b21" />
-      <text x="52" y=${bodyTop + bodyH + 24} fill=${MUTED} font-size="10"
+      <text x="52" y=${bodyTop + bodyH + 24} fill=${MUTED} font-size="11"
             letter-spacing="1.2" font-family="inherit">
         ${p === FREEZER ? "FREEZER ROOM" : "COLD ROOM"}
       </text>
