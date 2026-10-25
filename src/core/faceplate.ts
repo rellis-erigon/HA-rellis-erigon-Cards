@@ -12,7 +12,7 @@
  */
 
 import { svg, SVGTemplateResult, TemplateResult, html } from "lit";
-import { format, readClimate, readRole } from "./bind";
+import { format, joinOfRole, readClimate, readRole } from "./bind";
 import { Faceplate, HomeAssistant, Reading, Region } from "./types";
 
 export interface RenderContext {
@@ -24,6 +24,23 @@ export interface RenderContext {
   bindings: Record<string, string>;
   page: string;
   onAction: (region: Region, value?: number) => void;
+  /**
+   * When set, buttons report being held and released instead of clicked.
+   * A panel button is held for as long as the finger is down, and a volume
+   * ramp on the processor runs for exactly that long.
+   */
+  onPress?: (region: Region, down: boolean) => void;
+  /**
+   * The roles come straight from a Crestron processor, which never sends a
+   * join at its default. A visibility join with no entity has not been
+   * reported, so it is off, not unknown.
+   */
+  unreportedIsOff?: boolean;
+}
+
+/** A visibility role that a CIP processor would have reported if it were on. */
+function unreportedJoin(role: string): boolean {
+  return joinOfRole(role)?.startsWith("d") ?? false;
 }
 
 /** Regions on the current page, plus those pinned to every page. */
@@ -37,6 +54,9 @@ function visibleRegions(ctx: RenderContext): Region[] {
     if (region.visible_role && ctx.bindings[region.visible_role]) {
       return isOn(readRole(ctx.hass, ctx.bindings, region.visible_role));
     }
+    if (region.visible_role && ctx.unreportedIsOff && unreportedJoin(region.visible_role)) {
+      return false;
+    }
     if (!region.page) return true;
     if (region.page === ctx.page) return true;
     // Side by side on the panel, so side by side here.
@@ -49,9 +69,16 @@ function visibleRegions(ctx: RenderContext): Region[] {
 /** True once the panel itself is driving what is on screen. */
 export function visibilityIsLive(
   faceplate: Faceplate, bindings: Record<string, string>,
+  unreportedIsOff = false,
 ): boolean {
   const gated = faceplate.regions.filter((r) => r.visible_role);
-  return gated.length > 0 && gated.every((r) => bindings[r.visible_role!]);
+  if (!gated.length) return false;
+  if (gated.every((r) => bindings[r.visible_role!])) return true;
+  // From a processor, one reported subpage join is enough: the rest are
+  // off. With none reported there is nothing to follow yet.
+  return unreportedIsOff &&
+    gated.some((r) => bindings[r.visible_role!]) &&
+    gated.every((r) => bindings[r.visible_role!] || unreportedJoin(r.visible_role!));
 }
 
 export function renderFaceplate(ctx: RenderContext): TemplateResult {
@@ -83,9 +110,22 @@ function chassis(faceplate: Faceplate): SVGTemplateResult {
   return svg`${faceplate.artNode ?? ""}`;
 }
 
+/** Roles a climate entity answers better than any single point can.
+ *
+ * What the unit is doing is the thermostat point on a gateway, which is a
+ * bare on/off: "off" when the room is satisfied, shown as "Off" beside a
+ * unit that is plainly running. The climate entity has already turned
+ * that and the mode into Heating, Cooling or Idle, so it wins.
+ */
+const CLIMATE_FIRST = new Set(["hvac_action"]);
+
 function renderRegion(ctx: RenderContext, region: Region): SVGTemplateResult {
+  const preferClimate = Boolean(
+    ctx.climate && CLIMATE_FIRST.has(region.role)
+    && ctx.hass.states[ctx.climate]?.attributes?.hvac_action !== undefined
+  );
   const reading =
-    ctx.climate && !ctx.bindings[region.role]
+    ctx.climate && (preferClimate || !ctx.bindings[region.role])
       ? readClimate(ctx.hass, ctx.climate, region.role)
       : readRole(ctx.hass, ctx.bindings, region.role);
   switch (region.kind) {
@@ -488,7 +528,15 @@ function buttonRegion(
     .join(";");
   return svg`
     <g class="button ${lit ? "lit" : ""} ${arty ? "art" : ""}"
-       @click=${() => ctx.onAction(region)} role="button" tabindex="0">
+       @click=${ctx.onPress ? undefined : () => ctx.onAction(region)}
+       @pointerdown=${ctx.onPress ? (e: PointerEvent) => {
+         e.preventDefault();
+         ctx.onPress!(region, true);
+       } : undefined}
+       @pointerup=${ctx.onPress ? () => ctx.onPress!(region, false) : undefined}
+       @pointercancel=${ctx.onPress ? () => ctx.onPress!(region, false) : undefined}
+       @pointerleave=${ctx.onPress ? () => ctx.onPress!(region, false) : undefined}
+       role="button" tabindex="0">
       ${plain
         ? svg`<rect
             x=${region.x}
@@ -525,7 +573,16 @@ function buttonRegion(
           : region.y + height / 2 + (region.size ?? 12) / 3}
         text-anchor="middle"
         style=${ink}
-      >${region.text ?? ""}</text>
+      >${buttonText(ctx, region)}</text>
     </g>
   `;
+}
+
+/** A button's words: what the processor writes there, else its own. */
+function buttonText(ctx: RenderContext, region: Region): string {
+  if (region.label_role && ctx.bindings[region.label_role]) {
+    const reading = readRole(ctx.hass, ctx.bindings, region.label_role);
+    if (!reading.dark && reading.state) return reading.state;
+  }
+  return region.text ?? "";
 }

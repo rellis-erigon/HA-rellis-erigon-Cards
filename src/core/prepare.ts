@@ -73,7 +73,7 @@ export function prepare(
   const roles = expandRoles(
     [
       ...new Set(
-        full.regions.flatMap((r) => [r.role, r.visible_role ?? ""]),
+        full.regions.flatMap((r) => [r.role, r.visible_role ?? "", r.label_role ?? ""]),
       ),
     ].filter(Boolean)
   );

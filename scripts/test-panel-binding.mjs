@@ -186,7 +186,7 @@ async function mount(config, hass) {
 {
   // The real situation partway through setting a panel up: the text joins
   // were exposed long ago and the buttons have not been yet.
-  const hass = hassWith({ s1: "Orchard Room 1" });
+  const hass = hassWith({ s1: "Meeting Room 1" });
   const { svg } = await mount(
     { panel: FACEPLATE, device: "Function 1-2", hide_unbound: false },
     hass,
@@ -195,7 +195,7 @@ async function mount(config, hass) {
     t.textContent.trim(),
   );
   check("a partly exposed panel binds what exists",
-    texts.includes("Orchard Room 1"), texts.join("|"));
+    texts.includes("Meeting Room 1"), texts.join("|"));
   check("and draws the rest rather than collapsing",
     svg.querySelectorAll("rect.plate").length === 1);
 }
@@ -399,6 +399,244 @@ function withEntities(entries) {
   const fill = Number(svg.querySelector(".bar-fill").getAttribute("width"));
   check("an explicit choice still wins over the program's",
     fill === 20, `fill ${fill}`);
+}
+
+// -- emulating the panel: a control sends the join the panel would -------
+
+/** A Crestron CIP processor as the frontend sees it, recording calls. */
+function cipHass(joins) {
+  const hass = hassWith(joins, { deviceName: "Room A & B" });
+  for (const entry of Object.values(hass.entities)) entry.platform = "crestron_cip";
+  hass.devices.dev1.config_entries = ["entry-12"];
+  hass.calls = [];
+  hass.callService = async (domain, service, data) => {
+    hass.calls.push([domain, service, data]);
+  };
+  return hass;
+}
+
+const PANEL_KEYS = {
+  ...FACEPLATE,
+  regions: [
+    { id: "k1", kind: "button", role: "button_101", x: 0, y: 0, w: 100,
+      h: 60, action: "press", target: "button_101", text: "AirMedia" },
+    // The panel's volume up is a digital join the program ramps. The
+    // generator drew it as a level step, but the panel never wrote a
+    // level: it pressed this join.
+    { id: "k2", kind: "button", role: "button_211", x: 0, y: 100, w: 100,
+      h: 60, action: "level_up", target: "level_211", text: "" },
+    { id: "k3", kind: "bar", role: "level_211", x: 200, y: 0, w: 40,
+      h: 300, max: 65535 },
+  ],
+};
+
+/** Press and release a button: held, as on a panel, and clicked, as elsewhere. */
+async function tap(hass, config, id, holdMs = 10) {
+  const { root } = await mount({ panel: PANEL_KEYS, hide_unbound: false, ...config }, hass);
+  const keys = [...root.querySelectorAll("g.button")];
+  const buttons = PANEL_KEYS.regions.filter((r) => r.kind === "button");
+  const key = keys[buttons.findIndex((r) => r.id === id)];
+  key?.dispatchEvent(new w.Event("pointerdown", { bubbles: true, cancelable: true }));
+  await new Promise((r) => setTimeout(r, holdMs));
+  key?.dispatchEvent(new w.Event("pointerup", { bubbles: true }));
+  key?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  // The release waits out the minimum press.
+  await new Promise((r) => setTimeout(r, 150));
+}
+
+{
+  const hass = cipHass({ d101: "on", a211: 30000 });
+  await tap(hass, { device: "Room A & B" }, "k1");
+  const [down, up] = hass.calls;
+  check("a button on a CIP processor holds its own join, then releases it",
+    hass.calls.length === 2 &&
+      down[1] === "set_digital" && down[2].join === 101 && down[2].value === true &&
+      down[2].entry_id === "entry-12" &&
+      up[1] === "set_digital" && up[2].join === 101 && up[2].value === false,
+    JSON.stringify(hass.calls));
+}
+
+{
+  const hass = cipHass({ a211: 30000 });
+  await tap(hass, { device: "Room A & B" }, "k2");
+  const [call] = hass.calls;
+  check("volume up holds the panel's join rather than writing a level",
+    call && call[1] === "set_digital" && call[2].join === 211 && call[2].value === true,
+    JSON.stringify(hass.calls));
+}
+
+{
+  // Without an entry id the action would go to every processor.
+  const hass = cipHass({ d101: "on" });
+  hass.devices.dev1.config_entries = [];
+  hass.entities = Object.fromEntries(
+    Object.entries(hass.entities).map(([k, v]) => [k, { ...v, platform: "other" }]));
+  await tap(hass, { device: "Room A & B" }, "k1");
+  check("a device that is not a CIP processor sends no CIP action",
+    !hass.calls.some(([domain]) => domain === "crestron_cip"),
+    JSON.stringify(hass.calls));
+}
+
+{
+  const hass = cipHass({ d101: "on" });
+  hass.states["button.by_hand"] = { entity_id: "button.by_hand", state: "unknown", attributes: {} };
+  await tap(hass, { device: "Room A & B",
+                    entities: { button_101: "button.by_hand" } }, "k1");
+  const [call] = hass.calls;
+  check("a hand-bound entity still wins over the panel's join",
+    call && call[0] === "button" && call[2].entity_id === "button.by_hand",
+    JSON.stringify(hass.calls));
+}
+
+{
+  // Two subpages sharing one space, shown by d31 and d33. The processor
+  // reports d31 on and never mentions d33, because it is at its default.
+  const PAGES = {
+    ...FACEPLATE,
+    pages: ["unjoined", "joined"],
+    regions: [
+      { id: "p1", kind: "text", role: "", x: 0, y: 0, w: 200, h: 40,
+        text: "Unjoined page", page: "unjoined", visible_role: "lamp_31" },
+      { id: "p2", kind: "text", role: "", x: 0, y: 0, w: 200, h: 40,
+        text: "Joined page", page: "joined", visible_role: "lamp_33" },
+    ],
+  };
+  const hass = cipHass({ d31: "on" });
+  const { root, svg } = await mount(
+    { panel: PAGES, device: "Room A & B", hide_unbound: false }, hass);
+  const texts = [...svg.querySelectorAll("text")].map((t) => t.textContent.trim());
+  check("an unreported subpage join on a processor is off",
+    texts.includes("Unjoined page") && !texts.includes("Joined page"),
+    texts.join("|"));
+  check("and the processor, not page tabs, decides what is on screen",
+    !root.querySelector(".pages"));
+
+  // The same panel off a processor keeps the old behaviour: unknown is
+  // not off, so the user picks the page.
+  const plain = hassWith({ d31: "on" });
+  for (const id of Object.keys(plain.states)) {
+    plain.states[id.replace("button.", "binary_sensor.")] = plain.states[id];
+  }
+  const other = await mount({ panel: PAGES, device: "Function 1-2", hide_unbound: false }, plain);
+  check("elsewhere an unbound visibility join still falls back to tabs",
+    Boolean(other.root.querySelector(".pages")));
+}
+
+{
+  // Held for as long as the finger is down: the processor ramps a volume
+  // for exactly as long as its join is high.
+  const hass = cipHass({ a211: 30000 });
+  const started = Date.now();
+  let releasedAt = 0;
+  const record = hass.callService;
+  hass.callService = async (...args) => {
+    if (args[2]?.value === false) releasedAt = Date.now();
+    return record(...args);
+  };
+  await tap(hass, { device: "Room A & B" }, "k2", 300);
+  check("a held button is released when the finger lifts, not before",
+    releasedAt - started >= 290, `released after ${releasedAt - started} ms`);
+}
+
+// -- a whole panel: every screen, and the processor picks one ----------
+
+{
+  const screen = (text) => ({
+    ...FACEPLATE, id: text, regions: [
+      { id: "t", kind: "text", role: "", x: 0, y: 0, w: 300, h: 40, text },
+    ],
+  });
+  const DOC = {
+    format: "crestron-panel", version: 1, name: "Room", size: [1280, 800],
+    screens: { Start: screen("Start screen"), Main: screen("Main screen") },
+    page_joins: { Start: 12, Main: 13 },
+    default_screen: "Main",
+  };
+  globalThis.fetch = async () => ({ ok: true, json: async () => DOC });
+
+  const textsOf = (svg) => [...svg.querySelectorAll("text")].map((t) => t.textContent.trim());
+
+  // The processor pulsed Start after Main: both are off now, and the
+  // later one is the page on the wall.
+  const hass = cipHass({ d12: "off", d13: "off" });
+  hass.states["button.function_1_2_d12"].attributes.last_on = "2026-10-25T00:20:00+00:00";
+  hass.states["button.function_1_2_d13"].attributes.last_on = "2026-10-25T00:10:00+00:00";
+  const { root, svg } = await mount(
+    { panel_url: "/local/crestron-panels/room/panel.json",
+      device: "Room A & B", hide_unbound: false }, hass);
+  check("a whole panel loads from panel_url and shows the page flipped to last",
+    textsOf(svg).includes("Start screen") && !textsOf(svg).includes("Main screen"),
+    textsOf(svg).join("|"));
+  check("and the processor decides, so there are no screen tabs",
+    !root.querySelector(".screens"));
+
+  // A page join that is on right now beats any record of the past.
+  const now = cipHass({ d12: "off", d13: "on" });
+  now.states["button.function_1_2_d12"].attributes.last_on = "2026-10-25T00:20:00+00:00";
+  const second = await mount(
+    { panel_url: "/local/crestron-panels/room/panel.json",
+      device: "Room A & B", hide_unbound: false }, now);
+  check("a page join that is on now wins",
+    textsOf(second.svg).includes("Main screen"), textsOf(second.svg).join("|"));
+
+  // Nothing flipped yet: the default, and tabs to choose.
+  const none = cipHass({ s1: "Room" });
+  const third = await mount(
+    { panel_url: "/local/crestron-panels/room/panel.json",
+      device: "Room A & B", hide_unbound: false }, none);
+  check("before any flip the default screen shows, with tabs to choose",
+    textsOf(third.svg).includes("Main screen") && Boolean(third.root.querySelector(".screens")),
+    textsOf(third.svg).join("|"));
+
+  const fourth = await mount(
+    { panel_url: "/local/crestron-panels/room/panel.json", default_screen: "Start",
+      device: "Room A & B", hide_unbound: false }, cipHass({ s1: "Room" }));
+  check("a site can say which screen its panels rest on",
+    textsOf(fourth.svg).includes("Start screen"), textsOf(fourth.svg).join("|"));
+}
+
+{
+  // A Subpage Reference List: one zone strip, drawn per zone, each bound to
+  // its own joins inside the list's SmartObject.
+  const strip = (i) => ({ regions: [
+    { id: `name_i${i}`, kind: "text", role: `text_o1_${11 + (i - 1) * 10}`, x: 0, y: 0, w: 200, h: 40, placeholder: "" },
+    { id: `mute_i${i}`, kind: "button", role: `button_o1_${4011 + (i - 1) * 10}`, x: 0, y: 500,
+      w: 200, h: 60, action: "press", target: `button_o1_${4011 + (i - 1) * 10}`, text: "MUTE" },
+  ] });
+  const DOC = {
+    format: "crestron-panel", version: 1, name: "BGM", size: [1280, 800],
+    screens: { Page: { ...FACEPLATE, id: "bgm", regions: [], lists: [{
+      x: 0, y: 120, w: 1276, h: 650, orientation: "horizontal", spacing: 10, margin: 5,
+      smart_object: 1, item_size: [200, 640], items: [1, 2, 3].map(strip),
+    }] } },
+    page_joins: {}, default_screen: "Page",
+  };
+  globalThis.fetch = async () => ({ ok: true, json: async () => DOC });
+  const hass = cipHass({ s1: "Reception" });
+  for (const [i, name] of [[2, "Gym"], [3, "Pool Area"]]) {
+    const id = `sensor.reception_o1_s${11 + (i - 1) * 10}`;
+    hass.states[id] = { entity_id: id, state: name,
+      attributes: { join: `o1:s${11 + (i - 1) * 10}` } };
+    hass.entities[id] = { entity_id: id, device_id: "dev1", platform: "crestron_cip" };
+  }
+  const { root } = await mount({ panel_url: "/local/crestron-panels/bgm/panel.json",
+    device: "Room A & B", hide_unbound: false }, hass);
+  const items = [...root.querySelectorAll(".list .item")];
+  check("every item of a reference list is drawn", items.length === 3, `${items.length} items`);
+  const names = items.map((item) => [...item.querySelectorAll("text")].map((t) => t.textContent.trim()).join("|"));
+  check("each item reads its own join inside the SmartObject",
+    names[1].includes("Gym") && names[2].includes("Pool Area") && !names[0].includes("Gym"),
+    names.join(" / "));
+
+  hass.calls.length = 0;
+  const mute = items[2].querySelector("g.button");
+  mute.dispatchEvent(new w.Event("pointerdown", { bubbles: true, cancelable: true }));
+  mute.dispatchEvent(new w.Event("pointerup", { bubbles: true }));
+  await new Promise((r) => setTimeout(r, 150));
+  const [down] = hass.calls;
+  check("a list item's button is sent into its SmartObject",
+    down && down[1] === "set_digital" && down[2].join === 4031 && down[2].smart_object === 1,
+    JSON.stringify(hass.calls));
 }
 
 console.log(`\n${passed} passed, ${failed} failed`);

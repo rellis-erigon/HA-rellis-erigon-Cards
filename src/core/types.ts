@@ -24,6 +24,8 @@ export interface Region {
   id: string;
   /** The role this region shows, e.g. "energy_total". Never an entity id. */
   role: string;
+  /** A role whose text replaces a button's own: a label the processor writes. */
+  label_role?: string;
   kind: RegionKind;
   /** Position in the faceplate's own coordinate space, not pixels. */
   x: number;
@@ -177,6 +179,10 @@ export interface Region {
     | "power_toggle"
     | "mode_cycle"
     | "fan_cycle"
+    // Presses a button entity rather than calling a climate service: the
+    // filter sign is cleared at the unit, and there is no climate service
+    // for it.
+    | "filter_reset"
     | "mute_toggle"
     | "level_up"
     | "level_down"
@@ -213,6 +219,44 @@ export interface FaceplateOption {
   help?: string;
 }
 
+/**
+ * A Subpage Reference List: one subpage drawn once per item, side by side,
+ * scrolling where they do not fit — a zone strip repeated per zone.
+ */
+export interface FaceplateList {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  orientation: "horizontal" | "vertical";
+  spacing: number;
+  margin: number;
+  smart_object: number;
+  background?: string | null;
+  /** The item subpage's own size. */
+  item_size: [number, number];
+  items: { regions: Region[] }[];
+}
+
+/**
+ * A whole imported panel: every screen, and the join that shows each.
+ *
+ * Written by crestron_cip.import_panel. A touch panel is several screens,
+ * and which is showing is the processor's decision, made by pulsing the
+ * screen's join.
+ */
+export interface PanelDocument {
+  format: "crestron-panel";
+  version: number;
+  name: string;
+  size: [number, number];
+  screens: Record<string, Faceplate>;
+  /** screen -> the digital join the processor pulses to show it. */
+  page_joins: Record<string, number>;
+  /** What to draw before the processor has flipped a page. */
+  default_screen: string;
+}
+
 export interface Faceplate {
   id: string;
   name: string;
@@ -238,6 +282,8 @@ export interface Faceplate {
    */
   artNode?: unknown;
   regions: Region[];
+  /** Subpage Reference Lists on this screen, drawn over it. */
+  lists?: FaceplateList[];
   pages?: string[];
   /**
    * Which pages are on screen together, keyed by page.
@@ -297,6 +343,8 @@ export interface HassRegistryEntry {
   entity_id: string;
   device_id?: string | null;
   area_id?: string | null;
+  /** The integration that created the entity, e.g. "crestron_cip". */
+  platform?: string;
 }
 
 export interface HassDevice {
@@ -304,6 +352,7 @@ export interface HassDevice {
   name?: string | null;
   name_by_user?: string | null;
   area_id?: string | null;
+  config_entries?: string[];
 }
 
 export interface HomeAssistant {
@@ -316,6 +365,8 @@ export interface HomeAssistant {
     service: string,
     data: Record<string, unknown>
   ): Promise<unknown>;
+  /** A websocket command; optional because test doubles rarely need it. */
+  callWS?<T>(message: Record<string, unknown>): Promise<T>;
 }
 
 export interface FaceplateCardConfig {
@@ -344,7 +395,15 @@ export interface FaceplateCardConfig {
    * An imported panel belongs to one site, so shipping it to everyone
    * in the bundle would be absurd — it travels in the card config.
    */
-  panel?: Faceplate;
+  panel?: Faceplate | PanelDocument;
+  /** Where to load an imported panel from, e.g. /local/crestron-panels/x/panel.json. */
+  panel_url?: string;
+  /**
+   * The screen to show until the processor flips a page. A page join is
+   * pulsed, so a card that has never seen one cannot know the page; this
+   * is where a site says what its panels rest on.
+   */
+  default_screen?: string;
   /** Values for the faceplate's declared options. */
   options?: Record<string, number>;
   /** How much a trim key moves a level, in the level's own units. */
@@ -355,6 +414,13 @@ export interface FaceplateCardConfig {
    * have some of it. The card says how many it hid.
    */
   hide_unbound?: boolean;
+  /**
+   * How large to draw an imported panel, as a multiple of its own size.
+   * The card never draws past the drawing's size by default; a panel
+   * project built for a 200px-wide strip is unreadable at 200px on a
+   * dashboard.
+   */
+  scale?: number;
   /**
    * Names to print on a repeated faceplate, keyed by the role prefix of the
    * thing they name — `{ zone1: "Reception" }`. A rack of sixteen strips

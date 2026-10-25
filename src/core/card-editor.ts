@@ -19,7 +19,7 @@
 
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
 import { faceplatesFor, getFaceplate, resolveFaceplate } from "../faceplates/index";
-import { FaceplateCardConfig, HomeAssistant } from "./types";
+import { Faceplate, FaceplateCardConfig, HomeAssistant } from "./types";
 
 export interface EditorOptions {
   /** Expand region roles into everything the card can actually bind. */
@@ -38,6 +38,10 @@ function humanise(role: string): string {
   return words.charAt(0).toUpperCase() + words.slice(1);
 }
 
+const EMPTY: Faceplate = {
+  id: "", name: "", card: "", render: "svg", size: [1, 1], regions: [],
+};
+
 export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): void {
   class FaceplateCardEditor extends LitElement {
     static override properties = {
@@ -54,10 +58,15 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
 
     /** The faceplate currently chosen, resolved at its option values. */
     private _faceplate() {
-      return resolveFaceplate(
-        getFaceplate(card, this._config?.faceplate),
-        this._config?.options ?? {}
-      );
+      // An imported panel travels in the config and is in no catalogue, so
+      // looking it up by name found nothing and the editor threw on open.
+      const panel = this._config?.panel;
+      const base = panel && "screens" in panel
+        ? panel.screens[panel.default_screen] ?? Object.values(panel.screens)[0]
+        : panel ?? getFaceplate(card, this._config?.faceplate);
+      // A panel loaded from panel_url is not in the config at all; the
+      // editor still has to open, with nothing to list.
+      return resolveFaceplate(base ?? EMPTY, this._config?.options ?? {});
     }
 
     /**
@@ -97,7 +106,8 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
       const data: Record<string, unknown> = {
         title: config.title ?? config.name ?? "",
         hide_unbound: config.hide_unbound !== false,
-        faceplate: getFaceplate(card, config.faceplate).id,
+        // An imported panel has no catalogue entry to name.
+        faceplate: config.panel ? "" : getFaceplate(card, config.faceplate)?.id ?? "",
         device: config.device ?? "",
       };
       for (const option of this._faceplate().options ?? []) {
@@ -123,6 +133,7 @@ export function defineFaceplateEditor(card: string, opts: EditorOptions = {}): v
         type: this._config?.type ?? `custom:${card}`,
         faceplate: String(data.faceplate ?? ""),
       };
+      if (config.panel) delete config.faceplate;
 
       const title = String(data.title ?? "").trim();
       if (title) config.title = title;

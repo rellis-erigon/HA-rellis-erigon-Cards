@@ -8,6 +8,8 @@ import terser from "@rollup/plugin-terser";
 const cards = {
   "bms-meter-card": "src/cards/meter/bms-meter-card.ts",
   "hvac-controller-card": "src/cards/hvac/hvac-controller-card.ts",
+  "ac-history-card": "src/cards/hvac/ac-history-card.ts",
+  "ac-mapping-card": "src/cards/hvac/ac-mapping-card.ts",
   "pump-system-card": "src/cards/plant/pump-system-card.ts",
   "audio-zone-card": "src/cards/audio/audio-zone-card.ts",
   "room-controller-card": "src/cards/av/room-controller-card.ts",
@@ -15,7 +17,9 @@ const cards = {
   "plant-equipment-card": "src/cards/plant/plant-equipment-card.ts",
   "fire-panel-card": "src/cards/fire/fire-panel-card.ts",
   "crestron-panel-card": "src/cards/panel/crestron-panel-card.ts",
+  "crestron-xpanel-card": "src/cards/panel/crestron-xpanel-card.ts",
   "bridge-devices-strategy": "src/strategy/bridge-devices.ts",
+  "site-floors-strategy": "src/strategy/site-floors.ts",
 };
 
 const plugins = [

@@ -18,6 +18,7 @@ import { hiddenNote, prepare } from "../../core/prepare";
 import { renderFaceplate } from "../../core/faceplate";
 import { deviceEntityIds, readClimate } from "../../core/bind";
 import { getFaceplate } from "../../faceplates/index";
+import { Assessment, Change, ClimateState, Setting, assess } from "../../core/change-confirm";
 import {
   FaceplateCardConfig,
   HomeAssistant,
@@ -28,14 +29,106 @@ const CARD = "hvac-controller-card";
 
 const MODES = ["off", "cool", "heat", "dry", "fan_only", "auto"];
 
+/** "fan_only" as "Fan only". */
+const pretty = (value: string): string =>
+  value.charAt(0).toUpperCase() + value.slice(1).replace(/_/g, " ");
+
 class HvacControllerCard extends LitElement {
   static override properties = {
     hass: { attribute: false },
     _config: { state: true },
+    _page: { state: true },
+    _change: { state: true },
   };
 
   declare hass?: HomeAssistant;
   declare private _config?: FaceplateCardConfig;
+
+  constructor() {
+    super();
+    this._page = "";
+  }
+
+  /** The newest change asked of the unit, followed until it has taken. */
+  declare private _change?: Change;
+  private _told = "";
+  private _tick?: number;
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this._tick !== undefined) window.clearInterval(this._tick);
+    this._tick = undefined;
+  }
+
+  /** Ask for a change and follow it: sending, then the unit's answer. */
+  private async _send(
+    label: string,
+    target: string,
+    settings: Setting[],
+    want: (state: ClimateState) => boolean,
+    call: () => Promise<unknown>
+  ): Promise<void> {
+    const change: Change = { label, target, settings, want, at: Date.now() };
+    this._change = change;
+    this._told = "";
+    // Re-check once a second: a unit that never answers has to be noticed
+    // even when nothing else changes on the page.
+    if (this._tick === undefined) {
+      this._tick = window.setInterval(() => this.requestUpdate(), 1000);
+    }
+    try {
+      await call();
+      change.sent = true;
+    } catch (err) {
+      change.refused = (err as { message?: string })?.message ?? String(err);
+    }
+    this.requestUpdate();
+  }
+
+  private _assessment(): Assessment | undefined {
+    const change = this._change;
+    const climate = this._config?.climate;
+    if (!change || !climate || !this.hass) return undefined;
+    const result = assess(change, this.hass.states[climate] as ClimateState | undefined,
+                          Date.now());
+    const settled = result.phase === "confirmed" || result.phase === "failed";
+    if (settled && this._told !== result.phase) {
+      // A toast too, so the answer is seen even if the page has moved on.
+      this._told = result.phase;
+      const name = cardTitle(this.hass, this._config!) ?? "AC";
+      this._notify(`${name}: ${result.text}`);
+      if (this._tick !== undefined) window.clearInterval(this._tick);
+      this._tick = undefined;
+      // A confirmation stays up a while; a failure until the next change
+      // or until it is dismissed.
+      if (result.phase === "confirmed") {
+        window.setTimeout(() => {
+          if (this._change === change) this._change = undefined;
+        }, 15000);
+      }
+    }
+    return result;
+  }
+
+  private _status(): TemplateResult | typeof nothing {
+    const result = this._assessment();
+    if (!result) return nothing;
+    const icon = {
+      sending: "mdi:send-clock",
+      held: "mdi:timer-sand",
+      waiting: "mdi:progress-clock",
+      confirmed: "mdi:check-circle",
+      failed: "mdi:alert-circle",
+    }[result.phase];
+    return html`<div class="change ${result.phase}" role="status" aria-live="polite">
+      <ha-icon icon=${icon}></ha-icon>
+      <span>${result.text}</span>
+      ${result.phase === "failed"
+        ? html`<button class="dismiss" title="Dismiss"
+                 @click=${() => { this._change = undefined; }}>✕</button>`
+        : nothing}
+    </div>`;
+  }
 
   setConfig(config: FaceplateCardConfig): void {
     if (!config) throw new Error("Invalid configuration");
@@ -44,6 +137,9 @@ class HvacControllerCard extends LitElement {
     // throwing there shows "Configuration error" instead of the card. A
     // card with nothing bound renders dark and says what it needs.
     this._config = config;
+    const faceplate = getFaceplate(CARD, config.faceplate);
+    this._page = (config as { page?: string }).page
+      ?? faceplate.pages?.[0] ?? "";
   }
 
   getCardSize(): number {
@@ -68,9 +164,72 @@ class HvacControllerCard extends LitElement {
     return entity ? Number(this.hass.states[entity]?.state) : undefined;
   }
 
+  /** Role to entity, as the last render resolved it.
+   *
+   * Kept because one action does not go through the climate entity: the
+   * filter sign is cleared by pressing a button on the unit, and there is
+   * no climate service for it.
+   */
+  private _bindings: Record<string, string> = {};
+
+  /** The page being shown. Empty until a faceplate with pages is set.
+   *
+   * The indoor-unit face grew a second page for the points no face drew —
+   * accumulators, ventilation, the wall-controller locks. Without this the
+   * card asked for page "" and every region pinned to a page vanished,
+   * leaving the chassis and the keys.
+   */
+  declare private _page: string;
+
   private async _onAction(region: Region): Promise<void> {
     if (!this.hass || !this._config) return;
     const climate = this._config.climate;
+
+    // Paging changes nothing on the unit, so it happens whatever the card
+    // is bound to — including a read-only one, which is exactly where the
+    // second page of readings is worth turning to.
+    if (region.action === "page" || region.action === "next_page"
+        || region.action === "prev_page") {
+      const pages = getFaceplate(CARD, this._config.faceplate).pages ?? [];
+      if (!pages.length) return;
+      if (region.action === "page" && region.target) {
+        this._page = region.target;
+        return;
+      }
+      const index = pages.indexOf(this._page);
+      const step = region.action === "prev_page" ? -1 : 1;
+      this._page = pages[(index + step + pages.length) % pages.length];
+      return;
+    }
+
+    // Before the climate guard: this one needs a button, not a thermostat,
+    // so a read-only unit can still have its filter sign cleared.
+    if (region.action === "filter_reset") {
+      const entity = this._bindings.filter_reset;
+      if (!entity) {
+        this._notify(
+          "No filter-reset button on this unit. The bridge only offers one " +
+          "where writing is enabled."
+        );
+        return;
+      }
+      // Say which of the two happened. Pressing a reset on a unit whose
+      // sign is already clear is a write that changes nothing, and
+      // reporting "cleared" either way is how a working key looks broken.
+      const sign = this._bindings.filter;
+      const dirty = sign
+        ? this.hass.states[sign]?.state === "on"
+        : undefined;
+      if (dirty === false) {
+        this._notify("No filter sign on this unit — nothing to clear.");
+        return;
+      }
+      await this.hass.callService("button", "press", { entity_id: entity });
+      this._notify(
+        dirty ? "Filter sign cleared." : "Filter reset sent."
+      );
+      return;
+    }
 
     // Without a climate entity there is nothing safe to call: a BMS setpoint
     // point may not even be writable. Saying so beats a silent no-op.
@@ -87,17 +246,21 @@ class HvacControllerCard extends LitElement {
       case "temp_down": {
         if (current === undefined) return;
         const delta = region.action === "temp_up" ? step : -step;
-        await this.hass.callService("climate", "set_temperature", {
-          entity_id: climate,
-          temperature: Math.round((current + delta) * 2) / 2,
-        });
+        const temperature = Math.round((current + delta) * 2) / 2;
+        await this._send("Setpoint", `${temperature}°`, ["temperature"],
+          (s) => Number(s.attributes.temperature) === temperature,
+          () => this.hass!.callService("climate", "set_temperature", {
+            entity_id: climate, temperature,
+          }));
         return;
       }
       case "power_toggle": {
         const on = this.hass.states[climate]?.state !== "off";
-        await this.hass.callService("climate", on ? "turn_off" : "turn_on", {
-          entity_id: climate,
-        });
+        await this._send("Power", on ? "Off" : "On", ["power"],
+          (s) => (s.state === "off") === on,
+          () => this.hass!.callService("climate", on ? "turn_off" : "turn_on", {
+            entity_id: climate,
+          }));
         return;
       }
       case "fan_cycle": {
@@ -106,10 +269,7 @@ class HvacControllerCard extends LitElement {
         if (!modes.length) return;
         const now = this.hass.states[climate]?.attributes.fan_mode as string;
         const next = modes[(modes.indexOf(now) + 1) % modes.length];
-        await this.hass.callService("climate", "set_fan_mode", {
-          entity_id: climate,
-          fan_mode: next,
-        });
+        await this._setFan(climate, next);
         return;
       }
       case "mode_cycle": {
@@ -117,15 +277,100 @@ class HvacControllerCard extends LitElement {
           (this.hass.states[climate]?.attributes.hvac_modes as string[]) ?? MODES;
         const now = this.hass.states[climate]?.state ?? modes[0];
         const next = modes[(modes.indexOf(now) + 1) % modes.length];
-        await this.hass.callService("climate", "set_hvac_mode", {
-          entity_id: climate,
-          hvac_mode: next,
-        });
+        await this._setMode(climate, next);
         return;
       }
       default:
         return;
     }
+  }
+
+  private _setMode(climate: string, mode: string): Promise<void> {
+    // A unit in Auto reports the Cool or Heat it has chosen, never Auto.
+    const want = mode === "auto"
+      ? (s: ClimateState) => ["auto", "cool", "heat", "heat_cool"].includes(s.state)
+      : (s: ClimateState) => s.state === mode;
+    return this._send("Mode", pretty(mode),
+      mode === "off" ? ["power"] : ["hvac_mode", "power"], want,
+      () => this.hass!.callService("climate", "set_hvac_mode", {
+        entity_id: climate, hvac_mode: mode,
+      }));
+  }
+
+  private _setFan(climate: string, fan: string): Promise<void> {
+    return this._send("Fan", pretty(fan), ["fan_mode"],
+      (s) => s.attributes.fan_mode === fan,
+      () => this.hass!.callService("climate", "set_fan_mode", {
+        entity_id: climate, fan_mode: fan,
+      }));
+  }
+
+  /** Mode and fan as drop-downs, because stepping through four is poor. */
+  private _selects(): TemplateResult | typeof nothing {
+    const climate = this._config?.climate;
+    if (!this.hass || !climate) return nothing;
+    const state = this.hass.states[climate];
+    if (!state) return nothing;
+
+    const rows: TemplateResult[] = [];
+    const add = (
+      label: string,
+      options: string[],
+      current: string | undefined,
+      onPick: (value: string) => void
+    ) => {
+      if (!options.length) return;
+      rows.push(html`
+        <label>
+          <span>${label}</span>
+          <select
+            .value=${current ?? ""}
+            @change=${(event: Event) => {
+              const value = (event.target as HTMLSelectElement).value;
+              if (value && value !== current) onPick(value);
+            }}
+          >
+            ${options.map(
+              (option) => html`<option
+                value=${option}
+                ?selected=${option === current}
+              >${option}</option>`
+            )}
+          </select>
+        </label>
+      `);
+    };
+
+    add(
+      "Mode",
+      (state.attributes.hvac_modes as string[]) ?? [],
+      state.state,
+      (value) => void this._setMode(climate, value)
+    );
+    add(
+      "Fan",
+      (state.attributes.fan_modes as string[]) ?? [],
+      state.attributes.fan_mode as string | undefined,
+      (value) => void this._setFan(climate, value)
+    );
+
+    return rows.length ? html`<div class="picks">${rows}</div>` : nothing;
+  }
+
+  /** The unit's model and rated duty, where the climate entity carries
+   * them (an integration that knows the model sets `model`,
+   * `rated_cooling_kw` and `rated_heating_kw`). */
+  private _spec(): TemplateResult | typeof nothing {
+    const climate = this._config?.climate;
+    const attrs = climate ? this.hass?.states[climate]?.attributes : undefined;
+    if (!attrs?.model) return nothing;
+    const kw = (value: unknown, what: string) =>
+      typeof value === "number" ? html`<span>${what} <b>${value.toFixed(1)} kW</b></span>` : nothing;
+    return html`<div class="spec">
+      <span class="model">${attrs.model}</span>
+      ${kw(attrs.rated_cooling_kw, "Cool")}
+      ${kw(attrs.rated_heating_kw, "Heat")}
+    </div>`;
   }
 
   private _notify(message: string): void {
@@ -151,6 +396,8 @@ class HvacControllerCard extends LitElement {
       this._config.device ? deviceEntityIds(this.hass, this._config.device) : []
     );
 
+    this._bindings = bindings;
+
     const bound = this._config.climate
       ? roles.length
       : roles.filter((role) => bindings[role]).length;
@@ -163,6 +410,8 @@ class HvacControllerCard extends LitElement {
     return html`
       <ha-card>
         ${name ? html`<div class="title">${name}</div>` : nothing}
+        ${this._spec()}
+        ${this._status()}
         ${!this._config.climate && !this._config.entities
           ? html`<div class="hint">
               Nothing bound yet. Choose a climate entity in the editor, or map
@@ -180,10 +429,11 @@ class HvacControllerCard extends LitElement {
             climate: this._config.climate,
             faceplate,
             bindings,
-            page: "",
+            page: this._page,
             onAction: (region) => void this._onAction(region),
           })}
-        </div>`}
+        </div>
+        ${this._selects()}`}
       </ha-card>
     `;
   }
@@ -193,9 +443,39 @@ class HvacControllerCard extends LitElement {
       padding: 12px;
       overflow: hidden;
     }
+    /* Mode and fan sit under the drawn panel: SVG has no select, and a
+       native one is what works with a thumb on a phone. */
+    .picks {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .picks label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1 1 140px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--secondary-text-color);
+    }
+    .picks select {
+      flex: 1;
+      min-width: 0;
+      padding: 7px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--divider-color, #444);
+      background: var(--card-background-color, #1b2027);
+      color: var(--primary-text-color, #e8edf3);
+      font: inherit;
+      font-size: 13px;
+    }
     .title {
       font-weight: 600;
-      font-size: 13px;
+      font-size: 24px;
+      line-height: 1.25;
       letter-spacing: 1.2px;
       text-transform: uppercase;
       padding: 5px 10px;
@@ -205,11 +485,58 @@ class HvacControllerCard extends LitElement {
       background: var(--secondary-background-color, rgba(127, 127, 127, 0.14));
       border-left: 3px solid var(--primary-color);
     }
+    .spec {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 24px;
+      margin: -2px 0 12px;
+      padding: 0 10px;
+      font-size: 24px;
+      line-height: 1.25;
+      color: var(--secondary-text-color);
+    }
+    .spec .model {
+      font-family: var(--code-font-family, monospace);
+      color: var(--primary-text-color);
+    }
+    .spec b { color: var(--primary-text-color); font-weight: 600; }
+    .change {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 10px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 16px;
+      line-height: 1.3;
+      color: var(--primary-text-color);
+      background: var(--secondary-background-color, rgba(127, 127, 127, 0.14));
+      border-left: 4px solid var(--info-color, #039be5);
+    }
+    .change ha-icon { flex: none; --mdc-icon-size: 22px; }
+    .change span { flex: 1; }
+    .change.sending ha-icon, .change.waiting ha-icon, .change.held ha-icon {
+      color: var(--info-color, #039be5);
+    }
+    .change.confirmed { border-left-color: var(--success-color, #43a047); }
+    .change.confirmed ha-icon { color: var(--success-color, #43a047); }
+    .change.failed { border-left-color: var(--error-color, #db4437); }
+    .change.failed ha-icon { color: var(--error-color, #db4437); }
+    .change .dismiss {
+      border: 0; background: none; cursor: pointer; font: inherit;
+      color: var(--secondary-text-color); padding: 0 4px;
+    }
     .faceplate {
       width: 100%;
       height: auto;
       display: block;
-      max-height: 520px;
+      /* Grow with the card, as tall as the screen allows and no taller.
+         A fixed 520px cap was right for a card a quarter of the page wide;
+         in a room grid spanning the page it stopped the panel growing and
+         left it small and centred in a wide card. The allowance is the
+         top bar, the title and the mode and fan row. */
+      max-height: calc(100vh - 170px);
+      min-height: 0;
     }
     /* Daikin's dark controllers render cyan on black. Fixed, not themed:
        a display that follows the dashboard stops reading as hardware. */
@@ -334,5 +661,5 @@ defineFaceplateEditor(CARD);
   name: "HVAC Controller Card",
   description: "A wall controller that looks and behaves like the real one.",
   preview: true,
-  documentationURL: "https://github.com/rellis-erigon/HA-Cards",
+  documentationURL: "https://github.com/rellis-erigon/HA-rellis-erigon-Cards",
 });

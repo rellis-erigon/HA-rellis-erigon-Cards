@@ -108,7 +108,8 @@ function build(values: Record<string, number>, ctx?: BuildContext) {
     // -- Source ---------------------------------------------------------
     regions.push({
       id: `src${n}`, role: `zone${n}_source`, kind: "text", group: `src${n}`,
-      x: x + 6, y: rowTop + 20, w: STRIP_W - 12, align: "middle",
+      // Its own row: at +20 the name ran 4px into the SRC key under it.
+      x: x + 6, y: rowTop + ROW_SOURCE, w: STRIP_W - 12, align: "middle",
       size: 12, placeholder: "",
     });
     regions.push({

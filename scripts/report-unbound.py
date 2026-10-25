@@ -15,11 +15,13 @@ is a mapping that was never written.
     python3 scripts/report-unbound.py qsys_bridge generate_zone_card
 """
 import asyncio, json, os, sys, collections
-sys.path.insert(0, "/share/HA-Cards/scripts")
+from pathlib import Path
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
 import websockets
 from ha_ws import HA, URL, TOKEN_VAR
 
-CATALOGUE = "/share/HA-Cards/faceplates/index.json"
+CATALOGUE = HERE.parent / "faceplates" / "index.json"
 
 
 async def main():

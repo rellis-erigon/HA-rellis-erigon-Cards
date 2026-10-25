@@ -9,9 +9,17 @@
 import { HassEntity, HomeAssistant, Reading } from "./types";
 
 /**
- * Roles the meter faceplates use, and the slot keys they correspond to in
- * the Niagara templates. Slot keys come first because a typed device has
+ * Roles the faceplates use, and the slot keys they correspond to in the
+ * Niagara templates. Slot keys come first because a typed device has
  * already had a person confirm them.
+ *
+ * This is the shared vocabulary. The same equipment reaches Home Assistant
+ * by more than one road on a real estate — a Daikin fan coil arrives as
+ * BACnet objects through the D-BACS gateway, as oBIX points through
+ * Niagara, and sometimes as joins through a Crestron processor — and a card
+ * should not care which. So a role is named for what the point *means*, and
+ * every spelling the bridges produce for it is listed against that one name
+ * rather than mapped per integration.
  */
 export const ROLE_SLOTS: Record<string, string[]> = {
   energy_total: ["energy_total", "energy", "energy_generated"],
@@ -33,6 +41,60 @@ export const ROLE_SLOTS: Record<string, string[]> = {
   battery: ["battery"],
   alarm: ["alarm", "common_fault", "fault"],
   reverse_flow: ["reverse_flow", "reverse"],
+
+  // --- HVAC, shared across every bridge -----------------------------------
+  run: ["run_status", "run", "on_off_status", "running", "command"],
+  fault: ["alarm", "fault", "common_fault"],
+  fault_code: ["malfunction_code", "fault_code", "error_code"],
+  hvac_mode: ["mode", "mode_status", "hvac_mode", "operation_mode"],
+  hvac_action: ["thermo_status", "thermostat", "hvac_action"],
+  room_temp: ["room_temperature", "room_temp", "space_temperature"],
+  setpoint: ["setpoint", "set_temperature"],
+  setpoint_adjust: ["temp_adjust", "setpoint_adjust", "temp_offset"],
+  setpoint_cool: ["cooling_setpoint", "setpoint_cool"],
+  setpoint_heat: ["heating_setpoint", "setpoint_heat"],
+  fan_speed: ["fan_speed", "fan_status", "airflow_rate"],
+  fan_running: ["indoor_fan", "fan_running", "supply_fan_status"],
+  swing: ["air_direction", "swing", "vane", "louvre"],
+  filter: ["filter", "filter_sign", "filter_alarm"],
+  filter_dp: ["filter_dp", "filter_differential_pressure"],
+  //: The button that clears a filter sign, as opposed to `filter`, which is
+  //: the sign itself. A unit has both and they are not interchangeable.
+  filter_reset: ["reset_filter_sign", "filter_reset", "reset_filter"],
+  //: A D-BACS gateway publishes an accumulator per indoor unit. `power` in
+  //: its name, kilowatt-hours in its value — it belongs with energy_total,
+  //: not with the instantaneous power roles.
+  gas_total: ["accumulated_gas", "gas_total"],
+  //: Whether the wall controller has been locked out, per function. A hotel
+  //: room is normally locked and a plant room is not, so this is worth
+  //: drawing rather than inferring.
+  lock_power: ["remote_lock_on_off", "wall_controller_power", "lock_power"],
+  lock_mode: ["remote_lock_mode", "wall_controller_mode", "lock_mode"],
+  lock_setpoint: [
+    "remote_lock_setpoint", "wall_controller_setpoint", "lock_setpoint",
+  ],
+  //: The gateway refusing sub-group control, which is the reason a write
+  //: can be accepted and do nothing.
+  central_rejected: [
+    "central_control_rejection", "reject_sub_group_control",
+  ],
+  ventilation_mode: ["ventilation_mode"],
+  ventilation_amount: ["ventilation_amount"],
+  compressor: ["compressor", "compressor_status"],
+  heater: ["heater", "heater_status"],
+  comms: ["communication", "communication_status", "comms"],
+  energy_saving: ["energy_saving", "eco", "setback"],
+  thermo_off: ["forced_thermostat_off", "thermo_off"],
+  forced_off: ["forced_stop", "system_forced_off", "forced_off"],
+  supply_air_temp: ["supply_air_temp", "supply_air_temperature"],
+  return_air_temp: ["return_air_temp", "return_air_temperature"],
+  outside_air_temp: ["outside_air_temp", "ambient_temperature"],
+  humidity: ["humidity", "relative_humidity"],
+  humidity_setpoint: ["humidity_setpoint"],
+  co2: ["co2", "carbon_dioxide"],
+  valve_position: ["valve_position", "valve"],
+  damper_position: ["damper_position", "damper"],
+  occupancy: ["occupancy", "occupied"],
 };
 
 /**
@@ -41,7 +103,7 @@ export const ROLE_SLOTS: Record<string, string[]> = {
  * wrong point, which is the single most repeated bug in this workspace.
  */
 const ROLE_PATTERNS: Record<string, RegExp> = {
-  energy_total: /metertotal$|_energy_total$|_kwh_total$/,
+  energy_total: /metertotal$|_energy_total$|_kwh_total$|_accumulated_power$/,
   power_total: /3phase_active_power$|_active_power$|_power_total$/,
   power_l1: /active_power_p1$/,
   power_l2: /active_power_p2$/,
@@ -65,6 +127,75 @@ const ROLE_PATTERNS: Record<string, RegExp> = {
   battery: /_battery$|_battery_level$|_batt$/,
   alarm: /_alarm$|_common_fault$/,
   reverse_flow: /_reverse_flow$|_reverse$/,
+
+  // --- HVAC ---------------------------------------------------------------
+  //
+  // Two spellings run through all of these. The generic one is what a
+  // bridge names a point when it is naming it for people
+  // (`_room_temperature`), and the compressed one is the manufacturer's own
+  // object name arriving untouched through a BMS (`_roomtemp`,
+  // `_startstopstatus`). The same Daikin unit produces both depending on
+  // which bridge it came through, so both are matched against the one role.
+  run: /_running$|_run_status$|_on_off_status$|_startstopstatus$/,
+  fault: /_alarm$|_fault$|_common_fault$/,
+  fault_code: /_malfunction_code$|_malfunctioncode$|_fault_code$|_error_code$/,
+  // Not a wall-controller lock and not a ventilation mode: both end in
+  // `_mode` and would otherwise be read as the unit's operating mode,
+  // which is the kind of mis-binding that shows a wrong number rather
+  // than no number.
+  hvac_mode:
+    /(?<!controller)(?<!ventilation)_mode$|_mode_status$|_operation_mode$|_airconmodestatus$/,
+  // The thermostat is what says whether a unit is calling for anything, as
+  // opposed to merely switched on.
+  hvac_action: /_thermostat$|_thermo_status$|_thermostatus$|_hvac_action$/,
+  room_temp: /_room_temperature$|_room_temp$|_roomtemp$|_space_temp(erature)?$/,
+  // `_tempadjust` is Daikin's own name for the absolute room setpoint. On
+  // some controllers the same word means a plus-or-minus offset from a base
+  // setpoint instead, which is why setpoint_adjust exists as its own role —
+  // binding an offset where a setpoint belongs shows 2 °C in a room.
+  // Negative lookbehind, because a dual-setpoint controller publishes
+  // `cooling_setpoint` and `heating_setpoint` alongside nothing called just
+  // "setpoint", and binding one of those as *the* setpoint shows a room
+  // being held at a temperature it is not being held at.
+  setpoint:
+    /(?<!cooling|heating|cool|heat|humidity|rh|controller)_setpoint$|_set_temperature$|_set_temp$|_stpt$|_tempadjust$/,
+  setpoint_adjust: /_setpoint_adjust$|_temp_adjust$|_temp_offset$/,
+  setpoint_cool: /_cooling_setpoint$|_setpoint_cool$|_cool_setpoint$/,
+  setpoint_heat: /_heating_setpoint$|_setpoint_heat$|_heat_setpoint$/,
+  // Speed, not whether the fan is turning: fan_running is that.
+  fan_speed: /_fan_speed$|_fan_status$|_fanstatus$|_airflowrate(status)?$/,
+  fan_running: /_indoor_fan$|_indoorfanstatus$|_fan_running$|_supply_fan$/,
+  swing: /_air_direction$|_airdirection(status)?$|_swing(_mode)?$|_vane$|_louvre$/,
+  // The sign itself, not the button that clears it: `_reset_filter_sign`
+  // ends with `_filter_sign` and would otherwise bind here, leaving the
+  // filter_reset role empty and the FILTER CLEAN key inert.
+  filter: /(?<!reset)_filter$|(?<!reset)_filter_sign$|_filtersign$|_filter_alarm$|_filter_dirty$/,
+  filter_dp: /_filter_dp$|_filter_differential_pressure$/,
+  filter_reset: /_reset_filter_sign$|_filter_reset$|_reset_filter$/,
+  gas_total: /_accumulated_gas$|_gas_total$/,
+  lock_power: /_wall_controller_power$|_remote_lock_on_off$|_lock_power$/,
+  lock_mode: /_wall_controller_mode$|_remote_lock_mode$|_lock_mode$/,
+  lock_setpoint:
+    /_wall_controller_setpoint$|_remote_lock_setpoint$|_lock_setpoint$/,
+  central_rejected:
+    /_reject_sub_group_control$|_central_control_rejection$/,
+  ventilation_mode: /_ventilation_mode$/,
+  ventilation_amount: /_ventilation_amount$/,
+  compressor: /_compressor$|_compressorstatus$/,
+  heater: /_heater$|_heaterstatus$/,
+  comms: /_communication$|_communicationstatus$|_comms$|_offline$/,
+  energy_saving: /_energy_saving$|_energyefficiencystatus$|_eco$|_setback$/,
+  thermo_off: /_forced_thermostat_off$|_forcedthermooffstatus$/,
+  forced_off: /_forced_stop$|_systemforcedoff$|_forced_off$/,
+  supply_air_temp: /_supply_air_temp(erature)?$|_discharge_air_temp$|_sat$/,
+  return_air_temp: /_return_air_temp(erature)?$|_rat$/,
+  outside_air_temp: /_outside_air_temp(erature)?$|_ambient_temp(erature)?$|_oat$/,
+  humidity: /_humidity$|_relative_humidity$|_rh$/,
+  humidity_setpoint: /_humidity_setpoint$|_rh_setpoint$/,
+  co2: /_co2$|_carbon_dioxide$|_co2_level$/,
+  valve_position: /_valve_position$|_valve$|_vlv_pos$/,
+  damper_position: /_damper_position$|_damper$|_dmp_pos$/,
+  occupancy: /_occupancy$|_occupied$/,
 };
 
 const UNAVAILABLE = new Set(["unavailable", "unknown", "none", ""]);
@@ -92,19 +223,7 @@ export const DERIVED_ROLES: Record<string, string[]> = {
  */
 export function deviceEntityIds(hass: HomeAssistant, device: string): string[] {
   const registry = hass.entities ?? {};
-
-  let deviceId = device;
-  const devices = hass.devices ?? {};
-  if (!devices[device]) {
-    const wanted = device.trim().toLowerCase();
-    const match = Object.entries(devices).find(
-      ([id, d]) =>
-        (d.name_by_user ?? "").trim().toLowerCase() === wanted ||
-        (d.name ?? "").trim().toLowerCase() === wanted ||
-        id === device
-    );
-    if (match) deviceId = match[0];
-  }
+  const deviceId = resolveDeviceId(hass, device);
 
   const ids = Object.values(registry)
     .filter((entry) => entry.device_id === deviceId)
@@ -117,6 +236,36 @@ export function deviceEntityIds(hass: HomeAssistant, device: string): string[] {
   // frontends do not expose the registry, and a card that silently binds
   // nothing is harder to diagnose than one that guesses from the name.
   return Object.keys(hass.states).filter((id) => id.includes(device)).sort();
+}
+
+/** A device's registry id, from its id or the name shown in Home Assistant. */
+export function resolveDeviceId(hass: HomeAssistant, device: string): string {
+  const devices = hass.devices ?? {};
+  if (devices[device]) return device;
+  const wanted = device.trim().toLowerCase();
+  const match = Object.entries(devices).find(
+    ([, d]) =>
+      (d.name_by_user ?? "").trim().toLowerCase() === wanted ||
+      (d.name ?? "").trim().toLowerCase() === wanted
+  );
+  return match ? match[0] : device;
+}
+
+/**
+ * The Crestron CIP config entry behind a device, or undefined.
+ *
+ * A card pointed at a processor this way can send the panel's own joins,
+ * which is what makes it behave like the XPanel rather than like a set
+ * of Home Assistant entities: the panel's volume up is a press of a
+ * digital join that the program ramps, not a write of a level.
+ */
+export function cipEntryOf(hass: HomeAssistant, device: string): string | undefined {
+  const deviceId = resolveDeviceId(hass, device);
+  const ours = Object.values(hass.entities ?? {}).some(
+    (entry) => entry.device_id === deviceId && entry.platform === "crestron_cip",
+  );
+  if (!ours) return undefined;
+  return hass.devices?.[deviceId]?.config_entries?.[0];
 }
 
 /**
@@ -222,6 +371,14 @@ export function entityForControl(
 
 /** The join key a generated role refers to, or undefined if it names none. */
 export function joinOfRole(role: string): string | undefined {
+  // A join inside a SmartObject — a list item's — names its object:
+  // `button_o1_4011` is digital 4011 of object 1, written "o1:d4011".
+  const inObject = /^([a-z]+)_o(\d+)_(\d+)$/.exec(role);
+  if (inObject) {
+    const bus = ROLE_BUS[inObject[1]];
+    if (!bus || Number(inObject[3]) < 1) return undefined;
+    return `o${inObject[2]}:${bus}${inObject[3]}`;
+  }
   const cut = role.lastIndexOf("_");
   if (cut <= 0) return undefined;
   const bus = ROLE_BUS[role.slice(0, cut)];
@@ -231,6 +388,13 @@ export function joinOfRole(role: string): string | undefined {
   // tooling, never join zero.
   if (!bus || !/^\d+$/.test(number) || Number(number) < 1) return undefined;
   return `${bus}${number}`;
+}
+
+/** A join key split into its object (0 for none), bus and number. */
+export function parseJoin(key: string): { obj: number; bus: string; join: number } | undefined {
+  const match = /^(?:o(\d+):)?([das])(\d+)$/.exec(key);
+  if (!match) return undefined;
+  return { obj: Number(match[1] ?? 0), bus: match[2], join: Number(match[3]) };
 }
 
 /** Build the role → entity id map for a card. */
@@ -405,19 +569,25 @@ export function readClimate(
     };
   };
 
+  // Home Assistant's states are lower-case identifiers; a panel shows words.
+  const word = (value: unknown) =>
+    typeof value === "string" && value
+      ? (value.charAt(0).toUpperCase() + value.slice(1)).replace(/_/g, " ")
+      : value;
+
   switch (role) {
     case "hvac_mode":
-      return pick(entity.state);
+      return pick(word(entity.state));
     case "hvac_action":
-      return pick(attr.hvac_action ?? entity.state);
+      return pick(word(attr.hvac_action ?? entity.state));
     case "setpoint":
       return pick(attr.temperature, "\u00b0C");
     case "room_temp":
       return pick(attr.current_temperature, "\u00b0C");
     case "fan_speed":
-      return pick(attr.fan_mode);
+      return pick(word(attr.fan_mode));
     case "swing":
-      return pick(attr.swing_mode);
+      return pick(word(attr.swing_mode));
     case "power":
       return pick(entity.state === "off" ? "off" : "on");
     case "humidity":

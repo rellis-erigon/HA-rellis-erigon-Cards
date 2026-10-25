@@ -140,6 +140,37 @@ for (const card of CARDS) {
   editor.remove();
 }
 
+// An imported Crestron panel travels in the config and is in no catalogue.
+// Opening its editor used to throw looking it up by name.
+{
+  const Editor = customElements.get("crestron-panel-card-editor");
+  const editor = new Editor();
+  editor.hass = hass;
+  const errors = [];
+  const onError = (reason) => errors.push(String(reason?.stack ?? reason));
+  process.on("unhandledRejection", onError);
+  let threw = "";
+  try {
+    editor.setConfig({
+      type: "custom:crestron-panel-card",
+      panel: { id: "imported", name: "Imported", card: "crestron-panel-card",
+               render: "svg", size: [200, 640],
+               regions: [{ id: "r1", kind: "button", role: "button_101",
+                           x: 0, y: 0, w: 100, h: 60, action: "press",
+                           target: "button_101", text: "Go" }] },
+    });
+    document.body.appendChild(editor);
+    await new Promise((r) => setTimeout(r, 120));
+  } catch (e) {
+    threw = String(e);
+  }
+  process.off("unhandledRejection", onError);
+  const ok = !threw && errors.length === 0;
+  console.log(`crestron-panel-card: editor on an imported panel ${ok ? "ok" : "FAILED " + (threw || errors[0])}`);
+  if (!ok) failures++;
+  editor.remove();
+}
+
 if (failures) {
   console.log(`${failures} editor check(s) failed`);
   process.exit(1);

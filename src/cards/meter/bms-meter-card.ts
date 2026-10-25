@@ -355,5 +355,5 @@ defineFaceplateEditor(CARD, {
   name: "BMS Meter Card",
   description: "A power meter that looks like a power meter.",
   preview: true,
-  documentationURL: "https://github.com/rellis-erigon/HA-Cards",
+  documentationURL: "https://github.com/rellis-erigon/HA-rellis-erigon-Cards",
 });

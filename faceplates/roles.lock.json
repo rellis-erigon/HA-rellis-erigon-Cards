@@ -194,6 +194,37 @@
       "unit2_tank_temp"
     ]
   },
+  "indoor-unit": {
+    "card": "hvac-controller-card",
+    "roles": [
+      "central_rejected",
+      "comms",
+      "compressor",
+      "energy_saving",
+      "energy_total",
+      "fan_running",
+      "fan_speed",
+      "fault",
+      "fault_code",
+      "filter",
+      "filter_reset",
+      "forced_off",
+      "gas_total",
+      "heater",
+      "hvac_action",
+      "hvac_mode",
+      "lock_mode",
+      "lock_power",
+      "lock_setpoint",
+      "room_temp",
+      "run",
+      "setpoint",
+      "swing",
+      "thermo_off",
+      "ventilation_amount",
+      "ventilation_mode"
+    ]
+  },
   "lcd-water-meter": {
     "card": "bms-meter-card",
     "roles": [

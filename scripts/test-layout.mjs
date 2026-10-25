@@ -47,14 +47,30 @@ function textBox(r) {
   return { x1: left, x2: left + width, y1: r.y, y2: r.y + size * 1.1 };
 }
 
-/** A lamp's label is centred under the lamp, at its own size. */
+/** A lamp's label is centred under the lamp, as `lampRegion` draws it:
+ * 11px, its baseline 13 below the lamp. This said 9 and 12 for a while,
+ * and measured labels smaller than they are. */
 function lampLabelBox(r) {
   const radius = (r.w ?? 12) / 2;
-  const size = 9;
+  const size = 11;
   const width = (r.label || "").length * size * 0.62;
   const cx = r.x + radius;
-  const y = r.y + radius * 2 + 12;
+  const y = r.y + radius * 2 + 13;
   return { x1: cx - width / 2, x2: cx + width / 2, y1: y - size, y2: y + 2 };
+}
+
+function lampBox(r) {
+  const d = r.w ?? 12;
+  return { x1: r.x, x2: r.x + d, y1: r.y, y2: r.y + d };
+}
+
+function buttonBox(r) {
+  return { x1: r.x, x2: r.x + (r.w ?? 0), y1: r.y, y2: r.y + (r.h ?? 0) };
+}
+
+/** A region with no page is on every page, so it meets all of them. */
+function samePage(a, b) {
+  return !a.page || !b.page || a.page === b.page;
 }
 
 function overlap(a, b) {
@@ -104,6 +120,47 @@ for (const face of faceplates) {
       if (overlap(lampLabelBox(lamps[i]), lampLabelBox(lamps[j]))) {
         fail(face.id,
           `lamp labels ${lamps[i].label} and ${lamps[j].label} collide`);
+      }
+    }
+  }
+
+  // A key must not sit on a lamp, a lamp's label or a reading. Found in a
+  // screenshot: a page key placed in the lamp block, which nothing here
+  // compared, because keys were never measured and a key on every page
+  // was never set against regions on one.
+  const keys = regions.filter((r) => r.kind === "button" && r.w && r.h);
+  for (const key of keys) {
+    const kb = buttonBox(key);
+    for (const lamp of lamps) {
+      if (!samePage(key, lamp)) continue;
+      if (overlap(kb, lampBox(lamp)) || overlap(kb, lampLabelBox(lamp))) {
+        fail(face.id, `key ${key.id} sits on lamp ${lamp.label}`);
+      }
+    }
+    for (const text of texts) {
+      if (!samePage(key, text)) continue;
+      // Text wholly inside a key is that key's caption, which is fine.
+      const tb = textBox(text);
+      const inside = tb.x1 >= kb.x1 && tb.x2 <= kb.x2
+        && tb.y1 >= kb.y1 && tb.y2 <= kb.y2 + 2;
+      if (!inside && overlap(kb, tb)) {
+        fail(face.id, `key ${key.id} sits on text ${text.id}`);
+      }
+    }
+    for (const other of keys) {
+      if (other === key || !samePage(key, other)) continue;
+      if (key.id < other.id && overlap(kb, buttonBox(other))) {
+        fail(face.id, `keys ${key.id} and ${other.id} overlap`);
+      }
+    }
+  }
+
+  // A lamp's label must not run into the next row's lamp.
+  for (const a of lamps) {
+    for (const b of lamps) {
+      if (a === b || !samePage(a, b)) continue;
+      if (overlap(lampLabelBox(a), lampBox(b))) {
+        fail(face.id, `lamp label ${a.label} runs into lamp ${b.label}`);
       }
     }
   }
