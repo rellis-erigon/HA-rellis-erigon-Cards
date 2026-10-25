@@ -51,6 +51,11 @@ interface XPanelCardConfig {
   ruffle_url?: string;
   /** Copy Ruffle's console output into Home Assistant's log. */
   debug?: boolean;
+  /**
+   * Start this panel as soon as Home Assistant opens in a browser, on any
+   * dashboard, so it is already loaded when its view is shown.
+   */
+  background?: boolean;
 }
 
 interface XPanelInfo {
@@ -334,6 +339,94 @@ function follow(session: Session): void {
   session.frame ??= requestAnimationFrame(step);
 }
 
+/** The session for a card's panel, started if it is not running yet. */
+function sessionFor(hass: HomeAssistant, config: XPanelCardConfig): Session {
+  const target = Object.values(infoTarget(hass, config)).join(" ");
+  const key = `${target} ${config.xpanel_url ?? "configured"}`;
+  let session = sessions.get(key);
+  if (!session) {
+    const host = newHost();
+    const created: Session = { key, host, ready: Promise.resolve(), size: DEFAULT_SIZE };
+    created.ready = openSession(hass, config, created).catch((err: Error) => {
+      // A failed start is not kept: the next card to show it tries again.
+      sessions.delete(key);
+      host.remove();
+      throw err;
+    });
+    sessions.set(key, created);
+    session = created;
+  }
+  return session;
+}
+
+/** Every XPanel card in a dashboard's configuration set to run in the background. */
+export function backgroundCards(config: unknown): XPanelCardConfig[] {
+  const found: XPanelCardConfig[] = [];
+  const walk = (node: unknown): void => {
+    if (Array.isArray(node)) {
+      node.forEach(walk);
+    } else if (node && typeof node === "object") {
+      const card = node as XPanelCardConfig;
+      if (card.type === `custom:${CARD}` && card.background && (card.device || card.entry_id)) {
+        found.push(card);
+      }
+      Object.values(node).forEach(walk);
+    }
+  };
+  walk(config);
+  return found;
+}
+
+/**
+ * Start the background panels of every dashboard, once per browser tab.
+ *
+ * A browser runs the panel itself, so each one has to load it; this does
+ * that when Home Assistant opens rather than when the panel's view is
+ * first shown. A user who may not list dashboards gets the panels of the
+ * dashboard they opened.
+ */
+export async function startBackgroundPanels(hass: HomeAssistant): Promise<number> {
+  if (!hass.callWS) return 0;
+  let paths: (string | null)[];
+  try {
+    const dashboards = await hass.callWS<{ url_path: string; mode?: string }[]>(
+      { type: "lovelace/dashboards/list" });
+    paths = [null, ...dashboards.map((d) => d.url_path)];
+  } catch {
+    const first = window.location.pathname.split("/")[1];
+    paths = [first && first !== "lovelace" ? first : null];
+  }
+  let started = 0;
+  for (const path of paths) {
+    let config: unknown;
+    try {
+      config = await hass.callWS(path ? { type: "lovelace/config", url_path: path }
+                                      : { type: "lovelace/config" });
+    } catch {
+      continue; // a strategy dashboard, or one this user cannot read
+    }
+    for (const card of backgroundCards(config)) {
+      sessionFor(hass, card).ready.catch(() => {});
+      started += 1;
+    }
+  }
+  return started;
+}
+
+function whenHassReady(): void {
+  const root = document.querySelector("home-assistant") as (HTMLElement & { hass?: HomeAssistant }) | null;
+  if (!root) return; // not Home Assistant's frontend (the tests)
+  let tries = 0;
+  const check = () => {
+    if (root.hass?.callWS && root.hass.devices) {
+      startBackgroundPanels(root.hass).catch(() => {});
+    } else if (++tries < 120) {
+      setTimeout(check, 500);
+    }
+  };
+  check();
+}
+
 function park(session: Session): void {
   // Off screen at the size it had: hiding or shrinking it would make the
   // engine lay the panel out again, or stop drawing.
@@ -380,12 +473,14 @@ class CrestronXPanelCard extends LitElement {
           selector: { device: { filter: { integration: "crestron_cip" } } } },
         { name: "title", selector: { text: {} } },
         { name: "scale", selector: { number: { min: 0.1, max: 1, step: 0.05, mode: "slider" } } },
+        { name: "background", selector: { boolean: {} } },
         { name: "xpanel_url", selector: { text: {} } },
       ],
       computeLabel: (field: { name: string }) => ({
         device: "Room panel (or processor)",
         title: "Title",
         scale: "Scale (of the size that fits the window)",
+        background: "Load in the background when Home Assistant opens",
         xpanel_url: "Panel URL (leave empty to use the processor's configured panel)",
       } as Record<string, string>)[field.name] ?? field.name,
     };
@@ -423,23 +518,7 @@ class CrestronXPanelCard extends LitElement {
   }
 
   private _attach(): void {
-    const hass = this.hass!;
-    const config = this._config!;
-    const target = Object.values(infoTarget(hass, config)).join(" ");
-    const key = `${target} ${config.xpanel_url ?? "configured"}`;
-    let session = sessions.get(key);
-    if (!session) {
-      const host = newHost();
-      const created: Session = { key, host, ready: Promise.resolve(), size: DEFAULT_SIZE };
-      created.ready = openSession(hass, config, created).catch((err: Error) => {
-        // A failed start is not kept: the next card to show it tries again.
-        sessions.delete(key);
-        host.remove();
-        throw err;
-      });
-      sessions.set(key, created);
-      session = created;
-    }
+    const session = sessionFor(this.hass!, this._config!);
     this._session = session;
     session.owner = this;
     this._error = undefined;
@@ -486,6 +565,7 @@ class CrestronXPanelCard extends LitElement {
 }
 
 customElements.define(CARD, CrestronXPanelCard);
+whenHassReady();
 
 (window as unknown as { customCards?: unknown[] }).customCards ??= [];
 (window as unknown as { customCards: unknown[] }).customCards.push({

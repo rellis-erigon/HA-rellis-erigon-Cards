@@ -42,7 +42,8 @@ globalThis.fetch = async (url) => ({
   json: async () => ({ size: [1024, 600],
     page_joins: { "1.0-Init": 11, "2.0-Start": 12, "3.0-Main": 13, "x": 12 } }),
 });
-const { ipidParameter, relaySocketUrl, ratioOf, panelJsonUrl, scaleOf } = await import("../dist/crestron-xpanel-card.js");
+const mod = await import("../dist/crestron-xpanel-card.js");
+const { ipidParameter, relaySocketUrl, ratioOf, panelJsonUrl, scaleOf } = mod;
 const Card = customElements.get("crestron-xpanel-card");
 
 let failures = 0;
@@ -178,6 +179,31 @@ check("coming back reuses it rather than loading it again",
   check("at the room panel's IPID", loaded?.parameters?.ipid === "4", loaded?.parameters?.ipid);
   check("and the relay is told which panel",
     /[?&]panel=Room_2(&|$)/.test(loaded?.socketProxy?.[0]?.proxyUrl ?? ""), loaded?.socketProxy?.[0]?.proxyUrl);
+}
+
+{
+  // Background panels: found in any dashboard, started before their view shows.
+  const { backgroundCards, startBackgroundPanels } = mod;
+  const dash = { views: [{ sections: [{ cards: [
+    { type: "custom:crestron-xpanel-card", device: "room2", background: true },
+    { type: "custom:crestron-xpanel-card", device: "dev1" },
+    { type: "vertical-stack", cards: [{ type: "custom:crestron-xpanel-card", device: "dev1", background: true }] },
+  ] }] }] };
+  check("finds the cards set to run in the background, nested too",
+    backgroundCards(dash).map((c) => c.device).join() === "room2,dev1");
+  const bgHass = { ...hass, callWS: async (msg) => {
+    if (msg.type === "lovelace/dashboards/list") return [{ url_path: "av-system" }];
+    if (msg.type === "lovelace/config") {
+      if (msg.url_path === "av-system") return { views: [{ cards: [
+        { type: "custom:crestron-xpanel-card", entry_id: "entry1", panel: "Room_9", background: true }] }] };
+      throw new Error("strategy dashboard");
+    }
+    return hass.callWS(msg);
+  } };
+  const before = created.length;
+  const n = await startBackgroundPanels(bgHass);
+  for (let i = 0; i < 40 && created.length === before; i++) await new Promise((r) => setTimeout(r, 5));
+  check("starts them with no card on screen", n === 1 && created.length === before + 1, `${n} ${created.length - before}`);
 }
 
 if (failures) {
