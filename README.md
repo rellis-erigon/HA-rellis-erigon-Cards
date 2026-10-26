@@ -155,9 +155,11 @@ outcome worth designing against.
 
 ## Using the XPanel card
 
-`crestron-xpanel-card` needs the
+`crestron-xpanel-card` comes **built into** the
 [Crestron CIP integration](https://github.com/rellis-erigon/Crestron-CIP-HA)
-(0.22 or later) and Ruffle, served from `/local/ruffle/0.7.1/ruffle.js`.
+(0.23 or later), with Ruffle: install the integration and the card is
+there, with no resource to add. The copy in this collection is its source;
+if both load, the second stands down.
 
 1. Give the processor its room panels: **Settings → Devices & services →
    Crestron CIP → (processor) → Configure → Add or replace a room's

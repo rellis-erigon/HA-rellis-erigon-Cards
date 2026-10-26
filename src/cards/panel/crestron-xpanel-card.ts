@@ -20,7 +20,9 @@ import { resolveDeviceId } from "../../core/bind";
 import { HomeAssistant } from "../../core/types";
 
 const CARD = "crestron-xpanel-card";
-const DEFAULT_RUFFLE = "/local/ruffle/0.7.1/ruffle.js";
+// Ruffle as the Crestron CIP integration serves it (0.23 and later), beside
+// this card; ruffle_url points elsewhere.
+const DEFAULT_RUFFLE = "/crestron_cip/frontend/ruffle/ruffle.js";
 
 interface XPanelCardConfig {
   type: string;
@@ -564,14 +566,19 @@ class CrestronXPanelCard extends LitElement {
   `;
 }
 
-customElements.define(CARD, CrestronXPanelCard);
-whenHassReady();
+// The integration loads this card on every page, and the card collection
+// may load it again; the second copy stands down, or it would start every
+// background panel twice.
+if (!customElements.get(CARD)) {
+  customElements.define(CARD, CrestronXPanelCard);
+  whenHassReady();
 
-(window as unknown as { customCards?: unknown[] }).customCards ??= [];
-(window as unknown as { customCards: unknown[] }).customCards.push({
-  type: CARD,
-  name: "Crestron XPanel Card",
-  description: "The panel's own compiled XPanel, running live against its processor.",
-  preview: false,
-  documentationURL: "https://github.com/rellis-erigon/HA-rellis-erigon-Cards",
-});
+  (window as unknown as { customCards?: unknown[] }).customCards ??= [];
+  (window as unknown as { customCards: unknown[] }).customCards.push({
+    type: CARD,
+    name: "Crestron XPanel Card",
+    description: "The panel's own compiled XPanel, running live against its processor.",
+    preview: false,
+    documentationURL: "https://github.com/rellis-erigon/Crestron-CIP-HA",
+  });
+}
