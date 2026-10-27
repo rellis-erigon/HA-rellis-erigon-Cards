@@ -55,7 +55,8 @@ interface XPanelCardConfig {
   debug?: boolean;
   /**
    * Start this panel as soon as Home Assistant opens in a browser, on any
-   * dashboard, so it is already loaded when its view is shown.
+   * dashboard, so it is already loaded when its view is shown. Not on a
+   * phone or tablet (see isLowMemoryDevice).
    */
   background?: boolean;
 }
@@ -221,6 +222,35 @@ const DEFAULT_SIZE: [number, number] = [1280, 800];
 
 const sessions = new Map<string, Session>();
 
+/**
+ * A phone or tablet. Each panel is a player with its own copy of the
+ * engine, and Safari on iOS closes a tab that holds more than a panel or
+ * two ("this webpage was reloaded because a problem occurred"); Android
+ * phones run short too. There no panel starts in the background and only
+ * one runs at a time.
+ */
+export function isLowMemoryDevice(nav: Navigator): boolean {
+  const agent = nav.userAgent ?? "";
+  if (/iPhone|iPad|iPod|Android|Mobile/i.test(agent)) return true;
+  // Safari on an iPad calls itself a Mac; a Mac has no touch screen.
+  if (/Macintosh/.test(agent) && (nav.maxTouchPoints ?? 0) > 1) return true;
+  const memory = (nav as Navigator & { deviceMemory?: number }).deviceMemory;
+  return memory !== undefined && memory < 4;
+}
+
+/** Close every panel no card is showing, but `keep`; how many closed. */
+export function closeOtherSessions(keep?: Session): number {
+  let closed = 0;
+  for (const session of [...sessions.values()]) {
+    if (session === keep || session.owner) continue;
+    if (session.frame !== undefined) cancelAnimationFrame(session.frame);
+    sessions.delete(session.key);
+    session.host.remove(); // Ruffle ends a player that leaves the document
+    closed += 1;
+  }
+  return closed;
+}
+
 function newHost(): HTMLDivElement {
   const host = document.createElement("div");
   host.className = "crestron-xpanel-host";
@@ -351,7 +381,7 @@ function sessionFor(hass: HomeAssistant, config: XPanelCardConfig): Session {
     const created: Session = { key, host, ready: Promise.resolve(), size: DEFAULT_SIZE };
     created.ready = openSession(hass, config, created).catch((err: Error) => {
       // A failed start is not kept: the next card to show it tries again.
-      sessions.delete(key);
+      if (sessions.get(key) === created) sessions.delete(key);
       host.remove();
       throw err;
     });
@@ -420,6 +450,7 @@ function whenHassReady(): void {
   if (!root) return; // not Home Assistant's frontend (the tests)
   let tries = 0;
   const check = () => {
+    if (isLowMemoryDevice(navigator)) return;
     if (root.hass?.callWS && root.hass.devices) {
       startBackgroundPanels(root.hass).catch(() => {});
     } else if (++tries < 120) {
@@ -521,6 +552,7 @@ class CrestronXPanelCard extends LitElement {
 
   private _attach(): void {
     const session = sessionFor(this.hass!, this._config!);
+    if (isLowMemoryDevice(navigator)) closeOtherSessions(session);
     this._session = session;
     session.owner = this;
     this._error = undefined;

@@ -206,6 +206,27 @@ check("coming back reuses it rather than loading it again",
   check("starts them with no card on screen", n === 1 && created.length === before + 1, `${n} ${created.length - before}`);
 }
 
+{
+  // Phones and tablets: no background panels, and one panel at a time.
+  const { isLowMemoryDevice, closeOtherSessions } = mod;
+  const ua = (userAgent, maxTouchPoints = 0, deviceMemory) => ({ userAgent, maxTouchPoints, deviceMemory });
+  check("an iPhone is a low-memory device",
+    isLowMemoryDevice(ua("Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148")));
+  check("so is an iPad that calls itself a Mac",
+    isLowMemoryDevice(ua("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/17.6 Safari/605.1.15", 5)));
+  check("and the Home Assistant app on Android",
+    isLowMemoryDevice(ua("Mozilla/5.0 (Linux; Android 14; Pixel 8) Mobile Safari/537.36 Home Assistant/2026.10")));
+  check("a desktop Mac is not",
+    !isLowMemoryDevice(ua("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/18.6 Safari/605.1.15")));
+  check("nor a desktop with plenty of memory",
+    !isLowMemoryDevice(ua("Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/141.0 Safari/537.36", 0, 8)));
+  const hosts = () => document.querySelectorAll(".crestron-xpanel-host").length;
+  const before = hosts();
+  const closed = closeOtherSessions();
+  check("closing the panels no card shows takes them out of the page",
+    closed > 0 && hosts() === before - closed, `${closed} of ${before}`);
+}
+
 if (failures) {
   console.log(`${failures} failure(s)`);
   process.exit(1);
