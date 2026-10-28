@@ -217,6 +217,10 @@ interface Session {
   player?: HTMLElement;
 }
 
+/** Seconds before a panel that failed to start is tried again, doubling. */
+const RETRY_FIRST_S = 10;
+const RETRY_MAX_S = 60;
+
 /** XPanel.ini's size for the panels seen so far, until the import says. */
 const DEFAULT_SIZE: [number, number] = [1280, 800];
 
@@ -478,6 +482,8 @@ class CrestronXPanelCard extends LitElement {
   private _config?: XPanelCardConfig;
   private _error?: string;
   private _session?: Session;
+  private _retry?: ReturnType<typeof setTimeout>;
+  private _retryDelay = RETRY_FIRST_S;
 
   setConfig(config: XPanelCardConfig): void {
     if (!config.device && !config.entry_id) {
@@ -542,6 +548,8 @@ class CrestronXPanelCard extends LitElement {
   }
 
   private _release(): void {
+    if (this._retry !== undefined) clearTimeout(this._retry);
+    this._retry = undefined;
     const session = this._session;
     this._session = undefined;
     if (session?.owner === this) {
@@ -557,8 +565,22 @@ class CrestronXPanelCard extends LitElement {
     session.owner = this;
     this._error = undefined;
     follow(session);
-    session.ready.catch((err: Error) => {
-      if (this._session === session) this._error = err.message;
+    session.ready.then(() => {
+      if (this._session === session) this._retryDelay = RETRY_FIRST_S;
+    }, (err: Error) => {
+      if (this._session !== session) return;
+      // A panel that could not start (Home Assistant restarting, the
+      // processor away) is tried again while the card is showing, rather
+      // than left on its error until someone reloads the page.
+      const wait = this._retryDelay;
+      this._retryDelay = Math.min(wait * 2, RETRY_MAX_S);
+      this._error = `${err.message} Trying again in ${wait} s.`;
+      this._retry = setTimeout(() => {
+        this._retry = undefined;
+        if (this._session !== session || !this.isConnected) return;
+        this._session = undefined;
+        this.requestUpdate();
+      }, wait * 1000);
     });
   }
 

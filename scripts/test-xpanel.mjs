@@ -227,6 +227,38 @@ check("coming back reuses it rather than loading it again",
     closed > 0 && hosts() === before - closed, `${closed} of ${before}`);
 }
 
+{
+  // A panel that cannot start (Home Assistant restarting) tries again by
+  // itself while its card is showing. The retry waits 10 s; shortened here.
+  const realTimeout = globalThis.setTimeout;
+  globalThis.setTimeout = (fn, ms, ...rest) => realTimeout(fn, Math.min(ms, 5), ...rest);
+  let attempts = 0;
+  const flaky = { ...hass, devices: { ...hass.devices, flaky: { id: "flaky", name: "Flaky", config_entries: ["entry1"] } },
+    callWS: async (msg) => {
+      if (msg.type === "crestron_cip/xpanel_info" && msg.device_id === "flaky") {
+        attempts += 1;
+        if (attempts === 1) throw new Error("Home Assistant is restarting.");
+        return { host: "192.0.2.1", port: 41794, ipid: 9, relay: "/api/crestron_cip/xpanel/entry1",
+          key: "k3y", xpanel_url: "/local/crestron-panels/Flaky/xpanel/container.swf" };
+      }
+      return hass.callWS(msg);
+    } };
+  const retrying = new Card();
+  retrying.setConfig({ type: "custom:crestron-xpanel-card", device: "flaky" });
+  retrying.hass = flaky;
+  document.body.appendChild(retrying);
+  let sawError = false;
+  for (let i = 0; i < 200 && attempts < 2; i++) {
+    await new Promise((r) => realTimeout(r, 2));
+    sawError ||= /Trying again in 10 s/.test(retrying._error ?? "");
+  }
+  for (let i = 0; i < 50 && retrying._error; i++) await new Promise((r) => realTimeout(r, 2));
+  globalThis.setTimeout = realTimeout;
+  check("a panel that failed to start says it will try again", sawError);
+  check("and does, by itself", attempts === 2 && !retrying._error, `${attempts} ${retrying._error}`);
+  retrying.remove();
+}
+
 if (failures) {
   console.log(`${failures} failure(s)`);
   process.exit(1);
