@@ -429,5 +429,35 @@ const sectionNamed = (v, heading) =>
   }
 }
 
+// 16. An area's lights are one card, with one switch for them all, and
+// are not listed again device by device.
+{
+  const hass = makeHass();
+  hass.devices.dev_l1 = { id: "dev_l1", name: "Downlights", area_id: "room_a" };
+  hass.devices.dev_l2 = { id: "dev_l2", name: "Pendants", area_id: "room_a" };
+  hass.entities["light.pendants"] = { entity_id: "light.pendants", device_id: "dev_l2" };
+  hass.entities["light.downlights"] = { entity_id: "light.downlights", device_id: "dev_l1" };
+  hass.states["light.pendants"] = { attributes: { friendly_name: "Room 2 Pendants" } };
+  hass.states["light.downlights"] = { attributes: { friendly_name: "Room 1 Downlights" } };
+  const out = await customElements.get("ll-strategy-view-site-floors")
+    .generate({ area: "room_a" }, hass);
+  const lights = sectionNamed(out, "Lights");
+  const card = lights?.cards?.[1];
+  check("one Lights section with one card",
+    card?.type === "entities" && lights.cards.length === 2);
+  check("every light on it, by name, with a switch for all",
+    JSON.stringify(card?.entities) === JSON.stringify(["light.downlights", "light.pendants"])
+      && card?.show_header_toggle === true, JSON.stringify(card));
+  const other = JSON.stringify(sectionNamed(out, "Everything else") ?? {});
+  check("not listed again under Everything else", !other.includes("light."), other);
+  const names = (out.sections ?? []).map((s) => s.cards?.[0]?.heading);
+  check("after the equipment, before everything else",
+    names.indexOf("Lights") < names.indexOf("Everything else"), names.join(" / "));
+  const none = await customElements.get("ll-strategy-view-site-floors")
+    .generate({ area: "plant" }, makeHass());
+  check("an area with no lights has no Lights section",
+    !sectionNamed(none, "Lights"));
+}
+
 console.log(failures ? `\n${failures} failed` : "\nall strategy checks passed");
 process.exit(failures ? 1 : 0);

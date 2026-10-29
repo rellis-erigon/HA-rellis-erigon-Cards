@@ -50,7 +50,7 @@ const THUMBNAIL_ORDER = ["s2", "s1", "s0"];
 const CAMERA_TOKEN = /token_(\d+_\d+_\d+_\d+_\d+)_(s\d)$/;
 
 /** The three content sections, by the names the config uses for them. */
-const SECTION_NAMES = ["equipment", "cameras", "other"] as const;
+const SECTION_NAMES = ["equipment", "lights", "cameras", "other"] as const;
 type SectionName = (typeof SECTION_NAMES)[number];
 
 /** Layout a dashboard can ask for.
@@ -272,6 +272,33 @@ function friendlyName(hass: HassLike, entityId: string): string {
  * silly. The name comes from the first stream because that is the one the
  * recorder names; the others carry nothing but a token.
  */
+/**
+ * Every light in the area on one card, with one switch for all of them.
+ *
+ * Each light arrives as its own device, so left to "Everything else" an
+ * area with seven circuits drew seven one-line cards. A room's lights are
+ * one thing to the person standing in it.
+ */
+function lightsCard(hass: HassLike, entities: EntityLike[]) {
+  const lights = entities
+    .filter((e) => e.entity_id.startsWith("light.") && !e.hidden)
+    .map((e) => e.entity_id)
+    .sort((a, b) =>
+      (friendlyName(hass, a) || a).localeCompare(friendlyName(hass, b) || b,
+        undefined, { numeric: true }));
+  if (!lights.length) return { card: null, used: new Set<string>() };
+  return {
+    card: {
+      type: "entities",
+      title: lights.length > 1 ? `All ${lights.length} lights` : "Lights",
+      show_header_toggle: lights.length > 1,
+      state_color: true,
+      entities: lights,
+    },
+    used: new Set(lights),
+  };
+}
+
 function cameraCards(hass: HassLike, entities: EntityLike[]) {
   const streams = new Map<string, Record<string, string>>();
   for (const entity of entities) {
@@ -398,6 +425,13 @@ function areaView(
       ...reorder(units.map((entry) => entry.card)),
     ]);
   }
+  const lights = lightsCard(hass, entities);
+  if (lights.card) {
+    built.lights = section("lights", layout, [
+      { type: "heading", heading: "Lights" },
+      lights.card,
+    ]);
+  }
   if (cameras.cards.length) {
     built.cameras = section("cameras", layout, [
       { type: "heading", heading: "Cameras" },
@@ -417,7 +451,7 @@ function areaView(
 
   // An area controller has no device to be matched by; its entity is what
   // the generated card names, so that is what is skipped.
-  const drawn = new Set(cameras.used);
+  const drawn = new Set([...cameras.used, ...lights.used]);
   for (const entry of bridge) {
     if (entry.group && typeof entry.card.climate === "string") {
       drawn.add(entry.card.climate);
