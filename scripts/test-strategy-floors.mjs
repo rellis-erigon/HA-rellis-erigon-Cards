@@ -392,5 +392,42 @@ const sectionNamed = (v, heading) =>
   check("a config with no cells is refused, not drawn blank", refused);
 }
 
+// 15. An area's AC controller sits above its units, with or without a
+// rooms grid, and its entity is not listed again under Everything else.
+{
+  const unit = (device) => ({ device, area_id: "plant",
+                              card: { type: "custom:x", name: device } });
+  const controller = { device: "Plant — all 2 units", area_id: "plant",
+    card: { type: "custom:hvac-controller-card", name: "controller",
+            climate: "climate.plant_ac" } };
+  const hass = makeHass({
+    services: { daikin_dbacs: { generate_cards: {} },
+                area_climate: { generate_cards: {} } },
+    callService: async (domain) => ({ response: { cards:
+      domain === "area_climate" ? [controller]
+        : [unit("Room 102 ACU A-02"), unit("Room 101 ACU A-01"), unit("AHU")] } }),
+  });
+  hass.entities["climate.plant_ac"] = { entity_id: "climate.plant_ac", area_id: "plant" };
+  const equipOf = (out) => (out.sections ?? [])
+    .find((s) => s.cards?.[0]?.heading === "Equipment")?.cards ?? [];
+  const View = customElements.get("ll-strategy-view-site-floors");
+
+  for (const [label, config] of [
+    ["no grid", { area: "plant" }],
+    ["reversed", { area: "plant", layout: { sort: "reverse" } }],
+    ["rooms grid", { area: "plant", rooms: [[101, 102]] }],
+  ]) {
+    const out = await View.generate(config, hass);
+    const equip = equipOf(out);
+    check(`${label}: the area controller comes first`,
+      equip[1]?.name === "controller", JSON.stringify(equip[1]?.name ?? equip[1]?.type));
+    check(`${label}: and only once`,
+      equip.filter((c) => c.name === "controller").length === 1);
+    const listed = JSON.stringify(out.sections ?? []);
+    check(`${label}: its entity is not listed again`,
+      !listed.includes('"climate.plant_ac"') || listed.split('"climate.plant_ac"').length === 2);
+  }
+}
+
 console.log(failures ? `\n${failures} failed` : "\nall strategy checks passed");
 process.exit(failures ? 1 : 0);

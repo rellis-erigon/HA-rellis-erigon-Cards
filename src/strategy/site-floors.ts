@@ -28,6 +28,7 @@ import {
   type StrategyConfig,
   NOTE,
   areaName,
+  byDevice,
   collect,
 } from "./bridge-devices-shared";
 // Registers custom:room-grid-card, which the rooms layout draws with.
@@ -368,14 +369,21 @@ function areaView(
 
   const built: Partial<Record<SectionName, Record<string, unknown>>> = {};
 
-  if (bridge.length && rooms) {
+  // The area's own controller comes first whatever the sort order: it is
+  // the one card that acts on everything below it.
+  const controllers = bridge.filter((entry) => entry.group)
+    .map((entry) => entry.card);
+  const units = bridge.filter((entry) => !entry.group);
+
+  if (units.length && rooms) {
     // The grid takes the whole width of the page, unless the dashboard said
     // otherwise. A faceplate scales with its card, so a room grid squeezed
     // into half the page draws its lettering at half size — unreadable on
     // a desk screen. Full width lets the cards grow with the screen.
-    const grid = roomGrid(rooms, bridge);
+    const grid = roomGrid(rooms, units);
     const wide = section("equipment", layout, [
       { type: "heading", heading: "Equipment" },
+      ...controllers,
       grid.card,
       ...reorder(grid.rest.map((entry) => entry.card)),
     ]);
@@ -386,7 +394,8 @@ function areaView(
   } else if (bridge.length) {
     built.equipment = section("equipment", layout, [
       { type: "heading", heading: "Equipment" },
-      ...reorder(bridge.map((entry) => entry.card)),
+      ...controllers,
+      ...reorder(units.map((entry) => entry.card)),
     ]);
   }
   if (cameras.cards.length) {
@@ -406,7 +415,15 @@ function areaView(
     if (named && coveredNames.has(named)) coveredDevices.add(id);
   }
 
-  const rest = leftoverCards(hass, entities, cameras.used, coveredDevices);
+  // An area controller has no device to be matched by; its entity is what
+  // the generated card names, so that is what is skipped.
+  const drawn = new Set(cameras.used);
+  for (const entry of bridge) {
+    if (entry.group && typeof entry.card.climate === "string") {
+      drawn.add(entry.card.climate);
+    }
+  }
+  const rest = leftoverCards(hass, entities, drawn, coveredDevices);
   if (rest.length) {
     built.other = section("other", layout, [
       { type: "heading", heading: "Everything else" },
@@ -457,7 +474,7 @@ class SiteFloorsDashboardStrategy extends HTMLElement {
       bridgeByArea.get(key)!.push(entry);
     }
     for (const list of bridgeByArea.values()) {
-      list.sort((a, b) => a.device.localeCompare(b.device));
+      list.sort(byDevice);
     }
 
     const entitiesByArea = new Map<string, EntityLike[]>();

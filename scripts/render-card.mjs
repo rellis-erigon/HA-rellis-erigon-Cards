@@ -50,7 +50,7 @@ const states = Object.fromEntries(
     id,
     typeof v === "string"
       ? { state: v, attributes: {} }
-      : { state: v.state, attributes: v.unit ? { unit_of_measurement: v.unit } : {} },
+      : { state: v.state, attributes: { ...(v.attributes ?? {}), ...(v.unit ? { unit_of_measurement: v.unit } : {}) } },
   ]),
 );
 

@@ -70,6 +70,8 @@ export interface GeneratedCard {
   device: string;
   area_id?: string;
   card: Record<string, unknown>;
+  /** A controller for the whole area rather than one device: drawn first. */
+  group?: boolean;
 }
 
 export const NOTE = (text: string) => ({ type: "markdown", content: text });
@@ -112,6 +114,19 @@ export async function collect(hass: HassLike, config: StrategyConfig) {
           `points are bound but not enabled: ${skipped.slice(0, 6).join(", ")}`
         );
       }
+    }
+  }
+
+  // One controller per area with two or more air conditioners, from the
+  // area_climate integration. Marked as a group so the area's page puts it
+  // above the units it controls.
+  if (include("area_climate")) {
+    const args: Record<string, unknown> = {};
+    if (config.area) args.area = config.area;
+    const out = await ask(hass, "area_climate", "generate_cards", args);
+    if (out) {
+      cards.push(...((out.cards ?? []) as GeneratedCard[])
+        .map((entry) => ({ ...entry, group: true })));
     }
   }
 
@@ -171,6 +186,12 @@ export async function collect(hass: HassLike, config: StrategyConfig) {
   return { cards, problems };
 }
 
+/** Area controllers first, then devices by name. */
+export function byDevice(a: GeneratedCard, b: GeneratedCard): number {
+  if (Boolean(a.group) !== Boolean(b.group)) return a.group ? -1 : 1;
+  return a.device.localeCompare(b.device);
+}
+
 export function areaName(hass: HassLike, areaId: string): string {
   return hass.areas?.[areaId]?.name ?? areaId;
 }
@@ -183,7 +204,7 @@ export function byArea(hass: HassLike, cards: GeneratedCard[]) {
     groups.get(key)!.push(entry);
   }
   for (const entries of groups.values()) {
-    entries.sort((a, b) => a.device.localeCompare(b.device));
+    entries.sort(byDevice);
   }
   return [...groups.entries()].sort(([a], [b]) => {
     // Unplaced last: it is a to-do list, not a room.
