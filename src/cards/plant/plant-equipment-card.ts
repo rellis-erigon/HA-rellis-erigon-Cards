@@ -14,7 +14,7 @@
 import { LitElement, css, html, nothing, TemplateResult } from "lit";
 import { defineFaceplateEditor } from "../../core/card-editor";
 import { cardTitle } from "../../core/controls";
-import { hiddenNote, prepare } from "../../core/prepare";
+import { prepare } from "../../core/prepare";
 import { renderFaceplate } from "../../core/faceplate";
 import { deviceEntityIds } from "../../core/bind";
 import { getFaceplate } from "../../faceplates/index";
@@ -53,7 +53,7 @@ class PlantEquipmentCard extends LitElement {
 
   override render(): TemplateResult | typeof nothing {
     if (!this._config || !this.hass) return nothing;
-    const { faceplate: drawn, bindings, roles, hidden } = prepare(
+    const { faceplate: drawn, bindings, roles } = prepare(
       this.hass,
       this._config,
       getFaceplate(CARD, this._config.faceplate),
@@ -65,6 +65,9 @@ class PlantEquipmentCard extends LitElement {
     // Nothing bound and hiding on means there is nothing to draw at
     // all. With hiding off the user has asked for the full panel, dark
     // controls included, so it is still drawn.
+    // No "N controls hidden" note: these are read-only cabinets and plant
+    // on a wall of them, and a line under every one saying a lamp has no
+    // switch behind it is noise. Nothing bound at all is still said.
     const blank = bound === 0 && this._config.hide_unbound !== false;
     const name = cardTitle(this.hass, this._config);
 
@@ -82,9 +85,6 @@ class PlantEquipmentCard extends LitElement {
             onAction: () => undefined,
           })}
         </div>`}
-        ${hidden && bound > 0
-          ? html`<div class="hint muted">${hiddenNote(hidden)}</div>`
-          : nothing}
         ${bound === 0
           ? html`<div class="hint">
               Nothing bound. Map the roles this faceplate names in YAML,

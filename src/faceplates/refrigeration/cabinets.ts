@@ -24,11 +24,10 @@ interface Palette {
   accent: string;
   /** The temperature range the cabinet is meant to hold. */
   band: [number, number];
-  label: string;
 }
 
-const FRIDGE: Palette = { accent: "#7dd3fc", band: [0, 8], label: "FRIDGE" };
-const FREEZER: Palette = { accent: "#c7e9ff", band: [-26, -12], label: "FREEZER" };
+const FRIDGE: Palette = { accent: "#7dd3fc", band: [0, 8] };
+const FREEZER: Palette = { accent: "#c7e9ff", band: [-26, -12] };
 
 const DOOR_FILL = "#171d25";
 const DOOR_EDGE = "#4a5462";
@@ -43,11 +42,14 @@ function readout(x: number, y: number, w: number, p: Palette): Region[] {
   // having °C drawn over the top of it.
   // A text region's y is the top of its glyphs; the renderer puts the
   // baseline a full font size below it. Laying the block out by baseline
-  // instead drew the band straight through the number and sat the unit
-  // on top of it, which is what every cabinet card looked like.
+  // instead drew the setpoint straight through the number.
+  //
+  // There is no band bar under the reading. On the dark display its track
+  // read as a stray black bar, and a cabinet bound to the other type's
+  // faceplate showed an empty one; the number already says it all.
   const TEMP = 34;      // size of the reading
   const UNIT = 14;
-  const bandY = y + TEMP + 10;
+  const belowY = y + TEMP + 6;
   return [
     { id: "temp", role: "temperature", kind: "text",
       x, y, w: w - 26, align: "end", decimals: 1, size: TEMP,
@@ -55,13 +57,11 @@ function readout(x: number, y: number, w: number, p: Palette): Region[] {
     // Sat on the same baseline as the number, not the same top edge.
     { id: "temp_u", role: "temperature", kind: "text", show: "unit",
       x: x + w - 24, y: y + TEMP - UNIT, w: 24, align: "start", size: UNIT },
-    { id: "band", role: "temperature", kind: "bar",
-      x, y: bandY, w, h: 6, min: p.band[0], max: p.band[1] },
     { id: "sp", role: "setpoint", kind: "text",
-      x, y: bandY + 12, w, align: "middle", decimals: 1, size: 12,
+      x, y: belowY, w, align: "middle", decimals: 1, size: 12,
       unit: "", placeholder: "", group: "setpoint" },
     { id: "sp_lbl", role: "", kind: "text", text: "SETPOINT",
-      x, y: bandY + 28, w, align: "middle", size: 10, group: "setpoint" },
+      x, y: belowY + 16, w, align: "middle", size: 10, group: "setpoint" },
   ] as Region[];
 }
 
@@ -84,12 +84,45 @@ function lamps(x: number, y: number, gap: number = LAMP_GAP): Region[] {
   ] as Region[];
 }
 
-function frame(width: number, height: number, title: string) {
+// The face carries no type label. The card's own title names the cabinet,
+// and a printed "UPRIGHT FREEZER" on a walk-in fridge someone drew with
+// the nearest faceplate is a label that is simply wrong.
+function frame(width: number, height: number) {
   return svg`
     <rect x="0" y="0" width=${width} height=${height} rx="10" fill="#101216" />
-    <text x="16" y="25" fill=${MUTED} font-size="12" letter-spacing="1.6"
-          font-family="inherit">${title}</text>
   `;
+}
+
+/**
+ * A door drawn standing open, shown only while the door switch is on.
+ *
+ * The lamp alone is a small amber dot among three; an open door on a
+ * cold room is the thing a kitchen needs to see from across the room, so
+ * the door in the drawing opens: lit interior, shelves, the door swung
+ * out at the hinge, and OPEN across it.
+ *
+ * Every piece is gated on the door role and grouped with it, so a cabinet
+ * with no door switch never draws an open door.
+ */
+function openDoor(id: string, x: number, y: number, w: number, h: number): Region[] {
+  const AMBER = "#f59e0b";
+  const shelves = [0.3, 0.55, 0.8].map((f, i) => ({
+    id: `${id}_shelf${i}`, role: "door", visible_role: "door", group: "door_open",
+    kind: "plate", x: x + 6, y: y + h * f, w: w - 12, h: 3, radius: 1.5,
+    fill: "#9fb3c2",
+  }));
+  return [
+    { id: `${id}_inside`, role: "door", visible_role: "door", group: "door_open",
+      kind: "plate", x, y, w, h, radius: 6, fill: "#dbe9f3", border: AMBER },
+    ...shelves,
+    // The door itself, seen edge-on where it hangs off the hinge.
+    { id: `${id}_leaf`, role: "door", visible_role: "door", group: "door_open",
+      kind: "plate", x: x - 9, y: y - 4, w: 8, h: h + 8, radius: 2,
+      fill: "#4a5462", border: AMBER },
+    { id: `${id}_open`, role: "", visible_role: "door", group: "door_open",
+      kind: "text", text: "OPEN", x, y: y + h / 2 - 8, w, align: "middle",
+      size: Math.min(16, Math.max(11, w / 6)), color: "#b45309" },
+  ] as Region[];
 }
 
 // -- Under-bench ---------------------------------------------------------
@@ -113,7 +146,9 @@ function buildUnderbench(p: Palette) {
     const fronts = [];
 
     let x = pad;
+    const opened: Region[] = [];
     for (let i = 0; i < doors; i++) {
+      opened.push(...openDoor(`door${i}`, x, UB_TOP + 10, bayW, UB_BODY_H - 20));
       fronts.push(svg`
         <rect x=${x} y=${UB_TOP + 10} width=${bayW} height=${UB_BODY_H - 20}
               rx="5" fill=${DOOR_FILL} stroke=${DOOR_EDGE} stroke-width="1.5" />
@@ -138,7 +173,7 @@ function buildUnderbench(p: Palette) {
     }
 
     const artNode = svg`
-      ${frame(width, height, `UNDER-BENCH ${p.label}`)}
+      ${frame(width, height)}
       <rect x=${pad - 8} y=${UB_TOP} width=${width - (pad - 8) * 2}
             height=${UB_BODY_H} rx="8"
             fill=${BODY_FILL} stroke=${BODY_EDGE} stroke-width="2" />
@@ -151,6 +186,7 @@ function buildUnderbench(p: Palette) {
       size: [width, height] as [number, number],
       artNode,
       regions: [
+        ...opened,
         ...readout(width - 150, 20, 134, p),
         ...lamps(pad, height - 44, 74),
       ],
@@ -168,7 +204,7 @@ function buildWalkin(p: Palette) {
     const bodyTop = 72;
     const bodyH = 170;
     const artNode = svg`
-      ${frame(WALKIN_W, WALKIN_H, `WALK-IN ${p.label}`)}
+      ${frame(WALKIN_W, WALKIN_H)}
       <rect x="22" y=${bodyTop} width=${WALKIN_W - 44} height=${bodyH} rx="8"
             fill=${BODY_FILL} stroke=${BODY_EDGE} stroke-width="2" />
       <!-- One wide insulated door with the handle and the kick plate -->
@@ -178,16 +214,13 @@ function buildWalkin(p: Palette) {
             height="44" rx="3.5" fill=${MUTED} opacity="0.75" />
       <rect x="48" y=${bodyTop + bodyH - 46} width=${WALKIN_W - 176}
             height="22" rx="3" fill="#161b21" />
-      <text x="52" y=${bodyTop + bodyH + 24} fill=${MUTED} font-size="11"
-            letter-spacing="1.2" font-family="inherit">
-        ${p === FREEZER ? "FREEZER ROOM" : "COLD ROOM"}
-      </text>
     `;
 
     return {
       size: [WALKIN_W, WALKIN_H] as [number, number],
       artNode,
       regions: [
+        ...openDoor("door0", 40, bodyTop + 16, WALKIN_W - 160, bodyH - 32),
         ...readout(WALKIN_W - 140, 14, 124, p),
         ...lamps(28, WALKIN_H - 44, 80),
       ],
@@ -210,7 +243,9 @@ function buildUpright(p: Palette) {
     const fronts = [];
 
     let x = pad + 8;
+    const opened: Region[] = [];
     for (let i = 0; i < doors; i++) {
+      opened.push(...openDoor(`door${i}`, x, bodyTop + 12, doorW, bodyH - 24));
       fronts.push(svg`
         <rect x=${x} y=${bodyTop + 12} width=${doorW} height=${bodyH - 24}
               rx="6" fill=${DOOR_FILL} stroke=${DOOR_EDGE} stroke-width="1.6" />
@@ -221,7 +256,7 @@ function buildUpright(p: Palette) {
     }
 
     const artNode = svg`
-      ${frame(width, UPRIGHT_H, `UPRIGHT ${p.label}`)}
+      ${frame(width, UPRIGHT_H)}
       <rect x=${pad} y=${bodyTop} width=${doors * doorW + (doors - 1) * 8 + 16}
             height=${bodyH} rx="8"
             fill=${BODY_FILL} stroke=${BODY_EDGE} stroke-width="2" />
@@ -232,6 +267,7 @@ function buildUpright(p: Palette) {
       size: [width, UPRIGHT_H] as [number, number],
       artNode,
       regions: [
+        ...opened,
         ...readout(width - 146, 56, 130, p),
         ...lamps(width - 2 * LAMP_GAP - 34, UPRIGHT_H - 48),
       ],
@@ -260,7 +296,8 @@ const COMMON = {
 
 function describe(kind: string, p: Palette): string {
   return `${kind}. Temperature against its ${p.band[0]} to ${p.band[1]} °C `
-    + "band is the primary reading; door, compressor and alarm are lamps. "
+    + "band is the primary reading; door, compressor and alarm are lamps, "
+    + "and the drawn door opens while the door switch is on. "
     + "Doors and drawers are drawn to identify the cabinet, not bound "
     + "separately — a real unit has one door switch for the whole thing.";
 }
