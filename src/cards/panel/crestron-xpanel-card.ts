@@ -190,6 +190,10 @@ export function playerOptions(url: string, info: XPanelInfo, proxyUrl: string,
     warnOnUnsupportedContent: false,
     allowScriptAccess: false,
     openUrlMode: "deny",
+    // Ruffle pauses a player while its tab is hidden, and a paused panel
+    // falls behind the real one (or the processor drops it). It keeps
+    // running in the background instead.
+    backgroundExecutionMode: "mainThread",
     logLevel: debug ? "info" : "warn",
   };
 }
@@ -215,6 +219,8 @@ interface Session {
   /** The panel's own screen, in its pixels: what the engine lays out to. */
   size: [number, number];
   player?: HTMLElement;
+  /** What follow last wrote, so an unchanged frame writes nothing. */
+  placed?: string;
 }
 
 /** Seconds before a panel that failed to start is tried again, doubling. */
@@ -258,8 +264,11 @@ export function closeOtherSessions(keep?: Session): number {
 function newHost(): HTMLDivElement {
   const host = document.createElement("div");
   host.className = "crestron-xpanel-host";
+  // In page coordinates rather than fixed to the window: the browser then
+  // scrolls it with the page, in step, instead of a script chasing the
+  // scroll a frame behind (which shows as the panel jumping).
   Object.assign(host.style, {
-    position: "fixed", left: "-20000px", top: "0", width: "1280px", height: "800px",
+    position: "absolute", left: "-20000px", top: "0", width: "1280px", height: "800px",
     zIndex: "2", overflow: "hidden", background: "#000",
   });
   document.body.appendChild(host);
@@ -346,7 +355,31 @@ async function openSession(hass: HomeAssistant, config: XPanelCardConfig,
   await player.ruffle().load(playerOptions(url, info, proxyUrl, config.debug));
 }
 
-/** Lay the host over the card's stage, every frame while a card owns it. */
+/**
+ * Where the host goes over a stage: page coordinates, the panel's scale,
+ * and how much of its top to clip so it never covers Home Assistant's
+ * toolbar when the view scrolls under it.
+ */
+export function placement(rect: { left: number; top: number; width: number; height: number },
+                          scroll: { x: number; y: number }, header: number,
+                          panelWidth: number) {
+  const hidden = Math.max(0, Math.min(rect.height, header - rect.top));
+  return {
+    left: Math.round((rect.left + scroll.x) * 100) / 100,
+    top: Math.round((rect.top + scroll.y) * 100) / 100,
+    width: rect.width,
+    height: rect.height,
+    scale: rect.width / panelWidth,
+    clip: hidden > 0 ? `inset(${hidden}px 0 0 0)` : "",
+  };
+}
+
+/**
+ * Keep the host over the card's stage while a card owns it. Checked every
+ * frame, for the layout changing under it, but written only when something
+ * moved: a scroll alone changes nothing here but the clip at the toolbar,
+ * and restyling a running player every frame costs it frames.
+ */
 function follow(session: Session): void {
   const step = () => {
     const owner = session.owner;
@@ -355,20 +388,21 @@ function follow(session: Session): void {
       return;
     }
     const rect = owner.stageRect();
-    const style = session.host.style;
     if (rect && rect.width > 0) {
-      style.left = `${rect.left}px`;
-      style.top = `${rect.top}px`;
-      style.width = `${rect.width}px`;
-      style.height = `${rect.height}px`;
-      if (session.player) {
-        session.player.style.transform = `scale(${rect.width / session.size[0]})`;
+      const at = placement(rect, { x: window.scrollX, y: window.scrollY },
+                           owner.headerBottom(), session.size[0]);
+      const key = JSON.stringify(at);
+      if (key !== session.placed) {
+        session.placed = key;
+        const style = session.host.style;
+        style.left = `${at.left}px`;
+        style.top = `${at.top}px`;
+        style.width = `${at.width}px`;
+        style.height = `${at.height}px`;
+        style.clipPath = at.clip;
+        style.visibility = "visible";
+        if (session.player) session.player.style.transform = `scale(${at.scale})`;
       }
-      // Never over Home Assistant's toolbar when the view scrolls under it.
-      const header = owner.headerBottom();
-      const hidden = Math.max(0, Math.min(rect.height, header - rect.top));
-      style.clipPath = hidden > 0 ? `inset(${hidden}px 0 0 0)` : "";
-      style.visibility = "visible";
     }
     session.frame = requestAnimationFrame(step);
   };
@@ -432,21 +466,22 @@ export async function startBackgroundPanels(hass: HomeAssistant): Promise<number
     const first = window.location.pathname.split("/")[1];
     paths = [first && first !== "lovelace" ? first : null];
   }
-  let started = 0;
+  const cards: XPanelCardConfig[] = [];
   for (const path of paths) {
-    let config: unknown;
     try {
-      config = await hass.callWS(path ? { type: "lovelace/config", url_path: path }
-                                      : { type: "lovelace/config" });
+      cards.push(...backgroundCards(await hass.callWS(
+        path ? { type: "lovelace/config", url_path: path } : { type: "lovelace/config" })));
     } catch {
-      continue; // a strategy dashboard, or one this user cannot read
-    }
-    for (const card of backgroundCards(config)) {
-      sessionFor(hass, card).ready.catch(() => {});
-      started += 1;
+      // a strategy dashboard, or one this user cannot read
     }
   }
-  return started;
+  // One after another: panels started together share the processor and
+  // the network, and all finish late. A card shown meanwhile starts its
+  // own panel at once (sessionFor), ahead of the queue.
+  void (async () => {
+    for (const card of cards) await sessionFor(hass, card).ready.catch(() => {});
+  })();
+  return cards.length;
 }
 
 function whenHassReady(): void {
@@ -467,8 +502,12 @@ function whenHassReady(): void {
 function park(session: Session): void {
   // Off screen at the size it had: hiding or shrinking it would make the
   // engine lay the panel out again, or stop drawing.
+  // At the top, so a host parked from far down a long view cannot make a
+  // shorter one scroll on into empty space.
   session.host.style.left = "-20000px";
+  session.host.style.top = "0";
   session.host.style.clipPath = "";
+  session.placed = undefined;
 }
 
 class CrestronXPanelCard extends LitElement {
@@ -532,12 +571,27 @@ class CrestronXPanelCard extends LitElement {
 
   /** The bottom of Home Assistant's toolbar, in the window. */
   headerBottom(): number {
-    const value = getComputedStyle(this).getPropertyValue("--header-height");
-    return parseFloat(value) || 56;
+    // Read once per showing and on resize: computed style every frame is
+    // a cost the panel pays in frames.
+    if (this._header === undefined) {
+      const value = getComputedStyle(this).getPropertyValue("--header-height");
+      this._header = parseFloat(value) || 56;
+    }
+    return this._header;
+  }
+
+  private _header?: number;
+  private _resized = () => { this._header = undefined; };
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    window.addEventListener("resize", this._resized, { passive: true });
   }
 
   override disconnectedCallback(): void {
     super.disconnectedCallback();
+    window.removeEventListener("resize", this._resized);
+    this._header = undefined;
     // The panel keeps running; only this window onto it closes.
     this._release();
   }

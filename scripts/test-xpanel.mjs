@@ -110,6 +110,7 @@ for (let i = 0; i < 20 && !loaded; i++) await new Promise((r) => setTimeout(r, 5
 
 check("loads the container", loaded?.url === "/local/crestron-panels/BGM/xpanel/container.swf");
 check("relative files resolve beside it", loaded?.base === "/local/crestron-panels/BGM/xpanel/");
+check("keeps running while the tab is hidden", loaded?.backgroundExecutionMode === "mainThread");
 check("asks about the device it was given", calls[0]?.device_id === "dev1", JSON.stringify(calls[0]));
 check("page parameters as Crestron's page gives them",
   JSON.stringify(loaded?.parameters) === JSON.stringify({
@@ -257,6 +258,18 @@ check("coming back reuses it rather than loading it again",
   check("a panel that failed to start says it will try again", sawError);
   check("and does, by itself", attempts === 2 && !retrying._error, `${attempts} ${retrying._error}`);
   retrying.remove();
+}
+
+{
+  const { placement } = mod;
+  const at = placement({ left: 10, top: 300, width: 640, height: 400 }, { x: 0, y: 1200 }, 56, 1280);
+  check("sits in page coordinates, so it scrolls with the page",
+    at.left === 10 && at.top === 1500 && at.scale === 0.5 && at.clip === "", JSON.stringify(at));
+  const under = placement({ left: 10, top: 6, width: 640, height: 400 }, { x: 0, y: 0 }, 56, 1280);
+  check("clips what is under the toolbar", under.clip === "inset(50px 0 0 0)", under.clip);
+  const same = placement({ left: 10, top: 300, width: 640, height: 400 }, { x: 0, y: 1200 }, 56, 1280);
+  check("an unmoved stage places it the same, so nothing is rewritten",
+    JSON.stringify(same) === JSON.stringify(at));
 }
 
 if (failures) {
